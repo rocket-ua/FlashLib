@@ -8,7 +8,7 @@
 
 var config = {
     libToJson: {
-        sayResultToConsole: true,
+        sayResultToConsole: false,
         saveToFiles: true,
         buildForSelected: false,
         saveFileName: null,
@@ -20,15 +20,16 @@ var config = {
         overrideExistingFiles: false,
         addExtensions: false,
         removeExtensions: false
+    },
+    createGraphicsList: {
+        exportImages: true,
+        exportImagesPath: null,
+        sayResultToConsole: false,
+        saveToFiles: true
     }
 };
 
-var basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
-
-function evalScripts() {
-    eval(FLfile.read(basePath + 'JSON.jsfl'));
-    eval(FLfile.read(basePath + 'DEBUG.jsfl'));
-}
+var basePath = '';
 
 function start() {
     fl.outputPanel.clear();
@@ -38,21 +39,18 @@ function start() {
         return;
     }
 
-    //basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
-    fl.trace(basePath);
-
-    //eval(FLfile.read(basePath + 'JSON.jsfl'));
-    //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
-
+    basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
     //fl.trace(basePath);
-    //fl.trace(DEBUG.traceElementProperties(document));
+
+    eval(FLfile.read(basePath + 'JSON.jsfl'));
+    eval(FLfile.read(basePath + 'DEBUG.jsfl'));
 
     if(!document.pathURI) {
         fl.trace('This document do not save yet.');
         return;
     }
 
-    var configPath = document.pathURI.replace(document.name, 'LibToJsonConfig.json');
+    var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
     var configString = FLfile.read(configPath);
 
     if(configString) {
@@ -69,21 +67,28 @@ function start() {
     if(config && config.exportImages) {
         startExportImages();
     }
+
+    if(config && config.createGraphicsList) {
+        startCreateGraphicsList();
+    }
 }
 
 /**
  * Получить данные из библиотеки в виде json строки
  */
 function startLibToJson() {
-    fl.runScript(basePath + 'LibToJson.jsfl', 'start', config.libToJson);
+    fl.runScript(basePath + 'LibToJson.jsfl', 'LibToJson', config.libToJson);
 }
 
 /**
  * Экспортировать графику из проекта
  */
 function startExportImages() {
-    fl.runScript(basePath + 'ExportImages.jsfl', 'start', config.exportImages);
+    fl.runScript(basePath + 'ExportImages.jsfl', 'ExportImages', config.exportImages);
 }
 
-evalScripts();
+function startCreateGraphicsList() {
+    fl.runScript(basePath + 'CreateGraphicsList.jsfl', 'CreateGraphicsList', config.createGraphicsList);
+}
+
 start();
