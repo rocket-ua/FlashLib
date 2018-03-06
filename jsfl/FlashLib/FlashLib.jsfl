@@ -42,8 +42,8 @@ function start() {
     basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
     //fl.trace(basePath);
 
-    eval(FLfile.read(basePath + 'JSON.jsfl'));
-    eval(FLfile.read(basePath + 'DEBUG.jsfl'));
+    //eval(FLfile.read(basePath + 'JSON.jsfl'));
+    //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
 
     if(!document.pathURI) {
         fl.trace('This document do not save yet.');
@@ -87,6 +87,9 @@ function startExportImages() {
     fl.runScript(basePath + 'ExportImages.jsfl', 'ExportImages', config.exportImages);
 }
 
+/**
+ *  Создать файл с ссылками на импортированные ассеты
+ */
 function startCreateGraphicsList() {
     fl.runScript(basePath + 'CreateGraphicsList.jsfl', 'CreateGraphicsList', config.createGraphicsList);
 }
