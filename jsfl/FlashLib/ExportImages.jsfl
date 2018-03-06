@@ -36,7 +36,7 @@ function ExportImages($config) {
         //this.docPath = document.pathURI.substr(0, document.pathURI.lastIndexOf('/'));
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
-        //this.docPath += 'src/';
+        this.docPath += 'exported/';
         fl.trace(this.docPath);
 
         var lib = document.library;
@@ -83,9 +83,9 @@ function ExportImages($config) {
             exportCurrentFile($item, filePath);
         } else {
             if (FLfile.exists(filePath)) {
-                exportCurrentFile($item, filePath);
-            } else {
                 fl.trace('Файл ' + filePath + ' уже существует, перезаписывание запрещено в конфиге')
+            } else {
+                exportCurrentFile($item, filePath);
             }
         }
     }
