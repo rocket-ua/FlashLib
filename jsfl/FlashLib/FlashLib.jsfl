@@ -18,14 +18,13 @@ var config = {
         exportImages: false,
         exportImagesPath: null,
         overrideExistingFiles: false,
-        addExtensions: false,
-        removeExtensions: false
+        addExtensions: false
     },
     createGraphicsList: {
-        exportImages: true,
-        exportImagesPath: null,
+        createImagesList: true,
+        imagesListPath: null,
         sayResultToConsole: false,
-        saveToFiles: true
+        saveToFile: true
     }
 };
 

@@ -17,7 +17,7 @@ function CreateGraphicsList($config) {
 
     config = $config;
 
-    if (!config.exportImages) {
+    if (!config.createImagesList) {
         return;
     }
 
@@ -44,15 +44,15 @@ function CreateGraphicsList($config) {
         if(jsonString && config && config.sayResultToConsole) {
             fl.trace(jsonString);
         }
-        if(jsonString && config && config.saveToFiles) {
+        if(jsonString && config && config.saveToFile) {
             saveResultToFile(jsonString);
         }
     }
 
     function createSaveFilesPath() {
         var path = document.pathURI.replace(document.name, '');
-        if (config && config.exportImagesPath) {
-            path = config.exportImagesPath;
+        if (config && config.imagesListPath) {
+            path = config.imagesListPath;
         }
         if (path.search('file:///') !== 0) {
             path = 'file:///' + path;

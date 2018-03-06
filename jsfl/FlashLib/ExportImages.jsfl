@@ -13,7 +13,6 @@
  *      exportImagesPath: null,
  *      overrideExistingFiles: false,
  *      addExtensions: false,
- *      removeExtensions: false
  * }
  */
 
