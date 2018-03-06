@@ -21,7 +21,7 @@ var config = {
         addExtensions: false
     },
     createGraphicsList: {
-        createImagesList: true,
+        createImagesList: false,
         imagesListPath: null,
         sayResultToConsole: false,
         saveToFile: true
