@@ -1,0 +1,15 @@
+{
+  "baseUrl": "",
+  "assets": [
+    {
+      "name": "flashLib",
+      "path": "flashLib.json",
+      "type": "json"
+    },
+    {
+      "name": "spriteSheets",
+      "path": "spriteSheets/spriteSheets.json",
+      "type": "json"
+    }
+  ]
+}

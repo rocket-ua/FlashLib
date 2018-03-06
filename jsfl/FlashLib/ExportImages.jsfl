@@ -37,7 +37,7 @@ function ExportImages($config) {
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
         this.docPath += 'exported/';
-        fl.trace(this.docPath);
+        //fl.trace(this.docPath);
 
         var lib = document.library;
         var libItems = lib.items;
