@@ -43,7 +43,7 @@ MacOS: /Users/<Username>/Library/Application Support/Adobe/Animate CC <version>/
     }
 }
 ```
-**libToJson* - объект для настройки параметров экспорта библиотеки в json.
+**libToJson** - объект для настройки параметров экспорта библиотеки в json.
 sayResultToConsole - выводить json строку библиотек в консоль Animate CC.
 saveToFiles - созранять библиотеку в файл
 buildForSelected - созадвать из библиотеки только выбранные элементы
