@@ -44,11 +44,11 @@ MacOS: /Users/<Username>/Library/Application Support/Adobe/Animate CC <version>/
 }
 ```
 **libToJson** - объект для настройки параметров экспорта библиотеки в json.
-sayResultToConsole - выводить json строку библиотек в консоль Animate CC.
-saveToFiles - созранять библиотеку в файл
-buildForSelected - созадвать из библиотеки только выбранные элементы
-saveFileName - имя файла в который дет созраена библиотека. По умолчанию flashLib.json
-saveFilesPath - абсолютный путь до папки в которую должен быть сохранен файл библиотеки. По умолчанию папка с проектом .fla
+<li> sayResultToConsole - выводить json строку библиотек в консоль Animate CC.
+<li> saveToFiles - созранять библиотеку в файл
+<li> buildForSelected - созадвать из библиотеки только выбранные элементы
+<li> saveFileName - имя файла в который дет созраена библиотека. По умолчанию flashLib.json
+<li> saveFilesPath - абсолютный путь до папки в которую должен быть сохранен файл библиотеки. По умолчанию папка с проектом .fla
 
 **exportImages** - объект для настройки параметров экспорта графики.
 exportImages - нужно ли экспортировать графику
@@ -116,3 +116,7 @@ var item = FlashLib.createItemFromLibrary('characters/hero');
 ```
 app.stage.addChild(item);
 ```
+
+
+### Контакты
+Telegram @rocket_ua
