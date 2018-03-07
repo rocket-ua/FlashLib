@@ -13,18 +13,7 @@ function start() {
 function loadAssets() {
     PIXI.loader.baseUrl = 'assets/';
     PIXI.loader.add("assets", "assets.json", "json");
-    PIXI.loader.once('complete', startLoadingGameResources, this);
-    PIXI.loader.load();
-}
-
-function startLoadingGameResources($loader, $resources) {
-    PIXI.loader.reset();
-
-    $resources.assets.data.assets.forEach(function ($item) {
-        PIXI.loader.add($item.name, $item.path);
-    }, this);
-
-    PIXI.loader.once('complete', this.onLoadingComplete, this);
+    PIXI.loader.once('complete', onLoadingComplete, this);
     PIXI.loader.load();
 }
 

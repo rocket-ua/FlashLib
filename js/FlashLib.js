@@ -177,6 +177,8 @@ var fljs = {
     },
 
 
+
+
     MovieClip: (function () {
         /**
          * Класс мувиклипа с кадрами
@@ -495,5 +497,33 @@ var fljs = {
         g.FlashLib = f();
     }
 })(function () {
+    function isJson(resource) {
+        return resource.type === PIXI.loaders.Resource.TYPE.JSON;
+    }
+
+    function atlasParser() {
+        return function (resource, next) {
+            if (!resource.data || !isJson(resource) || !resource.data.name || resource.data.name !== 'flashLibAssets') {
+                return next();
+            }
+
+            //PIXI.loader.reset();
+            var options = {
+                crossOrigin: resource.crossOrigin,
+                xhrType: PIXI.loaders.Resource.TYPE.JSON,
+                metadata: null,
+                parentResource: resource
+            };
+            resource.data.assets.forEach(function ($item) {
+                PIXI.loader.add($item.name, $item.path, options);
+            }, this);
+
+            return next();
+        }
+    }
+
+    PIXI.loaders.Loader.addPixiMiddleware(atlasParser);
+    PIXI.loader.use(atlasParser());
+    
     return fljs;
 });
