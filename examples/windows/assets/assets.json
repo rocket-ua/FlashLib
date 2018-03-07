@@ -1,16 +1,18 @@
 {
-  "name": "flashLibAssets",
-  "baseUrl": "",
-  "assets": [
+  "baseUrl": "./",
+  "libs": [
     {
       "name": "flashLib",
-      "path": "flashLib.json",
-      "type": "json"
-    },
+      "path": "flashLib.json"
+    }
+  ],
+  "assets": [
     {
       "name": "spriteSheets",
-      "path": "spriteSheets/spriteSheets.json",
-      "type": "json"
+      "path": "spriteSheets/spriteSheets.json"
     }
-  ]
+  ],
+  "metaData": {
+    "type": "FlashLib"
+  }
 }

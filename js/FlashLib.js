@@ -503,7 +503,8 @@ var fljs = {
 
     function atlasParser() {
         return function (resource, next) {
-            if (!resource.data || !isJson(resource) || !resource.data.name || resource.data.name !== 'flashLibAssets') {
+            if (!resource.data || !isJson(resource) || !resource.data.metaData ||
+                !resource.data.metaData.type || resource.data.metaData.type !== 'FlashLib') {
                 return next();
             }
 
@@ -514,6 +515,9 @@ var fljs = {
                 metadata: null,
                 parentResource: resource
             };
+            resource.data.libs.forEach(function ($lib) {
+                PIXI.loader.add($lib.name, $lib.path, options);
+            }, this);
             resource.data.assets.forEach(function ($item) {
                 PIXI.loader.add($item.name, $item.path, options);
             }, this);
