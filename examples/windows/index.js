@@ -1,7 +1,7 @@
 var app = null;
 
 function start() {
-    app = new PIXI.Application(1280, 768, {backgroundColor : 0x1099bb});
+    app = new PIXI.Application(1024, 768, {backgroundColor : 0x1099bb});
     document.body.appendChild(app.view);
 
     loadAssets();

@@ -536,6 +536,10 @@ function LibToJson($config) {
 
             this.libraryItem = $data.libraryItem.name;
         }
+
+        if($data.filters) {
+            this.filters = $data.filters;
+        }
         //DEBUG.traceElementPropertys($data);
         //DEBUG.traceElementPropertysRecursivity($data, 0);
     };

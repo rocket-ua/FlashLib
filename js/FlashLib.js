@@ -81,6 +81,10 @@ var fljs = {
 
         }
 
+        /**
+         * Получить объект класса по имени, включая полный путь к нему
+         * @param $name
+         */
         function getClassByName($name) {
             var splittedName = $name.split('.');
 
@@ -120,21 +124,58 @@ var fljs = {
                 break;
         }
 
-        item.name = $displayItemData.name;
-        item.x = $displayItemData.x;
-        item.y = $displayItemData.y;
-        item.width = $displayItemData.width;
-        item.height = $displayItemData.height;
-        item.scale.x = $displayItemData.scaleX;
-        item.scale.y = $displayItemData.scaleY;
-        item.rotation = ($displayItemData.rotation * (Math.PI / 180));
-        item.visible = $displayItemData.visible;
+        this.setDisplayItemProperties(item, $displayItemData);
+        this.addFiltersToDisplayItem(item, $displayItemData.filters);
 
         if(item['constructionComplete']) {
             item.constructionComplete();
         }
         return item;
     },
+
+    setDisplayItemProperties: function ($item, $displayItemData) {
+        $item.name = $displayItemData.name;
+        $item.x = $displayItemData.x;
+        $item.y = $displayItemData.y;
+        $item.width = $displayItemData.width;
+        $item.height = $displayItemData.height;
+        $item.scale.x = $displayItemData.scaleX;
+        $item.scale.y = $displayItemData.scaleY;
+        $item.rotation = ($displayItemData.rotation * (Math.PI / 180));
+        $item.visible = $displayItemData.visible;
+    },
+
+    addFiltersToDisplayItem: function ($item, $filters) {
+        if(!$filters) {
+            return;
+        }
+
+        var newFilters = [];
+        $filters.forEach(function (filterData) {
+            if(filterData.enabled) {
+                switch (filterData.name) {
+                    case 'glowFilter':
+                        console.log(filterData);
+                        break;
+                    case 'dropShadowFilter':
+                        console.log(filterData);
+                        break;
+                    case 'bevelFilter':
+                        console.log(filterData);
+                        break;
+                    case 'blurFilter':
+                        var qualityList = { 'low':90 , 'medium':65, 'high':40 };
+                        var filter = new PIXI.filters.BlurFilter(filterData.strength, qualityList[filterData.quality]);
+                        filter.blurX = filterData.blurX;
+                        filter.blurY = filterData.blurY;
+                        newFilters.push(filter);
+                        break;
+                }
+            }
+        }, this);
+        $item.filters = newFilters;
+    },
+
 
     MovieClip: (function () {
         /**

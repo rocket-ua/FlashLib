@@ -16,8 +16,8 @@
 
 ### Подготовка
 1. Положить файлы из папки в jsfl в папку со скриптам Animate CC
-Windows: C:\Users\<Username>\AppData\Local\Adobe\Animate CC 2015.2\<your locale>\Configuration\Commands\
-MacOS: /Users/<Username>/Library/Application Support/Adobe/Animate CC 2017/en_US/Configuration/Commands/
+>Windows: C:\Users\<Username>\AppData\Local\Adobe\Animate CC 2015.2\<your locale>\Configuration\Commands\
+>MacOS: /Users/<Username>/Library/Application Support/Adobe/Animate CC 2017/en_US/Configuration/Commands/
 2. Запустить Animate CC, открыть имеющийся или создать новый проект.
 3. В папке в которой лежит файл проекта Animate CC (.fla) создайте файл FlashLibConfig.json для настроек экспорта играфики.
 Если конфигурационного файла не будет, будут использоваться настройки по умолчанию.
