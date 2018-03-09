@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ExtensionList>
-	<Extension Id="com.example.EXTTest">
-		<HostList>
-			<Host Name="FLPR" Port="8006"/>
-		</HostList>
-	</Extension>
-</ExtensionList>
