@@ -3,7 +3,7 @@
   "libs": [
     {
       "name": "flashLib",
-      "path": "flashLib.json"
+      "path": "FlashLib.json"
     }
   ],
   "assets": [

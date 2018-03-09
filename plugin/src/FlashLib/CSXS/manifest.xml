@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ExtensionManifest Version="4.0" ExtensionBundleId="com.rocket.FlashLib" ExtensionBundleVersion="1.0.0" ExtensionBundleName="FlashLib" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<Author>rocket</Author>
+	<ExtensionList>
+		<Extension Id="com.rocket.FlashLib" Version="1.0.0" />
+	</ExtensionList>
+	<ExecutionEnvironment>
+		<HostList>
+            <Host Name="FLPR" Version="13.1" />
+		</HostList>
+		<LocaleList>
+			<Locale Code="All" />
+		</LocaleList>
+		<RequiredRuntimeList>
+			<RequiredRuntime Name="CSXS" Version="4.0" />
+		</RequiredRuntimeList>
+	</ExecutionEnvironment>
+	<DispatchInfoList>
+		<Extension Id="com.rocket.FlashLib">
+			<DispatchInfo >
+				<Resources>
+				<MainPath>./index.html</MainPath>
+				</Resources>
+				<Lifecycle>
+					<AutoVisible>true</AutoVisible>
+					<StartOn>
+						<Event>documentAfterActivate</Event>
+					</StartOn>
+				</Lifecycle>
+				<UI>
+					<Type>Panel</Type>
+					<Menu>FlashLib</Menu>
+					<Geometry>
+						<Size>
+							<Height>350</Height>
+							<Width>220</Width>
+						</Size>
+                        <MinSize>
+                            <Height>350</Height>
+                            <Width>220</Width>
+                        </MinSize>
+					</Geometry>
+					<Icons>
+					</Icons>					
+				</UI>
+			</DispatchInfo>
+		</Extension>
+	</DispatchInfoList>
+</ExtensionManifest>

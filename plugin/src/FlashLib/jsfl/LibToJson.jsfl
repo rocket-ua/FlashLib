@@ -6,6 +6,7 @@
  *      buildForSelected: false
  * }
  */
+
 function LibToJson($settings, $config) {
     var settings = {};
     var config = {};

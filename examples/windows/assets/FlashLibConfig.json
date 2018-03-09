@@ -1,0 +1,18 @@
+{
+  "basePath": "",
+  "libToJson": {
+    "saveToFile": true,
+    "sayResultToConsole": false,
+    "buildForSelected": false
+  },
+  "exportImages": {
+    "exportImages": false,
+    "overrideExistingFiles": false,
+    "addExtensions": false
+  },
+  "createGraphicsList": {
+    "saveToFile": false,
+    "createImagesList": false,
+    "sayResultToConsole": false
+  }
+}

@@ -29,7 +29,7 @@
     }
 };*/
 
-function FlsahLib($settings, $config) {
+function FlashLib($settings, $config) {
     var settings = {};
     var config = {
         basePath: '',
@@ -122,5 +122,3 @@ function FlsahLib($settings, $config) {
 
     start();
 }
-
-FlsahLib();
