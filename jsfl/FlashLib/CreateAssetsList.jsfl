@@ -2,11 +2,11 @@
  *
  */
 
-function CreateGraphicsList($settings, $config) {
+function CreateAssetsList($settings, $config) {
     var settings = {};
     var config = {};
-    var graphicsList = {};
-    var basePath = '';
+    var scriptPath = '';
+    var assetsList = {};
 
     if(!fl.getDocumentDOM()) {
         fl.trace('No opened documents found!');
@@ -16,22 +16,37 @@ function CreateGraphicsList($settings, $config) {
     settings = $settings;       
     config = $config;
 
-    if (!config || !config.createImagesList) {
+    if (!config || (!config.sayResultToConsole && !config.saveToFile)) {
         return;
     }
 
+    assetsList = {
+        baseUrl: './',
+        libs: [
+            { name: 'FlashLib', path: 'FlashLib.json', type: 'json' }
+        ],
+        assets: [],
+        metaData: {
+            type: 'FlashLib',
+            date: new Date()
+        }
+    };
+
     function start() {
-        basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
-        if(settings && settings.basePath) {
-            basePath = settings.basePath;
+
+
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
         }
         
-        eval(FLfile.read(basePath + 'JSON.jsfl'));
+        eval(FLfile.read(scriptPath + 'JSON.jsfl'));
         //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
 
         this.docPath = createSaveFilesPath();
-
-        graphicsList.assets = [];
+        //добавляем папку в которую будем скрладывать графику
+        //this.docPath += 'exported/';
+        this.docPath += document.name + '/';
 
         var lib = document.library;
         var libItems = lib.items;
@@ -43,7 +58,7 @@ function CreateGraphicsList($settings, $config) {
             getImagePath(item);
         }
 
-        var jsonString = JSON.encode(graphicsList);
+        var jsonString = JSON.encode(assetsList);
         if(jsonString && config && config.sayResultToConsole) {
             fl.trace(jsonString);
         }
@@ -58,7 +73,10 @@ function CreateGraphicsList($settings, $config) {
      */
     function createSaveFilesPath() {
         var path = document.pathURI.replace(document.name, "");
-        if(config && config.saveFilesPath) {
+        if(config && config.basePath && config.basePath !== '') {
+            path = config.basePath;
+        }
+        if(config && config.saveFilesPath && config.saveFilesPath !== '') {
             path = config.saveFilesPath;
         }
 
@@ -70,17 +88,25 @@ function CreateGraphicsList($settings, $config) {
         return path;
     }
 
+    /**
+     * Получить путь к имени файла
+     * @param $item
+     */
     function getImagePath($item) {
         renameItem($item);
 
         var graphicData = {
             name : $item.name.replace(/(.png|.jpg)/, ''),
-            path : $item.name,
+            path : document.name + '/' +$item.name,
             type : 'image'
         };
-        graphicsList.assets.push(graphicData);
+        assetsList.assets.push(graphicData);
     }
 
+    /**
+     * Переименовать файл в библиотеке если нужно
+     * @param $item файл библиотеки
+     */
     function renameItem($item) {
         document.library.selectItem($item.name);
 
@@ -100,15 +126,15 @@ function CreateGraphicsList($settings, $config) {
      */
     function saveResultToFile($result) {
         var path = createSaveFilesPath();
-        var fileName = "graphicsList.json";
+        var fileName = "FlashLibAssets.json";
         if(config && config.saveFileName) {
             fileName = config.saveFileName;
         }
 
-        path = path + fileName;
+        path += fileName;
         FLfile.write(path, $result);
 
-        fl.trace("Graphics list saved to " + path);
+        fl.trace("Assets list saved to " + path);
     }
 
     start();

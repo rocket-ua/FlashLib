@@ -1,18 +1,17 @@
 {
-  "basePath": "",
+  "basePath": "/Users/rocket/Projects/FlashLib/examples/windows/build/",
   "libToJson": {
     "saveToFile": true,
     "sayResultToConsole": false,
     "buildForSelected": false
   },
   "exportImages": {
-    "exportImages": false,
+    "exportImages": true,
     "overrideExistingFiles": false,
     "addExtensions": false
   },
-  "createGraphicsList": {
-    "saveToFile": false,
-    "createImagesList": false,
+  "createAssetsList": {
+    "saveToFile": true,
     "sayResultToConsole": false
   }
 }

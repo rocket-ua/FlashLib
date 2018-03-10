@@ -11,7 +11,7 @@ function LibToJson($settings, $config) {
     var config = {};
     var libData = {};
     var jsonLib = {};
-    var basePath = '';
+    var scriptPath = '';
 
     if (!fl.getDocumentDOM()) {
         fl.trace('No opened documents found!');
@@ -26,13 +26,13 @@ function LibToJson($settings, $config) {
     }
 
     function start() {
-        basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
-        if(settings && settings.basePath) {
-            basePath = settings.basePath;
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf('/')+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
         }
 
-        eval(FLfile.read(basePath + 'JSON.jsfl'));
-        //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
+        eval(FLfile.read(scriptPath + 'JSON.jsfl'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.jsfl'));
 
         createLibItems();
 
@@ -59,7 +59,7 @@ function LibToJson($settings, $config) {
      */
     function saveResultToFile($result) {
         var path = createSaveFilesPath();
-        var fileName = "FlashLib.json";
+        var fileName = 'FlashLib.json';
         if(config && config.saveFileName) {
             fileName = config.saveFileName;
         }
@@ -67,7 +67,7 @@ function LibToJson($settings, $config) {
         path = path + fileName;
         FLfile.write(path, $result);
 
-        fl.trace("Library saved to " + path);
+        fl.trace('Library saved to ' + path);
     }
 
     /**
@@ -75,13 +75,16 @@ function LibToJson($settings, $config) {
      * @returns {string}
      */
     function createSaveFilesPath() {
-        var path = document.pathURI.replace(document.name, "");
-        if(config && config.saveFilesPath) {
+        var path = document.pathURI.replace(document.name, '');
+        if(config && config.basePath && config.basePath !== '') {
+            path = config.basePath;
+        }
+        if(config && config.saveFilesPath && config.saveFilesPath !== '') {
             path = config.saveFilesPath;
         }
 
-        if(path.search("file:///") !== 0) {
-            path = "file:///" + path;
+        if(path.search('file:///') !== 0) {
+            path = 'file:///' + path;
             path = encodeURI(path);
         }
 
@@ -121,7 +124,7 @@ function LibToJson($settings, $config) {
      * @param $item
      */
     function putToFolder($path, $item) {
-        var pathArr = $path.split("/");
+        var pathArr = $path.split('/');
         var obj = libData;
         for(var i = 0; i < pathArr.length - 1; i++) {
             //if(!obj[pathArr[i]]) {
@@ -139,7 +142,7 @@ function LibToJson($settings, $config) {
      * @returns {boolean}
      */
     function checkDataExist($path) {
-        var pathArr = $path.split("/");
+        var pathArr = $path.split('/');
         var obj = libData;
         for(var i = 0; i < pathArr.length; i++) {
             //if(!obj[pathArr[i]]) {
@@ -162,19 +165,19 @@ function LibToJson($settings, $config) {
         var item = null;
         switch ($itemData.itemType)
         {
-            case "folder":
+            case 'folder':
                 item = new LibItemFolder();
                 break;
-            case "movie clip":
+            case 'movie clip':
                 item = new LibItemMovieClip();
                 break;
-            case "graphic":
+            case 'graphic':
                 item = new LibItemGraphic();
                 break;
-            case "bitmap":
+            case 'bitmap':
                 item = new LibItemBitmap();
                 break;
-            case "font":
+            case 'font':
                 item = new LibItemFont();
                 break;
         }
@@ -224,10 +227,10 @@ function LibToJson($settings, $config) {
     function LibItemBase() {
         BaseItem.apply(this, arguments);
 
-        this.itemType = "";
-        this.name = "";
+        this.itemType = '';
+        this.name = '';
         this.linkageExportForAS = false;
-        this.linkageClassName = "";
+        this.linkageClassName = '';
     }
 
     LibItemBase.prototype = new BaseItem();
@@ -242,7 +245,7 @@ function LibToJson($settings, $config) {
     function LibItemBitmap() {
         LibItemBase.apply(this, arguments);
 
-        //this.sourceFilePath = "";
+        //this.sourceFilePath = '';
         //this.sourceFileExists = false;
         //this.sourceFileIsCurrent = false;
     }
@@ -259,7 +262,7 @@ function LibToJson($settings, $config) {
     function LibItemMovieClip() {
         LibItemBase.apply(this, arguments);
         this.timeline = null;
-        this.symbolType = "movie clip";
+        this.symbolType = 'movie clip';
         //this.scalingGrid = false;
         //this.scalingGridRect = null;
     }
@@ -284,7 +287,7 @@ function LibToJson($settings, $config) {
         LibItemBase.apply(this, arguments);
 
         this.timeline = null;
-        this.symbolType = "graphic";
+        this.symbolType = 'graphic';
         //this.scalingGrid = false;
         //this.scalingGridRect = null;
     }
@@ -361,11 +364,11 @@ function LibToJson($settings, $config) {
      * @returns {*}
      */
     function getElementType($item) {
-        var type = $item["elementType"];
-        if(type === "instance") {
-            type = $item["instanceType"];
-            if(type !== "bitmap") {
-                type = $item["symbolType"];
+        var type = $item['elementType'];
+        if(type === 'instance') {
+            type = $item['instanceType'];
+            if(type !== 'bitmap') {
+                type = $item['symbolType'];
             }
         }
         return type;
@@ -380,10 +383,10 @@ function LibToJson($settings, $config) {
         var type = getElementType($item);
         var item = null;
         switch (type) {
-            case "text":
+            case 'text':
                 item = new ElementTextFieldItem();
                 break;
-            case "shape":
+            case 'shape':
                 item = new ElementShapeItem();
                 break;
             default:
@@ -404,7 +407,7 @@ function LibToJson($settings, $config) {
 
         this.frames = null;
         this.frameCount = 0;
-        this.name = "";
+        this.name = '';
         //this.currentFrame = 0;
     }
 
@@ -419,7 +422,7 @@ function LibToJson($settings, $config) {
         //for (var i = 0; i < $data.layers.length; i++) {
         for (var i = $data.layers.length - 1; i >= 0; i--) {
             var layer = $data.layers[i];
-            if(layer.layerType !== "guide") {
+            if(layer.layerType !== 'guide') {
                 for (var j = 0; j < layer.frames.length; j++) {
                     if(!this.frames[j]) {
                         this.frames.push([]);
@@ -439,7 +442,7 @@ function LibToJson($settings, $config) {
         this.frames = [];
         var newFrame = null;
         for each(var layer in $data.layers) {
-            if(layer.layerType !== "guide") {
+            if(layer.layerType !== 'guide') {
                 for each(var frame in layer.frames.reverse()) {
                     newFrame = new FrameItem();
                     newFrame.parseData(frame);
@@ -458,7 +461,7 @@ function LibToJson($settings, $config) {
     /*function LayerItem() {
         BaseItem.apply(this, arguments);
 
-        this.layerType = "";
+        this.layerType = '';
         this.frameCount = 0;
         this.frames = null;
         this.parentLayer = null;
@@ -476,7 +479,7 @@ function LibToJson($settings, $config) {
     function FrameItem() {
         BaseItem.apply(this, arguments);
 
-        this.name = "";
+        this.name = '';
         this.elements = null;
         //this.soundLibraryItem = null;
         this.isEmpty = true;
@@ -506,10 +509,10 @@ function LibToJson($settings, $config) {
     function ElementItem() {
         BaseItem.apply(this, arguments);
 
-        this.instanceType = "";
+        this.instanceType = '';
         //this.libraryItem = null; //[object BitmapItem]
-        this.elementType = "";
-        this.name = "";
+        this.elementType = '';
+        this.name = '';
         this.width = 0;
         this.height = 0;
         this.x = 0;
@@ -557,12 +560,12 @@ function LibToJson($settings, $config) {
     function ElementTextFieldItem() {
         ElementItem.apply(this, arguments);
 
-        this.textType = "";
+        this.textType = '';
         this.border = false;
         this.length = 0;
-        this.lineType = "";
+        this.lineType = '';
         this.maxCharacters = 0;
-        this.orientation = "";
+        this.orientation = '';
         this.scrollable = false;
         this.selectable = false;
         this.textRuns = null; // [object TextRun]

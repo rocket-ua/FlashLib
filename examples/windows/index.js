@@ -11,8 +11,8 @@ function start() {
  * Загрузка ресурсов
  */
 function loadAssets() {
-    PIXI.loader.baseUrl = 'assets/';
-    PIXI.loader.add("assets", "assets.json", "json");
+    PIXI.loader.baseUrl = './build/';
+    PIXI.loader.add("FlashLibAssets", "FlashLibAssets.json", "json");
     PIXI.loader.once('complete', onLoadingComplete, this);
     PIXI.loader.load();
 }
@@ -21,7 +21,7 @@ function loadAssets() {
  * Построение мувиклипа
  */
 function onLoadingComplete() {
-    var libraryData = PIXI.loader.resources['flashLib'].data;
+    var libraryData = PIXI.loader.resources['FlashLib'].data;
     FlashLib.addNewLibrary(libraryData);
 
     var item = FlashLib.createItemFromLibrary('loginWindow');

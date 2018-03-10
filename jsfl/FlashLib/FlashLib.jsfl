@@ -29,7 +29,7 @@
     }
 };*/
 
-function FlsahLib($settings, $config) {
+function FlashLib($settings, $config) {
     var settings = {};
     var config = {
         basePath: '',
@@ -43,13 +43,12 @@ function FlsahLib($settings, $config) {
             overrideExistingFiles: false,
             addExtensions: false
         },
-        createGraphicsList: {
+        createAssetsList: {
             saveToFile: false,
-            createImagesList: false,
             sayResultToConsole: false
         }
     };
-    var basePath = '';
+    var scriptPath = '';
 
     if(!fl.getDocumentDOM()) {
         fl.trace('No opened documents found!');
@@ -61,14 +60,14 @@ function FlsahLib($settings, $config) {
     function start() {
         fl.outputPanel.clear();
 
-        basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
-        if(settings && settings.basePath) {
-            basePath = settings.basePath;
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
         }
-        //fl.trace(basePath);
+        //fl.trace(scriptPath);
 
-        eval(FLfile.read(basePath + 'JSON.jsfl'));
-        //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
+        eval(FLfile.read(scriptPath + 'JSON.jsfl'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.jsfl'));
 
         if(!document.pathURI) {
             fl.trace('This document do not saved yet.');
@@ -94,8 +93,8 @@ function FlsahLib($settings, $config) {
             startExportImages();
         }
 
-        if(config && config.createGraphicsList) {
-            startCreateGraphicsList();
+        if(config && config.createAssetsList) {
+            startCreateAssetsList();
         }
     }
 
@@ -103,24 +102,37 @@ function FlsahLib($settings, $config) {
      * Получить данные из библиотеки в виде json строки
      */
     function startLibToJson() {
-        fl.runScript(basePath + 'LibToJson.jsfl', 'LibToJson', settings, config.libToJson);
+        config.libToJson.basePath = config.basePath;
+        fl.runScript(scriptPath + 'LibToJson.jsfl', 'LibToJson', settings, config.libToJson);
     }
 
     /**
      * Экспортировать графику из проекта
      */
     function startExportImages() {
-        fl.runScript(basePath + 'ExportImages.jsfl', 'ExportImages', settings, config.exportImages);
+        config.exportImages.basePath = config.basePath;
+        fl.runScript(scriptPath + 'ExportImages.jsfl', 'ExportImages', settings, config.exportImages);
     }
 
     /**
      *  Создать файл с ссылками на импортированные ассеты
      */
-    function startCreateGraphicsList() {
-        fl.runScript(basePath + 'CreateGraphicsList.jsfl', 'CreateGraphicsList', settings, config.createGraphicsList);
+    function startCreateAssetsList() {
+        config.createAssetsList.basePath = config.basePath;
+        fl.runScript(scriptPath + 'CreateAssetsList.jsfl', 'CreateAssetsList', settings, config.createAssetsList);
     }
 
     start();
 }
 
-FlsahLib();
+function getConfigData() {
+    var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
+    var configString = FLfile.read(configPath);
+    return configString;
+}
+
+if(fl.scriptURI !== 'unknown:') {
+    FlashLib();
+}
+
+//FlashLib();

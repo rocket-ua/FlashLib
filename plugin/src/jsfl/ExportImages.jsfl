@@ -18,7 +18,7 @@
 function ExportImages($settings, $config) {
     var settings = {};
     var config = {};
-    var basePath = '';
+    var scriptPath = '';
 
     if(!fl.getDocumentDOM()) {
         fl.trace('No opened documents found!');
@@ -33,18 +33,18 @@ function ExportImages($settings, $config) {
     }
 
     function start() {
-        basePath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
-        if(settings && settings.basePath) {
-            basePath = settings.basePath;
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
         }
 
-        //eval(FLfile.read(basePath + 'JSON.jsfl'));
-        //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
+        //eval(FLfile.read(scriptPath + 'JSON.jsfl'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.jsfl'));
 
-        //Получить путь до fla файла
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
-        this.docPath += 'exported/';
+        //this.docPath += 'exported/';
+        this.docPath += document.name + '/';
         //fl.trace(this.docPath);
 
         var lib = document.library;
@@ -64,7 +64,10 @@ function ExportImages($settings, $config) {
      */
     function createSaveFilesPath() {
         var path = document.pathURI.replace(document.name, '');
-        if (config && config.exportImagesPath) {
+        if (config && config.basePath && config.basePath !== '') {
+            path = config.basePath;
+        }
+        if (config && config.exportImagesPath && config.exportImagesPath !== '') {
             path = config.exportImagesPath;
         }
         if (path.search('file:///') !== 0) {
