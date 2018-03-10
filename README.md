@@ -20,7 +20,7 @@
 ### Подготовка
 1. Положить файлы из папки в jsfl в папку со скриптам Animate CC
 >Windows: C:\Users\<Username>\AppData\Local\Adobe\Animate CC 2015.2\<your locale>\Configuration\Commands\
->MacOS: /Users/<Username>/Library/Application Support/Adobe/Animate CC 2017/en_US/Configuration/Commands/
+>MacOS: /Users/Username/Library/Application Support/Adobe/Animate CC 2017/en_US/Configuration/Commands/
 2. Запустить Animate CC, открыть имеющийся или создать новый проект.
 3. Когда нужно будет экспортировать библиотеку, выберите **Commands -> FlashLib -> FlashLib**
 4. Если использовались настройки по умолчанию то в папке в которой находится файл проекта (.fla) появится файлы  
