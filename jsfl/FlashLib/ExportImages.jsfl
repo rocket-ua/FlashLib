@@ -4,17 +4,6 @@
  * будет корневой папкой для сохранения файлов, иначе коневой папкой будет папка в которой лежит fla файл
  * из библиотеки которого экспортируются картинки
  */
-
-
-/**
- * Config example
- * {
- *      exportImages: false,
- *      overrideExistingFiles: false,
- *      addExtensions: false,
- * }
- */
-
 function ExportImages($settings, $config) {
     var settings = {};
     var config = {};
@@ -44,7 +33,7 @@ function ExportImages($settings, $config) {
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
         //this.docPath += 'exported/';
-        this.docPath += document.name + '/';
+        this.docPath += document.name + '_lib' + '/';
         //fl.trace(this.docPath);
 
         var lib = document.library;

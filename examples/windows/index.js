@@ -12,7 +12,7 @@ function start() {
  */
 function loadAssets() {
     PIXI.loader.baseUrl = './build/';
-    PIXI.loader.add("FlashLibAssets", "FlashLibAssets.json", "json");
+    PIXI.loader.add('FlashLibAssets', 'FlashLibAssets.json', 'json');
     PIXI.loader.once('complete', onLoadingComplete, this);
     PIXI.loader.load();
 }

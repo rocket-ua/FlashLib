@@ -1,7 +1,6 @@
 /**
  *
  */
-
 function CreateAssetsList($settings, $config) {
     var settings = {};
     var config = {};
@@ -46,7 +45,7 @@ function CreateAssetsList($settings, $config) {
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
         //this.docPath += 'exported/';
-        this.docPath += document.name + '/';
+        this.docPath += document.name + '_lib' + '/';
 
         var lib = document.library;
         var libItems = lib.items;
@@ -97,7 +96,7 @@ function CreateAssetsList($settings, $config) {
 
         var graphicData = {
             name : $item.name.replace(/(.png|.jpg)/, ''),
-            path : document.name + '/' +$item.name,
+            path : document.name + '_lib' + '/' + $item.name,
             type : 'image'
         };
         assetsList.assets.push(graphicData);
