@@ -39,8 +39,8 @@ function CreateAssetsList($settings, $config) {
             scriptPath = settings.scriptPath;
         }
         
-        eval(FLfile.read(scriptPath + 'JSON.jsfl'));
-        //eval(FLfile.read(basePath + 'DEBUG.jsfl'));
+        eval(FLfile.read(scriptPath + 'JSON.js'));
+        //eval(FLfile.read(basePath + 'DEBUG.js'));
 
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
@@ -75,9 +75,6 @@ function CreateAssetsList($settings, $config) {
         if(config && config.basePath && config.basePath !== '') {
             path = config.basePath;
         }
-        if(config && config.saveFilesPath && config.saveFilesPath !== '') {
-            path = config.saveFilesPath;
-        }
 
         if(path.search("file:///") !== 0) {
             path = "file:///" + path;
@@ -92,31 +89,12 @@ function CreateAssetsList($settings, $config) {
      * @param $item
      */
     function getImagePath($item) {
-        renameItem($item);
-
         var graphicData = {
             name : $item.name.replace(/(.png|.jpg)/, ''),
             path : document.name + '_lib' + '/' + $item.name,
             type : 'image'
         };
         assetsList.assets.push(graphicData);
-    }
-
-    /**
-     * Переименовать файл в библиотеке если нужно
-     * @param $item файл библиотеки
-     */
-    function renameItem($item) {
-        document.library.selectItem($item.name);
-
-        var tempArr = $item.name.split('/');
-        var tempName = tempArr[tempArr.length - 1].replace(/\s/, '');
-        if (config.addExtensions) {
-            tempName += tempName.search(/(.png|.jpg)/) > -1 ? '' : '.png';
-        }
-
-        document.library.renameItem(tempName);
-        document.library.selectNone();
     }
 
     /**

@@ -1,7 +1,7 @@
 var app = null;
 
 function start() {
-    app = new PIXI.Application(1024, 768, {backgroundColor : 0x1099bb});
+    app = new PIXI.Application(1024, 768, {backgroundColor : /*0x1099bb*/ 0xCCCCCC});
     document.body.appendChild(app.view);
 
     loadAssets();
@@ -25,8 +25,8 @@ function onLoadingComplete() {
     FlashLib.addNewLibrary(libraryData);
 
     var item = FlashLib.createItemFromLibrary('loginWindow');
-    item.x = 50;
-    item.y = 100;
+    item.x = 200;
+    item.y = 80;
     app.stage.addChild(item);
 }
 

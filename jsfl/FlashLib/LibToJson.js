@@ -31,8 +31,8 @@ function LibToJson($settings, $config) {
             scriptPath = settings.scriptPath;
         }
 
-        eval(FLfile.read(scriptPath + 'JSON.jsfl'));
-        //eval(FLfile.read(scriptPath + 'DEBUG.jsfl'));
+        eval(FLfile.read(scriptPath + 'JSON.js'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.js'));
 
         createLibItems();
 
@@ -64,10 +64,39 @@ function LibToJson($settings, $config) {
             fileName = config.saveFileName;
         }
 
+        checkFolder(path);
+
         path = path + fileName;
         FLfile.write(path, $result);
 
         fl.trace('Library saved to ' + path);
+    }
+
+    /**
+     *
+     * @param $folderPath
+     */
+    function checkFolder($folderPath) {
+        $folderPath = $folderPath.replace('file:///', '');
+        var arr = $folderPath.split('/');
+        var temp = '';
+        var index = 0;
+        do {
+            if (arr[index] !== '') {
+                temp += arr[index] + '/';
+                // если каталога нет, созадем его
+                if (!FLfile.exists('file:///' + temp)) {
+                    var result = FLfile.createFolder('file:///' + temp);
+                    if(result) {
+                        fl.trace('Created directory: ' + ('file:///' + temp));
+                    } else {
+                        fl.trace('Error creating directory: ' + ('file:///' + temp));
+                    }
+
+                }
+            }
+            index++;
+        } while (index < arr.length);
     }
 
     /**
@@ -78,9 +107,6 @@ function LibToJson($settings, $config) {
         var path = document.pathURI.replace(document.name, '');
         if(config && config.basePath && config.basePath !== '') {
             path = config.basePath;
-        }
-        if(config && config.saveFilesPath && config.saveFilesPath !== '') {
-            path = config.saveFilesPath;
         }
 
         if(path.search('file:///') !== 0) {
@@ -109,13 +135,20 @@ function LibToJson($settings, $config) {
         }
 
         var jsonItem = {};
-        for each(var item in items) {
+        /*for each(var item in items) {
             if(checkDataExist(item.name)) {
                 continue;
             }
             jsonItem = createNewLibItem(item);
             putToFolder(item.name, jsonItem);
-        }
+        }*/
+
+        items.forEach(function (item) {
+            if(!checkDataExist(item.name)) {
+                jsonItem = createNewLibItem(item);
+                putToFolder(item.name, jsonItem);
+            }
+        }, this);
     }
 
     /**
@@ -493,11 +526,17 @@ function LibToJson($settings, $config) {
 
         this.elements = [];
         var newElement = null;
-        for each(var element in $data.elements) {
+        /*for each(var element in $data.elements) {
             newElement = createElementLibItem(element);
             //newElement.parseData(element);
             this.elements.push(newElement);
-        }
+        }*/
+
+        $data.elements.forEach(function (element) {
+            newElement = createElementLibItem(element);
+            //newElement.parseData(element);
+            this.elements.push(newElement);
+        }, this);
     };
 
 ///////////////////////////////////////////////////////////

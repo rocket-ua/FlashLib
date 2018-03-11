@@ -26,8 +26,8 @@ function FlashLib($settings, $config) {
         }
 
         //fl.trace(scriptPath);
-        eval(FLfile.read(scriptPath + 'JSON.jsfl'));
-        eval(FLfile.read(scriptPath + 'DEBUG.jsfl'));
+        eval(FLfile.read(scriptPath + 'JSON.js'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.js'));
 
         if(!document.pathURI) {
             fl.trace('This document do not saved yet.');
@@ -89,8 +89,7 @@ function FlashLib($settings, $config) {
      */
     function startLibToJson() {
         config.libToJson.basePath = config.basePath;
-        eval(FLfile.read(scriptPath + 'LibToJson.jsfl'));
-        LibToJson(settings, config.libToJson);
+        fl.runScript(scriptPath + 'LibToJson.js', 'LibToJson', settings, config.libToJson);
     }
 
     /**
@@ -98,8 +97,7 @@ function FlashLib($settings, $config) {
      */
     function startExportImages() {
         config.exportImages.basePath = config.basePath;
-        eval(FLfile.read(scriptPath + 'ExportImages.jsfl'));
-        ExportImages(settings, config.exportImages);
+        fl.runScript(scriptPath + 'ExportImages.js', 'ExportImages', settings, config.exportImages);
     }
 
     /**
@@ -107,8 +105,7 @@ function FlashLib($settings, $config) {
      */
     function startCreateAssetsList() {
         config.createAssetsList.basePath = config.basePath;
-        eval(FLfile.read(scriptPath + 'CreateAssetsList.jsfl'));
-        CreateAssetsList(settings, config.createAssetsList);
+        fl.runScript(scriptPath + 'CreateAssetsList.js', 'CreateAssetsList', settings, config.createAssetsList);
     }
 
     start();

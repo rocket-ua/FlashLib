@@ -27,8 +27,8 @@ function ExportImages($settings, $config) {
             scriptPath = settings.scriptPath;
         }
 
-        //eval(FLfile.read(scriptPath + 'JSON.jsfl'));
-        //eval(FLfile.read(scriptPath + 'DEBUG.jsfl'));
+        //eval(FLfile.read(scriptPath + 'JSON.js'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.js'));
 
         this.docPath = createSaveFilesPath();
         //добавляем папку в которую будем скрладывать графику
@@ -39,13 +39,19 @@ function ExportImages($settings, $config) {
         var lib = document.library;
         var libItems = lib.items;
         //пробежать по всем элементам библиотеки и экспортировать графику
-        for each(var item in libItems) {
+        /*for each(var item in libItems) {
             if (item.itemType !== 'bitmap') {
                 continue;
             }
             //экспортируем битмапку
             exportImage(item);
-        }
+        }*/
+
+        libItems.forEach(function (item) {
+            if(item.itemType === 'bitmap') {
+                exportImage(item);
+            }
+        }, this);
     }
 
     /**
@@ -56,19 +62,18 @@ function ExportImages($settings, $config) {
         if (config && config.basePath && config.basePath !== '') {
             path = config.basePath;
         }
-        if (config && config.exportImagesPath && config.exportImagesPath !== '') {
-            path = config.exportImagesPath;
-        }
+
         if (path.search('file:///') !== 0) {
             path = 'file:///' + path;
             path = encodeURI(path);
         }
+
         return path;
     }
 
     function exportImage($item) {
         //переименовываем битмапку, убираем пробелы и добавляем разрешение
-        renameItem($item);
+        //renameItem($item);
 
         //поучить локальный путь до файла картинки
         var path = $item.name.substr(0, $item.name.lastIndexOf('/'));
@@ -104,7 +109,6 @@ function ExportImages($settings, $config) {
         document.library.selectItem($item.name);
 
         var tempArr = $item.name.split('/');
-        //var tempName = tempArr[tempArr.length - 1].replace(' ', '');
         var tempName = tempArr[tempArr.length - 1].replace(/\s/, '');
         if (config.addExtensions) {
             tempName += tempName.search(/(.png|.jpg)/) > -1 ? '' : '.png';
@@ -123,8 +127,12 @@ function ExportImages($settings, $config) {
                 temp += arr[index] + '/';
                 // если каталога нет, созадем его
                 if (!FLfile.exists(this.docPath + temp)) {
-                    FLfile.createFolder(this.docPath + temp);
-                    fl.trace('Created directory: ' + (this.docPath + temp));
+                    var result = FLfile.createFolder(this.docPath + temp);
+                    if(result) {
+                        fl.trace('Created directory: ' + (this.docPath + temp));
+                    } else {
+                        fl.trace('Error created directory: ' + (this.docPath + temp));
+                    }
                 }
             }
             index++;
