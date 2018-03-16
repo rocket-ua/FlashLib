@@ -455,6 +455,7 @@ function LibToJson($settings, $config) {
         //for (var i = 0; i < $data.layers.length; i++) {
         for (var i = $data.layers.length - 1; i >= 0; i--) {
             var layer = $data.layers[i];
+
             if(layer.layerType !== 'guide') {
                 for (var j = 0; j < layer.frames.length; j++) {
                     if(!this.frames[j]) {

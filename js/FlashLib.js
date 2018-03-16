@@ -133,6 +133,11 @@ var fljs = {
         return item;
     },
 
+    /**
+     * Назначение параметров элементу
+     * @param $item объкет которому назначаются параметры
+     * @param $displayItemData объект с параметрами которые нужно назначить
+     */
     setDisplayItemProperties: function ($item, $displayItemData) {
         $item.name = $displayItemData.name;
         $item.x = $displayItemData.x;
@@ -145,6 +150,11 @@ var fljs = {
         $item.visible = $displayItemData.visible;
     },
 
+    /**
+     * Добавление фильтров
+     * @param $item элемент которому добавляются фильтры
+     * @param $filters массив с фильтрами
+     */
     addFiltersToDisplayItem: function ($item, $filters) {
         if(!$filters) {
             return;
