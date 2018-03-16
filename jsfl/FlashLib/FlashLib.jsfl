@@ -26,7 +26,9 @@ function FlashLib($settings, $config) {
         }
 
         //fl.trace(scriptPath);
-        eval(FLfile.read(scriptPath + 'JSON.js'));
+        fl.runScript(scriptPath + 'JSON.js');
+
+        //eval(FLfile.read(scriptPath + 'JSON.js'));
         //eval(FLfile.read(scriptPath + 'DEBUG.js'));
 
         if(!document.pathURI) {

@@ -36,7 +36,7 @@ DEBUG = {
         for (var property in $element) {
             try {
                 fl.trace(offset + property + ": " + $element[property]);
-                if(typeof($element[property]) == "object" && property != "layer") {
+                if(typeof($element[property]) === "object" && property !== "layer") {
                     this._traceElementPropertysRecursivity($element[property], $index + 1);
                 }
             } catch ($error) {

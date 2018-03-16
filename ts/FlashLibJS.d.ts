@@ -10,7 +10,8 @@ declare namespace FlashLibJS {
         public goToNextFrame($loop?:boolean):void;
         public goToPreviousFrame($loop?:boolean):void;
         public goToFrame($frameId:number):void;
-        public play($loop?:boolean, $revers?:boolean):void;
+        public goToAndPlay($frameId:number, $loop?:boolean, $revers?:boolean, $fps?:number):void;
+        public play($loop?:boolean, $revers?:boolean, $fps?:number):void;
         public stop():void;
         protected constructFrame($frameId:number):void;
         protected constructionComplete():void;

@@ -176,9 +176,6 @@ var fljs = {
         $item.filters = newFilters;
     },
 
-
-
-
     MovieClip: (function () {
         /**
          * Класс мувиклипа с кадрами
@@ -193,10 +190,7 @@ var fljs = {
             this.currentFrameName = '';
             this.animateParams = null;
 
-            /*this.ticker = new PIXI.ticker.Ticker();
-            this.ticker.autoStart = false;
-            this.ticker.speed = 1;
-            this.ticker.add(this.animate, this);*/
+            this.startFrameTime = null;
 
             this.isPlaying = false;
             this.goToFrame(1);
@@ -226,8 +220,8 @@ var fljs = {
         };
 
         /**
-         *
-         * @param $loop
+         * Перейти к предыдущему кадру
+         * @param $loop если дошли до первого кадра переходить ли на последний
          */
         MovieClip.prototype.goToPreviousFrame = function ($loop) {
             var nextIndex = this.currentFrameIndex - 1;
@@ -247,6 +241,7 @@ var fljs = {
          */
         MovieClip.prototype.goToFrame = function ($frameId) {
             if ($frameId === this.currentFrameIndex || $frameId > this.data.frames.length || $frameId < 1) {
+                console.log('MovieClip ' + this.name + ' does not have a frame ' + $frameId)
                 return;
             }
             this.removeChildren();
@@ -255,46 +250,66 @@ var fljs = {
 
         /**
          *
-         * @param $loop
-         * @param $revers
+         * @param $delta
          */
-        MovieClip.prototype.animate = function ($loop, $revers) {
-            if(this.animateParams) {
-                $revers = this.animateParams.revers;
-                $loop = this.animateParams.loop;
+        MovieClip.prototype.animate = function ($delta) {
+            var frameDuration = 1000 / this.animateParams.fps;
+            var currentTime = Date.now();
+            var deltaTime = currentTime - this.startFrameTime;
+            if(deltaTime < frameDuration) {
+                return;
             }
-            if($revers) {
-                this.goToPreviousFrame($loop);
-            } else {
-                this.goToNextFrame($loop);
+            var skipFramesCount = Math.ceil(deltaTime / frameDuration);
+            var revers = this.animateParams.revers;
+            var loop = this.animateParams.loop;
+            for (var i = 0; i < skipFramesCount; i++) {
+                if(revers) {
+                    this.goToPreviousFrame(loop);
+                } else {
+                    this.goToNextFrame(loop);
+                }
             }
+            this.startFrameTime = currentTime - (deltaTime % frameDuration);
         };
 
         /**
          *
          * @param $loop
          * @param $revers
+         * @param $fps
          */
-        MovieClip.prototype.play = function ($loop, $revers) {
+        MovieClip.prototype.play = function ($loop, $revers, $fps) {
             if(this.isPlaying) {
                 return;
             }
 
-            //this.ticker.start();
-            this.animateParams = {loop:$loop, revers:$revers};
-            PIXI.ticker.shared.add(this.animate, this);
+            this.animateParams = {loop:$loop, revers:$revers, fps:$fps || 24};
+            this.startFrameTime = Date.now();
+            PIXI.ticker.shared.add(this.animate, this, PIXI.UPDATE_PRIORITY.HIGH);
             this.isPlaying = true;
         };
 
         /**
-         *
+         * Перейти на кадр и запустить проигрывание мувиклипа
+         * @param $frameId
+         * @param $loop
+         * @param $revers
+         * @param $fps
+         */
+        MovieClip.prototype.goToAndPlay = function($frameId, $loop, $revers, $fps) {
+            this.stop();
+            this.goToFrame($frameId);
+            this.play($loop, $revers, $fps);
+        };
+
+        /**
+         * Остановить проишрывание мувиклипа
          */
         MovieClip.prototype.stop = function () {
             if(!this.isPlaying) {
                 return;
             }
 
-            //this.ticker.stop();
             this.animateParams = null;
             PIXI.ticker.shared.remove(this.animate, this);
             this.isPlaying = false;
@@ -333,6 +348,7 @@ var fljs = {
     })(),
 
     TextField: (function () {
+
         /**
          *
          * @param $data
