@@ -19,7 +19,7 @@
 
 ### Подготовка
 1. Положить файлы из папки в jsfl в папку со скриптам Animate CC
->Windows: C:\Users\UserName\AppData\Local\Adobe\Animate CC 2017\<your locale>\Configuration\Commands\
+>Windows: C:\Users\UserName\AppData\Local\Adobe\Animate CC 2017\en_US\Configuration\Commands\
 >MacOS: /Users/UserName/Library/Application Support/Adobe/Animate CC 2017/en_US/Configuration/Commands/
 2. Запустить Animate CC, открыть имеющийся или создать новый проект.
 3. Когда нужно будет экспортировать библиотеку, выберите **Commands -> FlashLib -> FlashLib**
