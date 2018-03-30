@@ -110,9 +110,9 @@ function ExportImages($settings, $config) {
 
         var tempArr = $item.name.split('/');
         var tempName = tempArr[tempArr.length - 1].replace(/\s/, '');
-        if (config.addExtensions) {
+        //if (config.addExtensions) {
             tempName += tempName.search(/(.png|.jpg)/) > -1 ? '' : '.png';
-        }
+        //}
 
         document.library.renameItem(tempName);
         document.library.selectNone();

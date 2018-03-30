@@ -32,7 +32,7 @@ function LibToJson($settings, $config) {
         }
 
         eval(FLfile.read(scriptPath + 'JSON.js'));
-        //eval(FLfile.read(scriptPath + 'DEBUG.js'));
+        eval(FLfile.read(scriptPath + 'DEBUG.js'));
 
         createLibItems();
 
@@ -239,14 +239,19 @@ function LibToJson($settings, $config) {
      */
     BaseItem.prototype.parseData = function ($data) {
         for (var property in this) {
-            if(/*$data.hasOwnProperty(property) &&*/ $data[property] !== undefined) {
-                /*if(this[property] != $data[property]) {
+            try {
+                if($data[property] !== undefined) {
+                    /*if(this[property] != $data[property]) {
+                        this[property] = $data[property];
+                    } else {
+                        delete this[property];
+                    }*/
                     this[property] = $data[property];
-                } else {
-                    delete this[property];
-                }*/
-                this[property] = $data[property];
+                }
+            } catch (err) {
+                //fl.trace(err);
             }
+
         }
     };
 

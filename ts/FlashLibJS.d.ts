@@ -1,5 +1,5 @@
-declare namespace FlashLibJS {
-    function addNewLibrary($libraryName:any):void;
+declare module FlashLibJS {
+    function addNewLibrary($library:any):void;
     function createItemFromLibrary($itemName:string, $libraryName?:any):any;
     function getItemDataFromLibrary($itemName:string, $libraryName?:any):any;
 
@@ -13,6 +13,9 @@ declare namespace FlashLibJS {
         public goToAndPlay($frameId:number, $loop?:boolean, $revers?:boolean, $fps?:number):void;
         public play($loop?:boolean, $revers?:boolean, $fps?:number):void;
         public stop():void;
+
+        public isPlaying:boolean;
+
         protected constructFrame($frameId:number):void;
         protected constructionComplete():void;
     }

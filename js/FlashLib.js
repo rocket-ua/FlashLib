@@ -68,8 +68,6 @@ var fljs = {
                 var name = $libraryItemData.name;
                 name = name.replace(/(.png|.jpg)/, '');
                 item = PIXI.Sprite.fromFrame(name);
-                //console.log('Sprite from frame:', name);
-                //item = PIXI.Sprite.fromImage(name);
                 break;
             default:
                 var classObject = getClassByName(type);
@@ -117,7 +115,6 @@ var fljs = {
                 break;
             case 'text':
                 item = new FlashLib.TextField($displayItemData);
-                //item = new PIXI.Text('TEST', null);
                 break;
             case 'shape':
                 item = new PIXI.Graphics();
@@ -330,8 +327,6 @@ var fljs = {
          * @param $frameId номер кадра который нужно создать
          */
         MovieClip.prototype.constructFrame = function ($frameId) {
-            //var currentFrameData = null;
-            //var displayItemData = null;
             var displayItem = null;
 
             this.data.frames[$frameId - 1].forEach(function (currentFrameData) {
@@ -342,7 +337,9 @@ var fljs = {
                 this.currentFrameName = currentFrameData.name;
             }.bind(this));
 
-            /*for (var i = 0; i < this.data.frames[$frameId - 1].length; i++) {
+            /*var currentFrameData = null;
+            var displayItemData = null;
+            for (var i = 0; i < this.data.frames[$frameId - 1].length; i++) {
                 currentFrameData = this.data.frames[$frameId - 1][i];
                 for (var j = 0; j < currentFrameData.elements.length; j++) {
                     displayItemData = currentFrameData.elements[j];
