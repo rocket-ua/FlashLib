@@ -12,7 +12,7 @@ function CreateAssetsList($settings, $config) {
         return;
     }
 
-    settings = $settings;       
+    settings = $settings;
     config = $config;
 
     if (!config || (!config.sayResultToConsole && !config.saveToFile)) {
@@ -31,8 +31,14 @@ function CreateAssetsList($settings, $config) {
         }
     };
 
-    function start() {
+    if(config.libSettings && config.libSettings.path) {
+        assetsList.libs[0].path = config.libSettings.path + assetsList.libs[0].path
+    }
 
+    function start() {
+        if(!config.exportImages) {
+            return;
+        }
 
         scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
         if(settings && settings.scriptPath) {

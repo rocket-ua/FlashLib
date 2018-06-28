@@ -1,4 +1,614 @@
 /**
+ *
+ */
+function CreateAssetsList($settings, $config) {
+    var settings = {};
+    var config = {};
+    var scriptPath = '';
+    var assetsList = {};
+
+    if(!fl.getDocumentDOM()) {
+        fl.trace('No opened documents found!');
+        return;
+    }
+
+    settings = $settings;
+    config = $config;
+
+    if (!config || (!config.sayResultToConsole && !config.saveToFile)) {
+        return;
+    }
+
+    assetsList = {
+        baseUrl: './',
+        libs: [
+            { name: 'FlashLib', path: 'FlashLib.json', type: 'json' }
+        ],
+        assets: [],
+        metaData: {
+            type: 'FlashLib',
+            date: new Date()
+        }
+    };
+
+    if(config.libSettings && config.libSettings.path) {
+        assetsList.libs[0].path = config.libSettings.path + assetsList.libs[0].path
+    }
+
+    function start() {
+        if(!config.exportImages) {
+            return;
+        }
+
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
+        }
+        
+        eval(FLfile.read(scriptPath + 'JSON.js'));
+        //eval(FLfile.read(basePath + 'DEBUG.js'));
+
+        this.docPath = createSaveFilesPath();
+        //добавляем папку в которую будем скрладывать графику
+        //this.docPath += 'exported/';
+        this.docPath += document.name + '_lib' + '/';
+
+        var lib = document.library;
+        var libItems = lib.items;
+        //пробежать по всем элементам библиотеки и экспортировать графику
+        for each(var item in libItems) {
+            if (item.itemType !== 'bitmap') {
+                continue;
+            }
+            getImagePath(item);
+        }
+
+        var jsonString = JSON.encode(assetsList);
+        if(jsonString && config && config.sayResultToConsole) {
+            fl.trace(jsonString);
+        }
+        if(jsonString && config && config.saveToFile) {
+            saveResultToFile(jsonString);
+        }
+    }
+
+    /**
+     * Получить путь к файлу в который сохранить библиотеку
+     * @returns {string}
+     */
+    function createSaveFilesPath() {
+        var path = document.pathURI.replace(document.name, "");
+        if(config && config.basePath && config.basePath !== '') {
+            path = config.basePath;
+        }
+
+        if(path.search("file:///") !== 0) {
+            path = "file:///" + path;
+            path = encodeURI(path);
+        }
+
+        return path;
+    }
+
+    /**
+     * Получить путь к имени файла
+     * @param $item
+     */
+    function getImagePath($item) {
+        var graphicData = {
+            name : $item.name.replace(/(.png|.jpg)/, ''),
+            path : document.name + '_lib' + '/' + $item.name,
+            type : 'image'
+        };
+        assetsList.assets.push(graphicData);
+    }
+
+    /**
+     * Сохранить данные библиотеки в файл
+     * @param $result {string}
+     */
+    function saveResultToFile($result) {
+        var path = createSaveFilesPath();
+        var fileName = "FlashLibAssets.json";
+        if(config && config.saveFileName) {
+            fileName = config.saveFileName;
+        }
+
+        path += fileName;
+        FLfile.write(path, $result);
+
+        fl.trace("Assets list saved to " + path);
+    }
+
+    start();
+}
+
+/**
+ * Created with WebStorm.
+ * User: rocket
+ * Date: 02.03.2018
+ * Time: 01:56
+ * To change this template use File | Settings | File Templates.
+ */
+
+DEBUG = {
+    /**
+     * Вызов рекурсивной функции для трейса свойист в значений элемента
+     * @param $element
+     * @param $index
+     */
+    traceElementPropertysRecursivity: function ($element, $index) {
+        this._traceElementPropertysRecursivity($element, $index);
+        fl.trace("");
+        fl.trace("=============================================");
+        fl.trace("");
+    },
+    /**
+     * Рекурсивная функция которая трейсит все свойства и значения элемента
+     * @param $element
+     * @param $index
+     * @private
+     */
+    _traceElementPropertysRecursivity: function ($element, $index) {
+        if($index > 10) {
+            return;
+        }
+
+        var offset = "";
+        for(var i = 0; i < $index; i++) {
+            offset += "~~";
+        }
+        for (var property in $element) {
+            try {
+                fl.trace(offset + property + ": " + $element[property]);
+                if(typeof($element[property]) === "object" && property !== "layer") {
+                    this._traceElementPropertysRecursivity($element[property], $index + 1);
+                }
+            } catch ($error) {
+                fl.trace(offset + property + ": " + $error);
+            }
+        }
+    },
+    traceElementProperties: function ($element) {
+        fl.trace("------------------------------------");
+        try {
+            for(var property in $element) {
+                try {
+                    fl.trace(property + ": " + $element[property]);
+                } catch ($error) {
+                    fl.trace(property + ": " + $error);
+                }
+            }
+        } catch ($errr) {
+            fl.trace($errr);
+        }
+
+        fl.trace("------------------------------------");
+    }
+};
+/**
+ * Экспорт картинок из библиотеки FlashIDE с сохранением структуры как в библиотеке.
+ * Если в функцию start передан объекр в котором есть поле exportImagesPath, то путь записаный в этом поле
+ * будет корневой папкой для сохранения файлов, иначе коневой папкой будет папка в которой лежит fla файл
+ * из библиотеки которого экспортируются картинки
+ */
+function ExportImages($settings, $config) {
+    var settings = {};
+    var config = {};
+    var scriptPath = '';
+
+    if(!fl.getDocumentDOM()) {
+        fl.trace('No opened documents found!');
+        return;
+    }
+
+    settings = $settings;
+    config = $config;
+
+    if (!config || !config.exportImages) {
+        return;
+    }
+
+    function start() {
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
+        }
+
+        //eval(FLfile.read(scriptPath + 'JSON.js'));
+        //eval(FLfile.read(scriptPath + 'DEBUG.js'));
+
+        this.docPath = createSaveFilesPath();
+        //добавляем папку в которую будем скрладывать графику
+        //this.docPath += 'exported/';
+        this.docPath += document.name + '_lib' + '/';
+        //fl.trace(this.docPath);
+
+        var lib = document.library;
+        var libItems = lib.items;
+        //пробежать по всем элементам библиотеки и экспортировать графику
+        /*for each(var item in libItems) {
+            if (item.itemType !== 'bitmap') {
+                continue;
+            }
+            //экспортируем битмапку
+            exportImage(item);
+        }*/
+
+        libItems.forEach(function (item) {
+            if(item.itemType === 'bitmap') {
+                exportImage(item);
+            }
+        }, this);
+    }
+
+    /**
+     * Получение пути для сохранения файлов карт
+     */
+    function createSaveFilesPath() {
+        var path = document.pathURI.replace(document.name, '');
+        if (config && config.basePath && config.basePath !== '') {
+            path = config.basePath;
+        }
+
+        if (path.search('file:///') !== 0) {
+            path = 'file:///' + path;
+            path = encodeURI(path);
+        }
+
+        return path;
+    }
+
+    function exportImage($item) {
+        //переименовываем битмапку, убираем пробелы и добавляем разрешение
+        //renameItem($item);
+
+        //поучить локальный путь до файла картинки
+        var path = $item.name.substr(0, $item.name.lastIndexOf('/'));
+
+        //проверить наличие папки для экспорта файла.
+        //если папки нет, она создасться
+        checkFolder(path);
+
+        //экспортировать файл в папку
+        var filePath = this.docPath + $item.name;
+        if (config.overrideExistingFiles) {
+            exportCurrentFile($item, filePath);
+        } else {
+            if (FLfile.exists(filePath)) {
+                fl.trace('File ' + filePath + ' already exists, rewriting is prohibited in the config file.')
+            } else {
+                exportCurrentFile($item, filePath);
+            }
+        }
+    }
+
+    function exportCurrentFile($item, $filePath) {
+        var result = $item.exportToFile($filePath);
+        //показать сообщение при уданочм/неудачном экспорте
+        if (result) {
+            fl.trace('The file was successfully exported to ' + $filePath);
+        } else {
+            fl.trace('File not exported ' + $filePath);
+        }
+    }
+
+    function renameItem($item) {
+        document.library.selectItem($item.name);
+
+        var tempArr = $item.name.split('/');
+        var tempName = tempArr[tempArr.length - 1].replace(/\s/, '');
+        //if (config.addExtensions) {
+            tempName += tempName.search(/(.png|.jpg)/) > -1 ? '' : '.png';
+        //}
+
+        document.library.renameItem(tempName);
+        document.library.selectNone();
+    }
+
+    function checkFolder($folderPath) {
+        var arr = $folderPath.split('/');
+        var temp = '';
+        var index = 0;
+        do {
+            if (arr[index] !== '') {
+                temp += arr[index] + '/';
+                // если каталога нет, созадем его
+                if (!FLfile.exists(this.docPath + temp)) {
+                    var result = FLfile.createFolder(this.docPath + temp);
+                    if(result) {
+                        fl.trace('Created directory: ' + (this.docPath + temp));
+                    } else {
+                        fl.trace('Error created directory: ' + (this.docPath + temp));
+                    }
+                }
+            }
+            index++;
+        } while (index < arr.length);
+    }
+
+    start();
+}
+/**
+ * Created with WebStorm.
+ * User: rocket
+ * Date: 02.03.2018
+ * Time: 00:16
+ * To change this template use File | Settings | File Templates.
+ */
+function FlashLib($settings, $config) {
+    var settings = {};
+    var config = {};
+    var scriptPath = '';
+
+    if(!fl.getDocumentDOM()) {
+        fl.trace('No opened documents found!');
+        return;
+    }
+
+    settings = $settings;
+
+    function start() {
+        fl.outputPanel.clear();
+
+        scriptPath = fl.scriptURI.substr(0, fl.scriptURI.lastIndexOf("/")+1);
+        if(settings && settings.scriptPath) {
+            scriptPath = settings.scriptPath;
+        }
+
+        //fl.trace(scriptPath);
+
+        if(!document.pathURI) {
+            fl.trace('This document do not saved yet.');
+            fl.trace('Save document and try again.');
+            return;
+        }
+
+        var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
+        if (!FLfile.exists(configPath)) {
+            createBaseConfig();
+        }
+
+        var configString = FLfile.read(configPath);
+        config = JSON.decode(configString);
+
+        if(config && config.libToJson) {
+            startLibToJson();
+        }
+
+        if(config && config.exportImages) {
+            startExportImages();
+        }
+
+        if(config && config.createAssetsList) {
+            startCreateAssetsList();
+        }
+    }
+
+    /**
+     * Создать файл с базовой конфигурацией
+     */
+    function createBaseConfig() {
+        var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
+        var baseConfig = {
+            basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
+            libToJson: {
+                saveToFile: true,
+                sayResultToConsole: false,
+                buildForSelected: false
+            },
+            exportImages: {
+                exportImages: true,
+                overrideExistingFiles: false,
+                addExtensions: false
+            },
+            createAssetsList: {
+                saveToFile: true,
+                sayResultToConsole: false,
+                libSettings: {
+                    path: "./"
+                }
+            }
+        };
+        var jsonBaseConfig = JSON.encode(baseConfig);
+        FLfile.write(configPath, jsonBaseConfig);
+
+        fl.trace('Created base config file.');
+    }
+
+    /**
+     * Получить данные из библиотеки в виде json строки
+     */
+    function startLibToJson() {
+        config.libToJson.basePath = config.basePath;
+        LibToJson(settings, config.libToJson);
+    }
+
+    /**
+     * Экспортировать графику из проекта
+     */
+    function startExportImages() {
+        config.exportImages.basePath = config.basePath;
+        ExportImages(settings, config.exportImages);
+    }
+
+    /**
+     *  Создать файл с ссылками на импортированные ассеты
+     */
+    function startCreateAssetsList() {
+        config.createAssetsList.basePath = config.basePath;
+        config.createAssetsList.exportImages = config.exportImages.exportImages;
+        CreateAssetsList(settings, config.createAssetsList);
+    }
+
+    start();
+}
+
+function getConfigData() {
+    var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
+    var configString = FLfile.read(configPath);
+    return configString;
+}
+
+//FlashLib();
+/**
+ * Created with WebStorm.
+ * User: rocket
+ * Date: 02.03.2018
+ * Time: 01:42
+ * To change this template use File | Settings | File Templates.
+ */
+var JSON = {
+    /**
+     * Encodes an Object as a JSON String
+     * Non-integer/string keys are skipped in the object, as are keys that point to a function.
+     *
+     * @name    JSON.encode
+     * @param    {Object}    obj        The json-serializble *thing* to be converted
+     * @returns    {String}            A JSON String
+     */
+    encode: function (obj) {
+        if (obj === null) {
+            return 'null';
+        }
+
+        var type = typeof obj;
+
+        if (type === 'undefined') {
+            return undefined;
+        }
+        if (type === 'number' || type === 'boolean') {
+            return '' + obj;
+        }
+        if (type === 'string') {
+            return this.quoteString(obj);
+        }
+        if (type === 'object') {
+            if (obj.constructor === Date) {
+                var month = obj.getUTCMonth() + 1,
+                    day = obj.getUTCDate(),
+                    year = obj.getUTCFullYear(),
+                    hours = obj.getUTCHours(),
+                    minutes = obj.getUTCMinutes(),
+                    seconds = obj.getUTCSeconds(),
+                    milli = obj.getUTCMilliseconds();
+
+                if (month < 10) {
+                    month = '0' + month;
+                }
+                if (day < 10) {
+                    day = '0' + day;
+                }
+                if (hours < 10) {
+                    hours = '0' + hours;
+                }
+                if (minutes < 10) {
+                    minutes = '0' + minutes;
+                }
+                if (seconds < 10) {
+                    seconds = '0' + seconds;
+                }
+                if (milli < 100) {
+                    milli = '0' + milli;
+                }
+                if (milli < 10) {
+                    milli = '0' + milli;
+                }
+                return '"' + year + '-' + month + '-' + day + 'T' +
+                    hours + ':' + minutes + ':' + seconds +
+                    '.' + milli + 'Z"';
+            }
+            if (obj.constructor === Array) {
+                var ret = [];
+                for (var i = 0; i < obj.length; i++) {
+                    ret.push(JSON.encode(obj[i]) || 'null');
+                }
+                return '[' + ret.join(',') + ']';
+            }
+            var name,
+                val,
+                pairs = [];
+
+            for (var k in obj) {
+                // Only include own properties,
+                // Filter out inherited prototypes
+                if (!Object.prototype.hasOwnProperty.call(obj, k)) {
+                    continue;
+                }
+
+                // Keys must be numerical or string. Skip others
+                type = typeof k;
+                if (type === 'number') {
+                    name = '"' + k + '"';
+                } else if (type === 'string') {
+                    name = this.quoteString(k);
+                } else {
+                    continue;
+                }
+                type = typeof obj[k];
+
+                // Invalid values like these return undefined
+                // from toJSON, however those object members
+                // shouldn't be included in the JSON string at all.
+                if (type === 'function' || type === 'undefined') {
+                    continue;
+                }
+                val = JSON.encode(obj[k]);
+                pairs.push(name + ':' + val);
+            }
+            return '{' + pairs.join(',') + '}';
+        }
+
+    },
+
+    /**
+     * Evaluates a given piece of json source.
+     * @param    {String}    src
+     * @name    JSON.decode
+     */
+    decode: function (src) {
+        if (src != null && src != '' && src != undefined) {
+            return eval('(' + src + ')');
+        }
+        return null;
+    },
+
+    toString: function () {
+        return '[class JSON]';
+    },
+
+    /**
+     * Helper function to correctly quote nested strings
+     * @ignore
+     */
+    quoteString: function (string) {
+        var escapeable = /["\\\x00-\x1f\x7f-\x9f]/g;
+        var meta =
+            {
+                '\b': '\\b',
+                '\t': '\\t',
+                '\n': '\\n',
+                '\f': '\\f',
+                '\r': '\\r',
+                '"': '\\"',
+                '\\': '\\\\'
+            };
+
+        if (string.match(escapeable)) {
+            return '"' + string.replace(escapeable, function (a) {
+                var c = meta[a];
+                if (typeof c === 'string') {
+                    return c;
+                }
+                c = a.charCodeAt();
+                return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+            }) + '"';
+        }
+        return '"' + string + '"';
+    }
+
+};
+/**
  * Config example
  * {
  *      saveToFile: false,

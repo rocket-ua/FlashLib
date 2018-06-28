@@ -26,10 +26,6 @@ function FlashLib($settings, $config) {
         }
 
         //fl.trace(scriptPath);
-        fl.runScript(scriptPath + 'JSON.js');
-
-        //eval(FLfile.read(scriptPath + 'JSON.js'));
-        //eval(FLfile.read(scriptPath + 'DEBUG.js'));
 
         if(!document.pathURI) {
             fl.trace('This document do not saved yet.');
@@ -64,7 +60,7 @@ function FlashLib($settings, $config) {
     function createBaseConfig() {
         var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
         var baseConfig = {
-            basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', ''),
+            basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
             libToJson: {
                 saveToFile: true,
                 sayResultToConsole: false,
@@ -77,7 +73,10 @@ function FlashLib($settings, $config) {
             },
             createAssetsList: {
                 saveToFile: true,
-                sayResultToConsole: false
+                sayResultToConsole: false,
+                libSettings: {
+                    path: "./"
+                }
             }
         };
         var jsonBaseConfig = JSON.encode(baseConfig);
@@ -91,7 +90,7 @@ function FlashLib($settings, $config) {
      */
     function startLibToJson() {
         config.libToJson.basePath = config.basePath;
-        fl.runScript(scriptPath + 'LibToJson.js', 'LibToJson', settings, config.libToJson);
+        LibToJson(settings, config.libToJson);
     }
 
     /**
@@ -99,7 +98,7 @@ function FlashLib($settings, $config) {
      */
     function startExportImages() {
         config.exportImages.basePath = config.basePath;
-        fl.runScript(scriptPath + 'ExportImages.js', 'ExportImages', settings, config.exportImages);
+        ExportImages(settings, config.exportImages);
     }
 
     /**
@@ -107,7 +106,8 @@ function FlashLib($settings, $config) {
      */
     function startCreateAssetsList() {
         config.createAssetsList.basePath = config.basePath;
-        fl.runScript(scriptPath + 'CreateAssetsList.js', 'CreateAssetsList', settings, config.createAssetsList);
+        config.createAssetsList.exportImages = config.exportImages.exportImages;
+        CreateAssetsList(settings, config.createAssetsList);
     }
 
     start();
@@ -117,10 +117,6 @@ function getConfigData() {
     var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
     var configString = FLfile.read(configPath);
     return configString;
-}
-
-if(fl.scriptURI !== 'unknown:') {
-    FlashLib();
 }
 
 //FlashLib();

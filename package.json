@@ -1,0 +1,32 @@
+{
+  "name": "FlashLib",
+  "version": "2.0.0",
+  "description": "Build graphics from Animate CC in PIXI.js",
+  "author": "rocket",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-concat": "^2.6.1"
+  },
+  "scripts": {
+    "start": "open \"jsfl/FlashLib.jsfl\" --hide"
+  },
+  "files": [
+    "js/",
+    "jsfl/",
+    "ts/",
+    "package.json",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rocket-ua/FlashLib.git"
+  },
+  "keywords": [
+    "FlashLib"
+  ],
+  "bugs": {
+    "url": "https://github.com/rocket-ua/FlashLib/issues"
+  },
+  "homepage": "https://github.com/rocket-ua/FlashLib#readme"
+}
