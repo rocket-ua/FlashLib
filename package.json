@@ -1,20 +1,21 @@
 {
-  "name": "FlashLib",
-  "version": "2.0.0",
+  "name": "flashlib",
+  "version": "2.0.7",
   "description": "Build graphics from Animate CC in PIXI.js",
   "author": "rocket",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "gulp-concat": "^2.6.1"
+  },
+  "bin": {
+    "flashlib": "bin/main.js"
   },
   "scripts": {
     "start": "open \"jsfl/FlashLib.jsfl\" --hide"
   },
   "files": [
-    "js/",
-    "jsfl/",
-    "ts/",
+    "bin/",
+    "js/*.js",
+    "jsfl/FlashLib.jsfl",
     "package.json",
     "README.md"
   ],
