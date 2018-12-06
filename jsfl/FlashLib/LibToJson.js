@@ -542,6 +542,7 @@ function LibToJson($settings, $config) {
 
         this.name = '';
         this.elements = null;
+        this.actionScript = null;
         //this.soundLibraryItem = null;
         this.isEmpty = true;
     }
@@ -752,6 +753,9 @@ function LibToJson($settings, $config) {
     ElementShapeItem.constructor = ElementShapeItem;
 
     ElementShapeItem.prototype.parseData = function ($data) {
+
+        DEBUG.traceElementPropertysRecursivity($data, 0)
+
         ElementItem.prototype.parseData.apply(this, arguments);
     };
 
