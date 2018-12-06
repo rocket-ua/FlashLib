@@ -1357,6 +1357,19 @@ function LibToJson($settings, $config) {
         numCubicSegments: 8
         members:
         isFloating: false*/
+
+        this.contours = [];
+        this.edges = [];
+        this.vertices = [];
+
+        this.isDrawingObject = false;
+        this.isFloating = false;
+        this.isGroup =  false;
+        this.isOvalObject = false;
+        this.isRectangleObject = false;
+
+        this.members = [];
+        this.numCubicSegments = 0;
     }
 
     ElementShapeItem.prototype = new ElementItem();
@@ -1364,9 +1377,18 @@ function LibToJson($settings, $config) {
 
     ElementShapeItem.prototype.parseData = function ($data) {
 
-        DEBUG.traceElementPropertysRecursivity($data, 0)
+        DEBUG.traceElementPropertysRecursivity($data, 0);
 
         ElementItem.prototype.parseData.apply(this, arguments);
+
+        if($data.vertices) {
+            this.vertices = [];
+            $data.vertices.forEach(function (value) {
+                this.vertices.push({x:value.x, y:value.y})
+                //this.vertices.push(value)
+            }, this);
+
+        }
     };
 
     start();
