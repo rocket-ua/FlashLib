@@ -3,6 +3,9 @@
 
 var exec = require('child_process').exec;
 var path = require('path');
+var minimist = require('minimist');
+
+var startParams = minimist(process.argv.slice(2));
 
 function open(target, appName, callback) {
     var opener;
@@ -53,5 +56,18 @@ function escape(s) {
 //    return path.join(__dirname, 'support', asset);
 //}
 
-var parth = path.join(__dirname, '..', 'jsfl', 'FlashLib.jsfl');
-open(parth);
+function onFlaOpened() {
+    runJSFL();
+}
+
+function runJSFL() {
+    var parth = path.join(__dirname, '..', 'jsfl', 'FlashLib.jsfl');
+    open(parth);
+}
+
+
+if(startParams.hasOwnProperty('open') && startParams['open']) {
+    open(startParams['open'], null, onFlaOpened);
+} else {
+    runJSFL();
+}

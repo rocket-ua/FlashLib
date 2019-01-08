@@ -55,7 +55,7 @@ var fljs = {
      * @param $libraryItemData данные элемента библиотеки
      */
     createItemFromLibraryData: function ($libraryItemData) {
-        var item = null
+        var item = null;
         var type = $libraryItemData.linkageExportForAS ?
             $libraryItemData.linkageClassName :
             $libraryItemData.itemType;
@@ -322,6 +322,10 @@ var fljs = {
          * @param $force перерисовать кадр даже если текущий кадр такой же
          */
         MovieClip.prototype.goToFrame = function ($frameId, $force) {
+            if(typeof $frameId === 'string') {
+                $frameId = this.getFrameIdByName($frameId)
+            }
+
             if ($frameId === this.currentFrameIndex && (!$force && $force !== 0)) {
                 //console.log('MovieClip ' + this.name + '(' + this.timelineData.name + ')' + ' now on frame ' + $frameId);
                 return;
@@ -333,6 +337,16 @@ var fljs = {
             this.exitFrame();
             this.removeChildren();
             this.constructFrame($frameId);
+        };
+
+        MovieClip.prototype.getFrameIdByName = function ($frameName) {
+            var frameId = this.currentFrameIndex;
+            this.timelineData.frames[0].forEach(function (currentFrameData, index) {
+                if(currentFrameData.name === $frameName) {
+                    frameId = index + 1;
+                }
+            }.bind(this));
+            return frameId;
         };
 
         /**
@@ -415,7 +429,7 @@ var fljs = {
                 currentFrameData.elements.forEach(function (displayItemData) {
                     displayItem = FlashLib.createDisplayItemFromData(displayItemData);
                     this.addChild(displayItem);
-                }.bind(this))
+                }.bind(this));
                 this.currentFrameName = currentFrameData.name;
                 this.evalScript(currentFrameData.actionScript);
             }.bind(this));
@@ -458,7 +472,7 @@ var fljs = {
             var style = {
                 align: textAttrs.alignment,
                 fill: textAttrs.fillColor,
-                fontFamily: textAttrs.face.split(' '),
+                fontFamily: textAttrs.face, /*textAttrs.face.split(' '),*/
                 fontSize: textAttrs.size,
                 fontStyle: textAttrs.italic ? 'italic' : 'normal',
                 fontWeight: textAttrs.bold ? 'bold' : 'normal',
@@ -499,7 +513,7 @@ var fljs = {
                     return Math.abs(this.scale.x) * this.texture.orig.width;
                 },
                 set: function (value) {
-                    this.updateText(true)
+                    this.updateText(true);
 
                     var sign = PIXI.utils.sign(this.scale.x) || 1;
                     this.scale.x = sign * value / this.texture.orig.width;
@@ -561,7 +575,51 @@ var fljs = {
             this.textRect = new PIXI.Rectangle(0, 0, 0, 0);
         };
 
-        TextField.prototype.correctPosition = function () {
+        TextField.prototype.correctPosition = function ($horizontal, $vertical) {
+            var hAlign = $horizontal || this.style && this.style.align;
+            var vAlign = $vertical || 'top';
+
+            //if (this.style && this.style.align) {
+            if (hAlign) {
+                switch (this.style.align) {
+                    case 'left':
+                        this.transform.position.x = this.textRect.x;
+                        break;
+                    case 'center':
+                        this.transform.position.x = this.x + ((this.textRect.width - this.origWidth) / 2);
+                        break;
+                    case 'right':
+                        this.transform.position.x = this.x + (this.textRect.width - this.origWidth);
+                        break;
+                    default:
+                        this.transform.position.x = this.textRect.x;
+                        break;
+                }
+            } else {
+                this.transform.position.x = this.textRect.x;
+            }
+
+            if (vAlign) {
+                switch (vAlign) {
+                    case 'top':
+                        this.transform.position.y = this.textRect.y;
+                        break;
+                    case 'center':
+                        this.transform.position.y = this.textRect.y + ((this.textRect.height - this.origHeight) / 2);
+                        break;
+                    case 'bottom':
+                        this.transform.position.y = this.textRect.y + (this.textRect.height - this.origHeight);
+                        break;
+                    default:
+                        this.transform.position.y = this.textRect.y;
+                        break;
+                }
+            } else {
+                this.transform.position.y = this.textRect.y;
+            }
+        };
+
+        /*TextField.prototype.correctPosition = function () {
             if (this.style && this.style.align) {
                 switch (this.style.align) {
                     case 'left':
@@ -581,7 +639,7 @@ var fljs = {
                 this.transform.position.x = this.textRect.x;
             }
             this.transform.position.y = this.textRect.y;
-        };
+        };*/
 
         return TextField;
     })()

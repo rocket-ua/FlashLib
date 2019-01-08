@@ -29,6 +29,8 @@ function onLoadingComplete() {
     item.y = 80;
     app.stage.addChild(item);
 
+    //item.goToFrame('First')
+
     //var item1 = FlashLib.createItemFromLibrary('testBtn');
     //app.stage.addChild(item1);
 }
