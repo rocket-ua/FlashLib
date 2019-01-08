@@ -1,6 +1,6 @@
 {
   "name": "flashlib",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Build graphics from Animate CC in PIXI.js",
   "author": "rocket",
   "license": "UNLICENSED",
@@ -13,7 +13,8 @@
     "flashlib": "bin/main.js"
   },
   "scripts": {
-    "start": "flashlib --open /Users/rocket/Projects/FlashLib/examples/windows/assets/pattern.fla"
+    "openPattern": "flashlib --open /Users/rocket/Projects/FlashLib/examples/windows/assets/pattern.fla",
+    "start": "flashlib"
   },
   "files": [
     "bin/",

@@ -83,7 +83,8 @@ function ExportImages($settings, $config) {
         checkFolder(path);
 
         //экспортировать файл в папку
-        var filePath = this.docPath + $item.name;
+        var filePath = createPathWithFileName($item);
+
         if (config.overrideExistingFiles) {
             exportCurrentFile($item, filePath);
         } else {
@@ -93,6 +94,19 @@ function ExportImages($settings, $config) {
                 exportCurrentFile($item, filePath);
             }
         }
+    }
+
+    function createPathWithFileName($item) {
+        var filePath = this.docPath;
+        var fileName = $item.name;
+        fileName = fileName.replace(/(.png|.jpg)/, '');
+        if ($item.hasValidAlphaLayer) {
+            fileName += ".png";
+        } else {
+            fileName += ".jpg";
+        }
+        filePath += fileName;
+        return filePath
     }
 
     function exportCurrentFile($item, $filePath) {

@@ -643,6 +643,10 @@ function LibToJson($settings, $config) {
     ElementTextFieldItem.constructor = ElementTextFieldItem;
 
     ElementTextFieldItem.prototype.parseData = function ($data) {
+        if($data.orientation !== 'horizontal') {
+            return;
+        }
+
         ElementItem.prototype.parseData.apply(this, arguments);
 
         if($data.textRuns) {
@@ -767,7 +771,8 @@ function LibToJson($settings, $config) {
 
     ElementShapeItem.prototype.parseData = function ($data) {
 
-        DEBUG.traceElementPropertysRecursivity($data, 0);
+        //DEBUG.traceElementPropertysRecursivity($data, 0);
+        fl.trace('Now, we cant export Shapes :(');
 
         ElementItem.prototype.parseData.apply(this, arguments);
 
