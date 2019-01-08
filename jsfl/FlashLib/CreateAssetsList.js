@@ -95,9 +95,11 @@ function CreateAssetsList($settings, $config) {
      * @param $item
      */
     function getImagePath($item) {
+        var name = $item.name.replace(/(.png|.jpg)/, '');
+        var type = $item.hasValidAlphaLayer ? '.png' : '.jpg';
         var graphicData = {
-            name : $item.name.replace(/(.png|.jpg)/, ''),
-            path : document.name + '_lib' + '/' + $item.name,
+            name : name,
+            path : document.name + '_lib' + '/' + name + type,
             type : 'image'
         };
         assetsList.assets.push(graphicData);

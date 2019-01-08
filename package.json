@@ -1,6 +1,6 @@
 {
   "name": "flashlib",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "Build graphics from Animate CC in PIXI.js",
   "author": "rocket",
   "license": "UNLICENSED",
