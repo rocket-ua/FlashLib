@@ -476,7 +476,8 @@ var fljs = {
                 fontSize: textAttrs.size,
                 fontStyle: textAttrs.italic ? 'italic' : 'normal',
                 fontWeight: textAttrs.bold ? 'bold' : 'normal',
-                letterSpacing: textAttrs.letterSpacing
+                letterSpacing: textAttrs.letterSpacing,
+                leading: textAttrs.lineSpacing
                 // stroke: '#000000',
                 // strokeThickness: 3
 
@@ -581,7 +582,7 @@ var fljs = {
 
             //if (this.style && this.style.align) {
             if (hAlign) {
-                switch (this.style.align) {
+                switch (hAlign) {
                     case 'left':
                         this.transform.position.x = this.textRect.x;
                         break;
@@ -617,6 +618,27 @@ var fljs = {
             } else {
                 this.transform.position.y = this.textRect.y;
             }
+
+            //this.transform.position.y += this.libData.textRuns[0].textAttrs.descent
+            //this.drawDebug()
+        };
+
+        TextField.prototype.drawDebug = function () {
+            setTimeout(function () {
+                //var sss = PIXI.TextMetrics.measureText(this.text, this.style);
+
+                var origRect = new PIXI.Graphics();
+                origRect.lineStyle(1, 0xFF0000, 1);
+                //origRect.drawRect(sss.x, sss.y, sss.width, sss.height);
+                origRect.drawRect(this.position.x - this.transform.position.x, this.position.y - this.transform.position.y, this.origWidth, this.origHeight);
+                this.addChild(origRect);
+
+                var realRect = new PIXI.Graphics();
+                realRect.lineStyle(1, 0x00FF00, 1);
+                realRect.drawRect((this.textRect.x - this.transform.position.x), (this.textRect.y - this.transform.position.y), this.width, this.height);
+                realRect.endFill();
+                this.addChild(realRect)
+            }.bind(this), 500);
         };
 
         /*TextField.prototype.correctPosition = function () {

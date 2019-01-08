@@ -1337,6 +1337,8 @@ function LibToJson($settings, $config) {
         this.rightMargin = 0;
         this.rotation = false;
         this.size = 14;
+        this.ascent = 0;
+        this.descent = 0;
     }
 
     TextAttrsItem.prototype = new BaseItem();
