@@ -5,16 +5,18 @@ import Bitmap from './Bitmap'
 import MovieClip from './MovieClip'
 import TextField from './TextField'
 
-/*export {default as Shape} from './Shape';
-export {default as Bitmap} from './Bitmap';
-export {default as MovieClip} from './MovieClip';
-export {default as TextField} from './TextField';*/
+/*export {Shape, Bitmap, MovieClip, TextField}*/
 
 export default new class FlashLib {
 
     constructor() {
+        this.Shape = Shape;
+        this.Bitmap = Bitmap;
+        this.MovieClip = MovieClip;
+        this.TextField = TextField;
+
         this.libraries = [];
-        //this.initPIXILoader();
+        this.initPIXILoader();
     }
 
     addNewLibrary($library) {
@@ -226,48 +228,12 @@ export default new class FlashLib {
         $item.filters = newFilters;
     }
 
-    initPIXILoader(loader) {
-        if(!loader) {
-            loader = PIXI.Loader.shared;
-        }
+    initPIXILoader() {
         function assetsParser(resource, next) {
             if (!resource.data || !(resource.type === PIXI.LoaderResource.TYPE.JSON) || !resource.data.metaData ||
                 !resource.data.metaData.type || resource.data.metaData.type !== 'FlashLib') {
                 return next();
             }
-
-            //PIXI.loader.reset();
-            let options = {
-                crossOrigin: resource.crossOrigin,
-                xhrType: PIXI.LoaderResource.TYPE.JSON,
-                metadata: null,
-                parentResource: resource
-            };
-            resource.data.libs.forEach(function ($lib) {
-                loader.add($lib.name, resource.data.baseUrl + $lib.path, options);
-            }, this);
-            resource.data.assets.forEach(function ($item) {
-                loader.add($item.name, resource.data.baseUrl + $item.path, options);
-            }, this);
-
-            return next();
-        }
-
-        //PIXI.loaders.Loader.addPixiMiddleware(atlasParser);
-        loader.use(assetsParser);
-    }
-
-    /*initPIXILoader() {
-        console.log('initPIXILoader');
-
-        function assetsParser(resource, next) {
-            console.log('assetsParser');
-            if (!resource.data || !(resource.type === PIXI.LoaderResource.TYPE.JSON) || !resource.data.metaData ||
-                !resource.data.metaData.type || resource.data.metaData.type !== 'FlashLib') {
-                return next();
-            }
-
-            console.log('function');
 
             //PIXI.loader.reset();
             let options = {
@@ -288,5 +254,10 @@ export default new class FlashLib {
 
         //PIXI.loaders.Loader.addPixiMiddleware(atlasParser);
         PIXI.Loader.shared.use(assetsParser);
-    }*/
+    }
 }
+
+/*export {default as Shape} from './Shape';
+export {default as Bitmap} from './Bitmap';
+export {default as MovieClip} from './MovieClip';
+export {default as TextField} from './TextField';*/
