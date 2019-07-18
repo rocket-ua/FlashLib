@@ -19,7 +19,7 @@ function CreateAssetsList($settings, $config) {
         return;
     }
 
-    assetsList = {
+    /*assetsList = {
         baseUrl: './',
         libs: [
             { name: 'FlashLib', path: 'FlashLib.json', type: 'json' }
@@ -29,10 +29,51 @@ function CreateAssetsList($settings, $config) {
             type: 'FlashLib',
             date: new Date()
         }
-    };
+    };*/
+    getBaseAssetList()
+    setAssetListDefaultParams()
 
-    if(config.libSettings && config.libSettings.path) {
-        assetsList.libs[0].path = config.libSettings.path + assetsList.libs[0].path
+    if(config.libSettings) {
+        if(config.libSettings.basePath) {
+            assetsList.baseUrl = config.libSettings.basePath
+        }
+        if(config.libSettings.path) {
+            assetsList.libs[0].path = config.libSettings.path
+        }
+    }
+
+    function getBaseAssetList() {
+        var baseAssetListPath = document.pathURI.replace(document.name, 'BaseAssetsList.json');
+        if (FLfile.exists(baseAssetListPath)) {
+            fl.trace('Used BaseAssetsList.json')
+            var configString = FLfile.read(baseAssetListPath);
+            assetsList = JSON.decode(configString);
+        } else {
+            assetsList = createBaseAssetList();
+        }
+    }
+
+    function createBaseAssetList() {
+        return {
+            baseUrl: './',
+            libs: [
+                { name: config.flashLibName || 'FlashLib', path: 'FlashLib.json', type: 'json' }
+            ],
+            assets: [],
+            metaData: {
+                type: 'FlashLib',
+                date: new Date()
+            }
+        };
+    }
+
+    function setAssetListDefaultParams() {
+        assetsList.baseUrl = './';
+        assetsList.libs[0].name = config.flashLibName || 'FlashLib';
+        assetsList.libs[0].path = 'FlashLib.json';
+        assetsList.libs[0].type = 'json';
+        assetsList.metaData.type = 'FlashLib';
+        assetsList.metaData.date = new Date();
     }
 
     function start() {
@@ -414,15 +455,18 @@ function FlashLib($settings, $config) {
                 buildForSelected: false
             },
             exportImages: {
+                flashLibName: 'FlashLib',
                 exportImages: true,
                 overrideExistingFiles: false,
                 addExtensions: false
             },
             createAssetsList: {
+                libName: document.name,
                 saveToFile: true,
                 sayResultToConsole: false,
                 libSettings: {
-                    path: "./"
+                    path: "",
+                    basePath: ""
                 }
             }
         };
@@ -658,7 +702,7 @@ function LibToJson($settings, $config) {
         createLibItems();
 
         jsonLib = {
-            name: '',
+            name: config.libName || '',
             date: new Date().toDateString(),
             lib: libData
         };

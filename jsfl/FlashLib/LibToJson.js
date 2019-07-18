@@ -32,7 +32,7 @@ function LibToJson($settings, $config) {
         createLibItems();
 
         jsonLib = {
-            name: '',
+            name: config.libName || '',
             date: new Date().toDateString(),
             lib: libData
         };
