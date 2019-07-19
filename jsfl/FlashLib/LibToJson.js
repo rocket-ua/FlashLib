@@ -32,7 +32,7 @@ function LibToJson($settings, $config) {
         createLibItems();
 
         jsonLib = {
-            name: config.libName || '',
+            name: config.flashLibName || '',
             date: new Date().toDateString(),
             lib: libData
         };

@@ -19,6 +19,10 @@ export default new class FlashLib {
         this.initPIXILoader();
     }
 
+    /**
+     * Добавить новую библиотеку
+     * @param $library данные библиотеки
+     */
     addNewLibrary($library) {
         this.libraries.push($library)
     }
@@ -60,6 +64,11 @@ export default new class FlashLib {
         }
     }
 
+    /**
+     * Получение библиотеки по имени
+     * @param $libraryName имя библиотеки
+     * @returns {*} данные библиотеки
+     */
     getLibraryByName($libraryName) {
         let index = this.libraries.findIndex(function (library) {
             return library.name === $libraryName
@@ -228,6 +237,9 @@ export default new class FlashLib {
         $item.filters = newFilters;
     }
 
+    /**
+     * Добавление парсера для загрузки ресурсов
+     */
     initPIXILoader() {
         function assetsParser(resource, next) {
             if (!resource.data || !(resource.type === PIXI.LoaderResource.TYPE.JSON) || !resource.data.metaData ||

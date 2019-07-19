@@ -450,6 +450,7 @@ function FlashLib($settings, $config) {
         var baseConfig = {
             basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
             libToJson: {
+                flashLibName: 'FlashLib',
                 saveToFile: true,
                 sayResultToConsole: false,
                 buildForSelected: false
@@ -702,7 +703,7 @@ function LibToJson($settings, $config) {
         createLibItems();
 
         jsonLib = {
-            name: config.libName || '',
+            name: config.flashLibName || '',
             date: new Date().toDateString(),
             lib: libData
         };
