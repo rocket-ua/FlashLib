@@ -27,7 +27,7 @@ File with settings export resources and library.
 It is created automatically when the script is first applied to the .fla file.
 ```json
 {
-    "basePath": "/Users/username/Projects/FlashLibExample/dist/",
+    "basePath": "../dist/",
     "libToJson": {
         "flashLibName": "FlashLib",
         "saveToFile": true,
