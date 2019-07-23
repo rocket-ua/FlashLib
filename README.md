@@ -1,68 +1,74 @@
-
-
 # FlashLib
 Данный инструмент находиться в стадии разработки.  
-Для экспорта библиотеки из проекта Animate CC или Flash Professional.  
-Библиотека экспортируется в виде JSON файла и записывается в файл, который после экспорта можно использоваться в своем проекте для построения объектов из библиотеки.
-
-На данный момент для экспорта библиотеки используются jsfl скрипты, но так же сейчас пишется плагин для Animate CC для более удобного использования.з
+FlashLib - инструмент для экспорта библиотеки из проекта Animate CC и сборки с помощю PIXI.js.
+Пример использования: https://github.com/rocket-ua/FlashLibExample
 
 ## Особенности
-<li> Поддержка мувиклипов. В мувиклипах поддерживается таймлайн и слои
-<li> Поддержка работы с Bitmap изображениями
-<li> Поддержка TextField
-<li> Поддержка вложенности в чайлдах и мувиклипах
-<li> Поддержка фильтра Blur
-
+<li> Экспорт MovieClip.
+<li> Экспорт Bitmap.
+<li> Экспорт TextField.
+<li> Возможность создания элементов из библиотеки по имени.
 
 ## Инструкция по применению
-Послу естановки для применения игструмерна используйте команду **flashlib**
-
+После установки для экспорта ресурсов и библиотеки используйте команду **flashlib**.
+В **package.json** нужно добавить скрипт:
+```
+"scripts": {
+    "openPattern": "flashlib --open /Users/username/Projects/flTest/assets/pattern.fla",
+    "start": "flashlib"
+},
+```
+Флаг **open** позволяет указать к какому проекту .fla применить скрипт экспорта.
 
 #### Формат файла FlashLibConfig.json
-Файл представляет собой json строку для настройки экспорта библиотеки и графики.
+Файл настройки экспорта ресурсов и библиотеки.
+Создается автоматически при первом применении скрипта к .fla файлу.
 ```
 {
-    {
-        basePath: '/Users/rocket/Projects/FlashLib/examples/windows/build/',
-        libToJson: {
-            saveToFile: true,
-            sayResultToConsole: false,
-            buildForSelected: false
-        },
-        exportImages: {
-            exportImages: true,
-            overrideExistingFiles: false,
-            addExtensions: false
-        },
-        createAssetsList: {
-            saveToFile: true,
-            sayResultToConsole: false
+    "basePath": "/Users/username/Projects/flTest/dist/",
+    "libToJson": {
+        "flashLibName": "FlashLib",
+        "saveToFile": true,
+        "sayResultToConsole": false,
+        "buildForSelected": false
+    },
+    "exportImages": {
+        "flashLibName": "FlashLib",
+        "exportImages": true,
+        "overrideExistingFiles": false,
+        "addExtensions": false
+    },
+    "createAssetsList": {
+        "libName": "pattern.fla",
+        "saveToFile": true,
+        "sayResultToConsole": false,
+        "libSettings": {
+            "path": "",
+            "basePath": ""
         }
-    };
+    }
 }
 ```
-**basePath** - путь к папке куда будет экспортирован проект.  
-**libToJson** - объект для настройки параметров экспорта библиотеки в json.
+**basePath** - путь к папке для экспорта проекта. Необходимо изменить на требуемый. По умолчанию экспортируется в папку где находиться .fla файл.
+**libToJson** - настройка параметров экспорта библиотеки в json.
+<li> flashLibName - имя библиотеки.
 <li> saveToFiles - сохранять библиотеку в файл.
-<li> sayResultToConsole - выводить json строку библиотек в консоль Animate CC.
-<li> buildForSelected - создавать из библиотеки только выбранные элементы.
+<li> sayResultToConsole - выводить json строку библиотеки в консоль.
+<li> buildForSelected - экспортировать из библиотеки только выбранные элементы.
   
-**exportImages** - объект для настройки параметров экспорта графики.
-<li> exportImages - нужно ли экспортировать графику
-<li> exportImagesPath - абсолютный путь до папки в которую будет экспортировать графика. По умолчанию в папке с проектом .fla 
-будет создана папка exported и в нее будет экспортирована графика с сохранением структуры
-<li> overrideExistingFiles - нужно ли перезаписывать при экспорте файлы, если такие уже имеются
+**exportImages** - настройки параметров экспорта графики.
+<li> flashLibName - имя библиотеки.
+<li> exportImages - экспортировать графику.
+<li> overrideExistingFiles - перезаписывать файлы, если такие уже имеются.
   
-**createGraphicsList** - объект для настройки параметров файла описания экспортированной графики.
-<li> saveToFile - нужно ли сохранять результат в файл.
-<li> sayResultToConsole - выводить json строку ассетов в консоль Animate CC.
+**createAssetsList** - настройки параметров файла загрузки ресурсов.
+<li> libName - название файла библиотеки из которой экспортировались ресурсы.
+<li> saveToFile - сохранять результат в файл.
+<li> sayResultToConsole - выводить json строку ассетов в консоль.
 
-### Загрузка графики
-#### Загрузка отдельных картинок
-1. В папе с проектом Animate CC после экспорта графики повился файл graphicsList.json.
-Это файл описания имени под которым файл должен быть загружен в pixi.js и пути по которому он был экспортирован.
-Для корректной работы нужно загружать графику используя примерно такой код:
+### Загрузка ресурсов
+#### Для загрузки проекта нужно загрузить файл FlashLibAssets.json из папки куда экспортировался проект (basePath)
+1. После экспорта ресурсов и библиотеки необходимо загрузить файл FlashLibAssets.json с помощю PIXI.js
 ```
 function loadAssets() {
     PIXI.loader.add('FlashLibAssets', 'FlashLibAssets.json', 'json');
@@ -71,37 +77,23 @@ function loadAssets() {
 }
 
 function onLoadingComplete() {
-    //Действия по завершению загрузки графики
+    //ALl resources for FlashLib is loaded
 }
 ```
 
-### Создание элемента из библиотеки
-После завершения загрузки графики и файла FlashLibAssets.json нужно указать выполнить следующие действия:
-1. Указать скрипту FlashFib загруженную библиотеку.  
-Для того что бы это сделать нужно сделать примерно следующее (при условии что библиотека загружалась под именем FlashLibAssets:
-```
-var libraryData = PIXI.loader.resources['FlashLibAssets'].data;
-FlashLib.addNewLibrary(libraryData);
-```
 2. Создать объект их библиотеки по имени.
-Например если в библиотеке есть мувикслик с именем **game** то создание будет выглядеть так:
 ```
-var item = FlashLib.createItemFromLibrary('game');
-```
-Если мувиклип в библиотеке лежит по пути например **characters/hero** то создание выглядит так:
-```
-var item = FlashLib.createItemFromLibrary('characters/hero');
-```
-После создания элемента из библиотеки его можно добавить на сцену или в любой объект в который можно добавить child.  
-```
-app.stage.addChild(item);
-```
-В зависимости от созданного элемента, он может быть таких типов:
-1. FlashLib.MovieClip
-2. FlashLib.TextField
-3. PIXI.Image
+var game = FlashLib.createItemFromLibrary('game');
+var heroImage = FlashLib.createItemFromLibrary('characters/hero');
 
-### После изменения проекта Animate CC (.fla) нужно перезапустить скрипт для применения изменений
+app.stage.addChild(game);
+app.stage.addChild(heroImage);
+```
+В качестве аргумента **createItemFromLibrary** используется имя и путь к элемиенту в библиотеке .fla проекта. 
+
+### После изменения проекта Animate CC (.fla) нужно перезапустить скрипт для экспорта ресурсов
+
+### Можно использовать спрайтлисты для загрузки графики.
 
 ### Контакты
 Telegram @rocket_ua
