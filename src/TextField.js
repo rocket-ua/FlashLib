@@ -23,6 +23,7 @@ export default class TextField extends PIXI.Text {
         this.textRect = null;
         this.libData = $data;
         this.createRect();
+        this.correctPosition();
     }
 
     createRect() {
@@ -30,6 +31,10 @@ export default class TextField extends PIXI.Text {
     };
 
     correctPosition($horizontal, $vertical) {
+        if(!this.textRect) {
+            return;
+        }
+
         let hAlign = $horizontal || this.style && this.style.align;
         let vAlign = $vertical || 'top';
 
@@ -111,24 +116,24 @@ export default class TextField extends PIXI.Text {
     }
 
     get origWidth() {
-        this.updateText(true);
+        this['updateText'](true);
         return Math.abs(this.scale.x) * this.texture.orig.width;
     }
 
     set origWidth(value) {
-        this.updateText(true);
+        this['updateText'](true);
         let sign = PIXI.utils.sign(this.scale.x) || 1;
         this.scale.x = sign * value / this.texture.orig.width;
         this._width = value;
     }
 
     get origHeight() {
-        this.updateText(true);
+        this['updateText'](true);
         return Math.abs(this.scale.y) * this._texture.orig.height;
     }
 
     set origHeight(value) {
-        this.updateText(true);
+        this['updateText'](true);
         let sign = PIXI.utils.sign(this.scale.y) || 1;
         this.scale.y = sign * value / this.texture.orig.height;
         this._height = value;

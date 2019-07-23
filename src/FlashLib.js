@@ -1,9 +1,9 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from 'pixi.js';
 
-import Shape from './Shape'
-import Bitmap from './Bitmap'
-import MovieClip from './MovieClip'
-import TextField from './TextField'
+import Shape from './Shape';
+import Bitmap from './Bitmap';
+import MovieClip from './MovieClip';
+import TextField from './TextField';
 
 /*export {Shape, Bitmap, MovieClip, TextField}*/
 
@@ -19,10 +19,6 @@ export default new class FlashLib {
         this.initPIXILoader();
     }
 
-    /**
-     * Добавить новую библиотеку
-     * @param $library данные библиотеки
-     */
     addNewLibrary($library) {
         this.libraries.push($library)
     }
@@ -64,14 +60,9 @@ export default new class FlashLib {
         }
     }
 
-    /**
-     * Получение библиотеки по имени
-     * @param $libraryName имя библиотеки
-     * @returns {*} данные библиотеки
-     */
     getLibraryByName($libraryName) {
         let index = this.libraries.findIndex(function (library) {
-            return library.name === $libraryName
+            return library.metaData.name === $libraryName
         });
         if (index === -1) {
             index = 0
@@ -238,37 +229,45 @@ export default new class FlashLib {
     }
 
     /**
-     * Добавление парсера для загрузки ресурсов
+     * Добавление обработки загружаемых файлов для автоматической загрузки ассетов и библиотек
+     * Добавление библиотек автоматически после загрузки
      */
     initPIXILoader() {
         function assetsParser(resource, next) {
             if (!resource.data || !(resource.type === PIXI.LoaderResource.TYPE.JSON) || !resource.data.metaData ||
-                !resource.data.metaData.type || resource.data.metaData.type !== 'FlashLib') {
+                !resource.data.metaData.type) {
                 return next();
             }
-
-            //PIXI.loader.reset();
-            let options = {
-                crossOrigin: resource.crossOrigin,
-                xhrType: PIXI.LoaderResource.TYPE.JSON,
-                metadata: null,
-                parentResource: resource
-            };
-            resource.data.libs.forEach(function ($lib) {
-                PIXI.Loader.shared.add($lib.name, resource.data.baseUrl + $lib.path, options);
-            }, this);
-            resource.data.assets.forEach(function ($item) {
-                PIXI.Loader.shared.add($item.name, resource.data.baseUrl + $item.path, options);
-            }, this);
-
-            return next();
+            switch (resource.data.metaData.type) {
+                case 'FlashLibAssets':
+                    //PIXI.loader.reset();
+                    let options = {
+                        crossOrigin: resource.crossOrigin,
+                        xhrType: PIXI.LoaderResource.TYPE.JSON,
+                        metadata: null,
+                        parentResource: resource
+                    };
+                    resource.data.libs.forEach(function ($lib) {
+                        PIXI.Loader.shared.add($lib.name, resource.data.baseUrl + $lib.path, options);
+                    }, this);
+                    resource.data.assets.forEach(function ($item) {
+                        PIXI.Loader.shared.add($item.name, resource.data.baseUrl + $item.path, options);
+                    }, this);
+                    return next();
+                    break;
+                case 'FlashLib':
+                    this.addNewLibrary(resource.data);
+                    return next();
+                    break;
+                default:
+                    return next();
+            }
         }
 
         //PIXI.loaders.Loader.addPixiMiddleware(atlasParser);
-        PIXI.Loader.shared.use(assetsParser);
+        PIXI.Loader.shared.use(assetsParser.bind(this));
     }
 }
-
 /*export {default as Shape} from './Shape';
 export {default as Bitmap} from './Bitmap';
 export {default as MovieClip} from './MovieClip';

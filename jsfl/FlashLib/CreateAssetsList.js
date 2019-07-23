@@ -30,22 +30,22 @@ function CreateAssetsList($settings, $config) {
             date: new Date()
         }
     };*/
-    getBaseAssetList()
-    setAssetListDefaultParams()
+    getBaseAssetList();
+    setAssetListDefaultParams();
 
     if(config.libSettings) {
         if(config.libSettings.basePath) {
-            assetsList.baseUrl = config.libSettings.basePath
+            assetsList.baseUrl = config.libSettings.basePath;
         }
         if(config.libSettings.path) {
-            assetsList.libs[0].path = config.libSettings.path
+            assetsList.libs[0].path = config.libSettings.path;
         }
     }
 
     function getBaseAssetList() {
         var baseAssetListPath = document.pathURI.replace(document.name, 'BaseAssetsList.json');
         if (FLfile.exists(baseAssetListPath)) {
-            fl.trace('Used BaseAssetsList.json')
+            fl.trace('Used BaseAssetsList.json');
             var configString = FLfile.read(baseAssetListPath);
             assetsList = JSON.decode(configString);
         } else {
@@ -61,7 +61,7 @@ function CreateAssetsList($settings, $config) {
             ],
             assets: [],
             metaData: {
-                type: 'FlashLib',
+                type: 'FlashLibAssets',
                 date: new Date()
             }
         };
@@ -72,7 +72,7 @@ function CreateAssetsList($settings, $config) {
         assetsList.libs[0].name = config.flashLibName || 'FlashLib';
         assetsList.libs[0].path = 'FlashLib.json';
         assetsList.libs[0].type = 'json';
-        assetsList.metaData.type = 'FlashLib';
+        assetsList.metaData.type = 'FlashLibAssets';
         assetsList.metaData.date = new Date();
     }
 

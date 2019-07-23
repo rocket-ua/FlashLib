@@ -61,7 +61,7 @@ function CreateAssetsList($settings, $config) {
             ],
             assets: [],
             metaData: {
-                type: 'FlashLib',
+                type: 'FlashLibAssets',
                 date: new Date()
             }
         };
@@ -72,7 +72,7 @@ function CreateAssetsList($settings, $config) {
         assetsList.libs[0].name = config.flashLibName || 'FlashLib';
         assetsList.libs[0].path = 'FlashLib.json';
         assetsList.libs[0].type = 'json';
-        assetsList.metaData.type = 'FlashLib';
+        assetsList.metaData.type = 'FlashLibAssets';
         assetsList.metaData.date = new Date();
     }
 
@@ -703,9 +703,12 @@ function LibToJson($settings, $config) {
         createLibItems();
 
         jsonLib = {
-            name: config.flashLibName || '',
-            date: new Date().toDateString(),
-            lib: libData
+            lib: libData,
+            metaData: {
+                type: 'FlashLib',
+                name: config.flashLibName || '',
+                date: new Date().toDateString(),
+            }
         };
 
         //Библиотека JSON подключается отдельно
