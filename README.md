@@ -1,29 +1,29 @@
 # FlashLib
-Данный инструмент находиться в стадии разработки.  
-FlashLib - инструмент для экспорта библиотеки из проекта Animate CC и сборки с помощю PIXI.js.
-Пример использования: https://github.com/rocket-ua/FlashLibExample
+This tool is under development.
+FlashLib is a tool to export a library from the Animate CC project and build using PIXI.js.
+Example of use: https://github.com/rocket-ua/FlashLibExample
 
-## Особенности
-<li> Экспорт MovieClip.
-<li> Экспорт Bitmap.
-<li> Экспорт TextField.
-<li> Возможность создания элементов из библиотеки по имени.
+## Features
+<li> Export MovieClip.
+<li> Export Bitmap.
+<li> Export TextField.
+<li> Ability to create items from the .fla library by name.
 
-## Инструкция по применению
-После установки для экспорта ресурсов и библиотеки используйте команду **flashlib**.
-В **package.json** нужно добавить скрипт:
-```
+## How to use
+For export resources and library use the command **flashlib**.
+In **package.json** you need to add a script:
+```json
 "scripts": {
     "openPattern": "flashlib --open /Users/username/Projects/FlashLibExample/assets/pattern.fla",
     "start": "flashlib"
-},
+}
 ```
-Флаг **open** позволяет указать к какому проекту .fla применить скрипт экспорта.
+The **open** flag allows you to specify the export script to which .fla project. If the flag is not specified, then it is applied to the current open project.
 
-#### Формат файла FlashLibConfig.json
-Файл настройки экспорта ресурсов и библиотеки.
-Создается автоматически при первом применении скрипта к .fla файлу.
-```
+#### FlashLibConfig.json file format
+File with settings export resources and library.
+It is created automatically when the script is first applied to the .fla file.
+```json
 {
     "basePath": "/Users/username/Projects/FlashLibExample/dist/",
     "libToJson": {
@@ -49,27 +49,27 @@ FlashLib - инструмент для экспорта библиотеки и�
     }
 }
 ```
-**basePath** - путь к папке для экспорта проекта. Необходимо изменить на требуемый. По умолчанию экспортируется в папку где находиться .fla файл.
-**libToJson** - настройка параметров экспорта библиотеки в json.
-<li> flashLibName - имя библиотеки.
-<li> saveToFiles - сохранять библиотеку в файл.
-<li> sayResultToConsole - выводить json строку библиотеки в консоль.
-<li> buildForSelected - экспортировать из библиотеки только выбранные элементы.
+**basePath** - folder path to export the project. Need to change to the required. By default, it is exported to the folder where the .fla file is located.
+**libToJson** - library export settings
+<li> flashLibName - library name.
+<li> saveToFiles - save library to file.
+<li> sayResultToConsole - output json library string to console.
+<li> buildForSelected - export only selected items from the library.
   
-**exportImages** - настройки параметров экспорта графики.
-<li> flashLibName - имя библиотеки.
-<li> exportImages - экспортировать графику.
-<li> overrideExistingFiles - перезаписывать файлы, если такие уже имеются.
+**exportImages** - graphics export settings.
+<li> flashLibName - library name.
+<li> exportImages - export graphics.
+<li> overrideExistingFiles - overwrite files, if they already exist.
   
-**createAssetsList** - настройки параметров файла загрузки ресурсов.
-<li> libName - название файла библиотеки из которой экспортировались ресурсы.
-<li> saveToFile - сохранять результат в файл.
-<li> sayResultToConsole - выводить json строку ассетов в консоль.
+**createAssetsList** - settings file resource download.
+<li> libName - the name of the .fla file from which the resources were exported.
+<li> saveToFile - save assets list to a file.
+<li> sayResultToConsole - output json assets string to console.
 
-### Загрузка ресурсов
-#### Для загрузки проекта нужно загрузить файл FlashLibAssets.json из папки куда экспортировался проект (basePath)
-После экспорта ресурсов и библиотеки необходимо загрузить файл FlashLibAssets.json с помощю PIXI.js
-```
+### Loading resources and creating items
+#### To load the library and resources, you need to load the file FlashLibAssets.json from the folder where the project was exported (basePath)
+After exporting the resources and the library, you need to load the FlashLibAssets.json file using PIXI.js
+```javascript
 function loadAssets() {
     PIXI.loader.add('FlashLibAssets', 'FlashLibAssets.json', 'json');
     PIXI.loader.once('complete', onLoadingComplete, this);
@@ -77,29 +77,29 @@ function loadAssets() {
 }
 
 function onLoadingComplete() {
-    //ALl resources for FlashLib is loaded
+    //ALl resources for FlashLib is loaded. 
+    //You can create items from FlashLib.
 }
 ```
 
-Импортировать FlashLib.
-```
+Import FlashLib.
+```javascript
 import FlashLib from 'flashlib';
 ```
 
-Создать объект из библиотеки по имени.
-```
-var game = FlashLib.createItemFromLibrary('game', 'FlashLib');
-var heroImage = FlashLib.createItemFromLibrary('characters/hero', 'FlashLib');
+Create an object from the library by name.
+```javascript
+let game = FlashLib.createItemFromLibrary('game', 'FlashLib');
+let heroImage = FlashLib.createItemFromLibrary('characters/hero', 'FlashLib');
 
 app.stage.addChild(game);
 app.stage.addChild(heroImage);
 ```
-В качестве аргумента **createItemFromLibrary** используется имя и путь к элемиенту в библиотеке .fla проекта. 
-Так же нужно указать имя из какой библиотеки нужно создать элемент (FlashLibConfig.json => libToJson.flashLibName)
+**createItemFromLibrary**
+<li> The first argument is the name and path to the item in the project's .fla library.
+<li> The second argument is the name from which library the item should be created. (FlashLibConfig.json => libToJson.flashLibName)
 
-### После изменения проекта Animate CC (.fla) нужно перезапустить скрипт для экспорта ресурсов
+### After changing the project in Animate CC (.fla), you need to restart the script to export the resources and the library.
 
-### Можно использовать спрайтлисты для загрузки графики.
-
-### Контакты
+### Contacts
 Telegram @rocket_ua
