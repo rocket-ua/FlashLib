@@ -14,7 +14,7 @@ FlashLib - инструмент для экспорта библиотеки и�
 В **package.json** нужно добавить скрипт:
 ```
 "scripts": {
-    "openPattern": "flashlib --open /Users/username/Projects/flTest/assets/pattern.fla",
+    "openPattern": "flashlib --open /Users/username/Projects/FlashLibExample/assets/pattern.fla",
     "start": "flashlib"
 },
 ```
@@ -25,7 +25,7 @@ FlashLib - инструмент для экспорта библиотеки и�
 Создается автоматически при первом применении скрипта к .fla файлу.
 ```
 {
-    "basePath": "/Users/username/Projects/flTest/dist/",
+    "basePath": "/Users/username/Projects/FlashLibExample/dist/",
     "libToJson": {
         "flashLibName": "FlashLib",
         "saveToFile": true,
