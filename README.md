@@ -20,6 +20,8 @@ In **package.json** you need to add a script:
 ```
 The **open** flag allows you to specify the export script to which .fla project. If the flag is not specified, then it is applied to the current open project.
 
+Then you need to run script for export library and resources from .fla.
+
 #### FlashLibConfig.json file format
 File with settings export resources and library.
 It is created automatically when the script is first applied to the .fla file.
