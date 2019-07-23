@@ -91,15 +91,20 @@ import FlashLib from 'flashlib';
 
 Create an object from the library by name.
 ```javascript
-let game = FlashLib.createItemFromLibrary('game', 'FlashLib');
-let heroImage = FlashLib.createItemFromLibrary('characters/hero', 'FlashLib');
+let loginWindow = FlashLib.createItemFromLibrary('loginWindow', 'FlashLib');
+this.app.stage.addChild(loginWindow);
 
-app.stage.addChild(game);
-app.stage.addChild(heroImage);
+let passwordTextImage = FlashLib.createItemFromLibrary('graphics/passwond_text.png', 'FlashLib');
+this.app.stage.addChild(passwordTextImage);
 ```
 **createItemFromLibrary**
 <li> The first argument is the name and path to the item in the project's .fla library.
 <li> The second argument is the name from which library the item should be created. (FlashLibConfig.json => libToJson.flashLibName)
+
+## Result
+### What was make Animate CC and what makes in PIXI.js
+<img src="https://images2.imgbox.com/8c/79/OxKyjCMV_o.png" height="200" />
+<img src="https://images2.imgbox.com/c4/10/qoUkDy9d_o.png" height="200" />
 
 ### After changing the project in Animate CC (.fla), you need to restart the script to export the resources and the library.
 
