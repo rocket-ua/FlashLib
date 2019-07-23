@@ -14,7 +14,6 @@
     "flashlib": "bin/main.js"
   },
   "scripts": {
-    "openPattern": "flashlib --open /Users/rocket/Projects/FlashLib/examples/windows/assets/pattern.fla",
     "start": "flashlib"
   },
   "files": [
