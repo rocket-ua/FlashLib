@@ -112,8 +112,8 @@ this.app.stage.addChild(passwordTextImage);
 ___
 ## Additional features
 FlashLib can create instances of custom classes when building item from library.  
-In JS project you need to make class and register via ***FlashLib.registerClass***.
-In Animate CC you need to make MovieClip with structure what you need, and set linkage to 'CheckBox' (name what you use in ***FlashLib.registerClass***)   
+In JS project you need to make class and register via ***FlashLib.registerClass***.  
+In Animate CC you need to make MovieClip with structure what you need, and set linkage to 'CheckBox' (name what you use in ***FlashLib.registerClass***).  
 ```javascript
 import FlashLib from 'flashlib';
 export default class CheckBox extends FlashLib.MovieClip {
@@ -151,7 +151,7 @@ export default class CheckBox extends FlashLib.MovieClip {
 FlashLib.registerClass('CheckBox', CheckBox);
 ```  
 When your MovieClip will building, FlashLib make instance of your class, and you functionality of your class will be works.  
-You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExampl).
+You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExample).
 
 ___
 ### Contacts
