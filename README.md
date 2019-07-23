@@ -86,15 +86,16 @@ function onLoadingComplete() {
 import FlashLib from 'flashlib';
 ```
 
-Создать объект их библиотеки по имени.
+Создать объект из библиотеки по имени.
 ```
-var game = FlashLib.createItemFromLibrary('game');
-var heroImage = FlashLib.createItemFromLibrary('characters/hero');
+var game = FlashLib.createItemFromLibrary('game', 'FlashLib');
+var heroImage = FlashLib.createItemFromLibrary('characters/hero', 'FlashLib');
 
 app.stage.addChild(game);
 app.stage.addChild(heroImage);
 ```
 В качестве аргумента **createItemFromLibrary** используется имя и путь к элемиенту в библиотеке .fla проекта. 
+Так же нужно указать имя из какой библиотеки нужно создать элемент (FlashLibConfig.json => libToJson.flashLibName)
 
 ### После изменения проекта Animate CC (.fla) нужно перезапустить скрипт для экспорта ресурсов
 
