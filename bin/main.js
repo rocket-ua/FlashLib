@@ -61,8 +61,8 @@ function onFlaOpened() {
 }
 
 function runJSFL() {
-    var path = path.join(__dirname, '..', 'jsfl', 'FlashLib.jsfl');
-    open(path);
+    var newPath = path.join(__dirname, '..', 'jsfl', 'FlashLib.jsfl');
+    open(newPath);
 }
 
 

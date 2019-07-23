@@ -30,22 +30,22 @@ function CreateAssetsList($settings, $config) {
             date: new Date()
         }
     };*/
-    getBaseAssetList()
-    setAssetListDefaultParams()
+    getBaseAssetList();
+    setAssetListDefaultParams();
 
     if(config.libSettings) {
         if(config.libSettings.basePath) {
-            assetsList.baseUrl = config.libSettings.basePath
+            assetsList.baseUrl = config.libSettings.basePath;
         }
         if(config.libSettings.path) {
-            assetsList.libs[0].path = config.libSettings.path
+            assetsList.libs[0].path = config.libSettings.path;
         }
     }
 
     function getBaseAssetList() {
         var baseAssetListPath = document.pathURI.replace(document.name, 'BaseAssetsList.json');
         if (FLfile.exists(baseAssetListPath)) {
-            fl.trace('Used BaseAssetsList.json')
+            fl.trace('Used BaseAssetsList.json');
             var configString = FLfile.read(baseAssetListPath);
             assetsList = JSON.decode(configString);
         } else {
@@ -118,17 +118,12 @@ function CreateAssetsList($settings, $config) {
      * @returns {string}
      */
     function createSaveFilesPath() {
-        var path = document.pathURI.replace(document.name, "");
-        if(config && config.basePath && config.basePath !== '') {
-            path = config.basePath;
+        var path = document.path.replace(document.name, '');
+        if (config && config.basePath && config.basePath !== '') {
+            path += config.basePath;
         }
 
-        if(path.search("file:///") !== 0) {
-            path = "file:///" + path;
-            path = encodeURI(path);
-        }
-
-        return path;
+        return FLfile.platformPathToURI(path);
     }
 
     /**
@@ -288,7 +283,7 @@ function ExportImages($settings, $config) {
     /**
      * Получение пути для сохранения файлов карт
      */
-    function createSaveFilesPath() {
+    /*function createSaveFilesPath() {
         var path = document.pathURI.replace(document.name, '');
         if (config && config.basePath && config.basePath !== '') {
             path = config.basePath;
@@ -300,6 +295,15 @@ function ExportImages($settings, $config) {
         }
 
         return path;
+    }*/
+
+    function createSaveFilesPath() {
+        var path = document.path.replace(document.name, '');
+        if (config && config.basePath && config.basePath !== '') {
+            path += config.basePath;
+        }
+
+        return FLfile.platformPathToURI(path);
     }
 
     function exportImage($item) {
@@ -448,7 +452,8 @@ function FlashLib($settings, $config) {
     function createBaseConfig() {
         var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
         var baseConfig = {
-            basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
+            //basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
+            basePath: './build/',
             libToJson: {
                 flashLibName: 'FlashLib',
                 saveToFile: true,
@@ -773,17 +778,12 @@ function LibToJson($settings, $config) {
      * @returns {string}
      */
     function createSaveFilesPath() {
-        var path = document.pathURI.replace(document.name, '');
-        if(config && config.basePath && config.basePath !== '') {
-            path = config.basePath;
+        var path = document.path.replace(document.name, '');
+        if (config && config.basePath && config.basePath !== '') {
+            path += config.basePath;
         }
 
-        if(path.search('file:///') !== 0) {
-            path = 'file:///' + path;
-            path = encodeURI(path);
-        }
-
-        return path;
+        return FLfile.platformPathToURI(path);
     }
 
     /**

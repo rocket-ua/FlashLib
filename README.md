@@ -1,6 +1,6 @@
 # FlashLib
 This tool is under development.
-FlashLib is a tool to export a library from the Animate CC project and build using PIXI.js.
+FlashLib is a tool to export a library from the Animate CC (.fla) project and build using PIXI.js.
 Example of use: https://github.com/rocket-ua/FlashLibExample
 
 ## Features

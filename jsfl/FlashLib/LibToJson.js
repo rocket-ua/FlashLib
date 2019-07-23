@@ -102,17 +102,12 @@ function LibToJson($settings, $config) {
      * @returns {string}
      */
     function createSaveFilesPath() {
-        var path = document.pathURI.replace(document.name, '');
-        if(config && config.basePath && config.basePath !== '') {
-            path = config.basePath;
+        var path = document.path.replace(document.name, '');
+        if (config && config.basePath && config.basePath !== '') {
+            path += config.basePath;
         }
 
-        if(path.search('file:///') !== 0) {
-            path = 'file:///' + path;
-            path = encodeURI(path);
-        }
-
-        return path;
+        return FLfile.platformPathToURI(path);
     }
 
     /**

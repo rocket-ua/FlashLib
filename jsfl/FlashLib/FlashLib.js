@@ -60,7 +60,8 @@ function FlashLib($settings, $config) {
     function createBaseConfig() {
         var configPath = document.pathURI.replace(document.name, 'FlashLibConfig.json');
         var baseConfig = {
-            basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
+            //basePath: document.pathURI.substr(0, document.pathURI.lastIndexOf("/")+1).replace('file:///Macintosh%20HD', '') + 'build/',
+            basePath: './build/',
             libToJson: {
                 flashLibName: 'FlashLib',
                 saveToFile: true,

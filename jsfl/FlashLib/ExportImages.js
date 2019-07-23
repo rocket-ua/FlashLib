@@ -57,7 +57,7 @@ function ExportImages($settings, $config) {
     /**
      * Получение пути для сохранения файлов карт
      */
-    function createSaveFilesPath() {
+    /*function createSaveFilesPath() {
         var path = document.pathURI.replace(document.name, '');
         if (config && config.basePath && config.basePath !== '') {
             path = config.basePath;
@@ -69,6 +69,15 @@ function ExportImages($settings, $config) {
         }
 
         return path;
+    }*/
+
+    function createSaveFilesPath() {
+        var path = document.path.replace(document.name, '');
+        if (config && config.basePath && config.basePath !== '') {
+            path += config.basePath;
+        }
+
+        return FLfile.platformPathToURI(path);
     }
 
     function exportImage($item) {
