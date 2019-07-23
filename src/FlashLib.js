@@ -15,12 +15,36 @@ export default new class FlashLib {
         this.MovieClip = MovieClip;
         this.TextField = TextField;
 
+        this.registeredClassesObject = {};
+
         this.libraries = [];
         this.initPIXILoader();
     }
 
+    /**
+     * Добавить класс для создания во время постоения элементов
+     * @param {string} $path путь по которому можно взять класс (через точку)
+     * @param {string} $class объкет класса для создания
+     */
+    registerClass($path, $class) {
+        let splittedName = $path.split('.');
+        let obj = this.registeredClassesObject;
+        splittedName.forEach((name, index, arr)=>{
+            if(index === arr.length - 1) {
+                obj[name] = $class;
+            } else {
+                obj[name] = {};
+                obj = obj[name];
+            }
+        });
+    }
+
+    /**
+     * Добавить новую библиотеку
+     * @param $library {object}
+     */
     addNewLibrary($library) {
-        this.libraries.push($library)
+        this.libraries.push($library);
     }
 
     /**
@@ -88,7 +112,7 @@ export default new class FlashLib {
                 item = new Bitmap($libraryItemData);
                 break;
             default:
-                let classObject = getClassByName(type);
+                let classObject = getClassByName.call(this, type);
                 if ($libraryItemData.symbolType === 'movie clip') {
                     item = new classObject($libraryItemData);
                 } else {
@@ -113,7 +137,8 @@ export default new class FlashLib {
                 return getClass($splittedName, item);
             }
 
-            return getClass(splittedName, window);
+            return getClass(splittedName, this.registeredClassesObject);
+            //return getClass(splittedName, window);
         }
 
         return item;
