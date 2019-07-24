@@ -41,7 +41,7 @@ export default new class FlashLib {
 
     /**
      * Добавить новую библиотеку
-     * @param $library {object}
+     * @param {*} $library
      */
     addNewLibrary($library) {
         this.libraries.push($library);
@@ -84,6 +84,11 @@ export default new class FlashLib {
         }
     }
 
+    /**
+     * Получение библиотеки по имени
+     * @param {string} $libraryName имя библиотеки
+     * @returns {*}
+     */
     getLibraryByName($libraryName) {
         let index = this.libraries.findIndex(function (library) {
             return library.metaData.name === $libraryName
@@ -96,7 +101,7 @@ export default new class FlashLib {
 
     /**
      * Получить элемент из библиотеки
-     * @param $libraryItemData данные элемента библиотеки
+     * @param {*} $libraryItemData данные элемента библиотеки
      */
     createItemFromLibraryData($libraryItemData) {
         let item = null;
@@ -122,7 +127,7 @@ export default new class FlashLib {
 
         /**
          * Получить объект класса по имени, включая полный путь к нему
-         * @param $name
+         * @param {string} $name имя класса
          */
         function getClassByName($name) {
             let splittedName = $name.split('.');
@@ -146,8 +151,8 @@ export default new class FlashLib {
 
     /**
      * Создать графический жлемент (не из библиотеки)
-     * @param $displayItemData данне графического элемента
-     * @param $libraryName имя библиотеки
+     * @param {*} $displayItemData данне графического элемента
+     * @param {string} $libraryName имя библиотеки
      * @returns {*}
      */
     createDisplayItemFromData($displayItemData, $libraryName) {
@@ -178,8 +183,8 @@ export default new class FlashLib {
 
     /**
      * Назначение параметров элементу
-     * @param $item объкет которому назначаются параметры
-     * @param $displayItemData объект с параметрами которые нужно назначить
+     * @param {*} $item объкет которому назначаются параметры
+     * @param {*} $displayItemData объект с параметрами которые нужно назначить
      */
     setDisplayItemProperties($item, $displayItemData) {
         $item.name = $displayItemData.name;
@@ -195,8 +200,8 @@ export default new class FlashLib {
 
     /**
      * Добавление фильтров
-     * @param $item элемент которому добавляются фильтры
-     * @param $filters массив с фильтрами
+     * @param {*} $item элемент которому добавляются фильтры
+     * @param {*} $filters массив с фильтрами
      */
     addFiltersToDisplayItem($item, $filters) {
         if (!$filters || !PIXI.filters) {

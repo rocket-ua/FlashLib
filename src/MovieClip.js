@@ -19,6 +19,9 @@ export default class MovieClip extends PIXI.Container {
         this.goToFrame(1);
     }
 
+    /**
+     * Вызывается при зеверщении создания объкета и нахначение параметров на сцене
+     */
     constructionComplete() {
 
     }
@@ -33,7 +36,7 @@ export default class MovieClip extends PIXI.Container {
     /**
      * Получить детей по имени в библиотеке
      * Паботает только с элементами этого расширения
-     * @param $name имя элемента из библиотеки
+     * @param {string} $name имя элемента из библиотеки
      * @returns {array} массив объектов имя в бибилиотеке совпадает с заданым
      */
     getChildrenByLibName($name) {
@@ -44,7 +47,7 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      * Переход к следующему кадру клипа
-     * @param $loop если дошли до последнего кадра переходить ли на первыц
+     * @param {boolean} $loop если дошли до последнего кадра переходить ли на первыц
      */
     goToNextFrame($loop) {
         let nextIndex = this.currentFrameIndex + 1;
@@ -61,7 +64,7 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      * Перейти к предыдущему кадру
-     * @param $loop если дошли до первого кадра переходить ли на последний
+     * @param {boolean} $loop если дошли до первого кадра переходить ли на последний
      */
     goToPreviousFrame($loop) {
         let nextIndex = this.currentFrameIndex - 1;
@@ -77,10 +80,14 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      * Перейти на конкретный кадр
-     * @param $frameId номер или имя кадра на который нужно перейти
-     * @param $force перерисовать кадр даже если текущий кадр такой же
+     * @param {number | string} $frameId номер или имя кадра на который нужно перейти
+     * @param {boolean} $force перерисовать кадр даже если текущий кадр такой же
      */
     goToFrame($frameId, $force) {
+        if (typeof $frameId === 'string') {
+            $frameId = this.findFrameIndexByName($frameId);
+        }
+
         if ($frameId === this.currentFrameIndex && (!$force && $force !== 0)) {
             //console.log('MovieClip ' + this.name + '(' + this.timelineData.name + ')' + ' now on frame ' + $frameId);
             return;
@@ -112,6 +119,24 @@ export default class MovieClip extends PIXI.Container {
         this.constructFrame($frameId);
     }
 
+    /**
+     * Получить номер кадра по имени
+     * @param {string} $name имя кадра
+     * @returns {number} номер кадра или -1 если кадр не найден
+     */
+    findFrameIndexByName($name) {
+        let index = -1;
+        for (let i = 0; i < this.timelineData.frames.length; i++) {
+            let frameData = this.timelineData.frames[i];
+            index = frameData.findIndex((frameData1) => {
+                return frameData1.name === $name;
+            });
+            if (index !== -1) {
+                return i + 1;
+            }
+        }
+        return index;
+    }
 
     //TODO: Написать правильноые расчеты смены кадров
     /**
@@ -140,9 +165,9 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      *
-     * @param $loop зациклена ли анимация
-     * @param $revers проигрывание в обратную сторону
-     * @param $fps какой частотой обновления кадров нужно проиграть
+     * @param {boolean} $loop зациклена ли анимация
+     * @param {boolean} $revers проигрывание в обратную сторону
+     * @param {number} $fps какой частотой обновления кадров нужно проиграть
      */
     play($loop, $revers, $fps) {
         if (this.isPlaying) {
@@ -157,10 +182,10 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      * Перейти на кадр и запустить проигрывание мувиклипа
-     * @param $frameId с какого кадра начать проигрывание
-     * @param $loop зациклена ли анимация
-     * @param $revers проигрывание в обратную сторону
-     * @param $fps с какой частотой обновления кадров нужно проиграть
+     * @param {number | string} $frameId с какого кадра начать проигрывание
+     * @param {boolean} $loop зациклена ли анимация
+     * @param {boolean} $revers проигрывание в обратную сторону
+     * @param {number} $fps с какой частотой обновления кадров нужно проиграть
      */
     goToAndPlay($frameId, $loop, $revers, $fps) {
         this.stop();
@@ -183,7 +208,7 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      * Создать элемениы кадра
-     * @param $frameId номер кадра который нужно создать
+     * @param {number | string} $frameId номер кадра который нужно создать
      */
     constructFrame($frameId) {
         //let currentFrameData = null;
@@ -211,6 +236,11 @@ export default class MovieClip extends PIXI.Container {
         this.currentFrameIndex = $frameId;
     }
 
+    /**
+     * Выполнить скрипт с текущим контекстом
+     * @param {string} $script текст скрипта который нужно выполнить
+     * @param {number | string} $frameId номер или имя кадра
+     */
     evalScript($script, $frameId) {
         if ($script && $script !== '') {
             try {
