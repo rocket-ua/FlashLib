@@ -15,12 +15,13 @@ For export resources and library use the command **flashlib**.
 In **package.json** you need to add a script:
 ```json
 "scripts": {
-    "openPattern": "flashlib --open /Users/username/Projects/FlashLibExample/assets/pattern.fla",
+    "openPattern": "flashlib --open ./assets/pattern.fla",
     "start": "flashlib"
 }
 ```
 The **open** flag allows you to specify the export script to which .fla project.  
-If the flag is not specified, then it is applied to the current open project.
+If the flag is not specified, then it is applied to the current open project.  
+You can use relative or absolute path.  
 
 Then you need to run script for export library and resources from .fla.
 

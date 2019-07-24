@@ -7,6 +7,7 @@
  * }
  */
 function LibToJson($settings, $config) {
+    var stageData = {};
     var libData = {};
     var jsonLib = {};
     var scriptPath = '';
@@ -30,8 +31,10 @@ function LibToJson($settings, $config) {
         }
 
         createLibItems();
+        createStage();
 
         jsonLib = {
+            stage: stageData,
             lib: libData,
             metaData: {
                 type: 'FlashLib',
@@ -108,6 +111,13 @@ function LibToJson($settings, $config) {
         }
 
         return FLfile.platformPathToURI(path);
+    }
+
+    function createStage() {
+        stageData.width = document.width;
+        stageData.height = document.height;
+        stageData.backgroundColor = document.backgroundColor;
+        stageData.timeline = {};
     }
 
     /**
