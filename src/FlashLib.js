@@ -14,6 +14,7 @@ export default new class FlashLib {
         this.Bitmap = Bitmap;
         this.MovieClip = MovieClip;
         this.TextField = TextField;
+        this.documents = {};
 
         this.registeredClassesObject = {};
 
@@ -44,7 +45,8 @@ export default new class FlashLib {
      * @param {*} $library
      */
     addNewLibrary($library) {
-        this.libraries.push($library);
+        this.documents[$library.metaData.name] = $library;
+        //this.libraries.push($library);
     }
 
     /**
@@ -70,7 +72,8 @@ export default new class FlashLib {
      */
     getItemDataFromLibrary($itemName, $libraryName) {
         let splittedName = $itemName.split('\/');
-        let lib = this.getLibraryByName($libraryName).lib;
+        //let lib = this.getLibraryByName($libraryName).lib;
+        let lib = this.documents[$libraryName].lib;
         let itemData = getItemDataFromName(lib, splittedName);
         return itemData;
 
