@@ -473,10 +473,10 @@ function LibToJson($settings, $config) {
     function TimelineItem() {
         BaseItem.apply(this, arguments);
 
-        this.frames = null;
-        this.frameCount = 0;
         this.name = '';
-        //this.currentFrame = 0;
+        this.layers = null;
+        this.frameCount = 0;
+        this.layerCount = 0;
     }
 
     TimelineItem.prototype = new BaseItem();
@@ -485,41 +485,17 @@ function LibToJson($settings, $config) {
     TimelineItem.prototype.parseData = function ($data) {
         BaseItem.prototype.parseData.apply(this, arguments);
 
-        this.frames = [];
-        var newFrame = null;
-        //for (var i = 0; i < $data.layers.length; i++) {
-        for (var i = $data.layers.length - 1; i >= 0; i--) {
-            var layer = $data.layers[i];
-
-            if(layer.layerType !== 'guide') {
-                for (var j = 0; j < layer.frames.length; j++) {
-                    if(!this.frames[j]) {
-                        this.frames.push([]);
-                    }
-                    var frame = layer.frames[j];
-                    newFrame = new FrameItem();
-                    newFrame.parseData(frame);
-                    this.frames[j].push(newFrame);
-                }
+        this.layers = [];
+        var newLayer = null;
+        $data.layers.forEach(function (layer) {
+            if(layer.layerType === 'guide') {
+                return;
             }
-        }
+            newLayer = new LayerItem();
+            newLayer.parseData(layer);
+            this.layers.push(newLayer);
+        }, this);
     };
-
-    /*TimelineItem.prototype.parseData = function ($data) {
-        BaseItem.prototype.parseData.apply(this, arguments);
-
-        this.frames = [];
-        var newFrame = null;
-        for each(var layer in $data.layers) {
-            if(layer.layerType !== 'guide') {
-                for each(var frame in layer.frames.reverse()) {
-                    newFrame = new FrameItem();
-                    newFrame.parseData(frame);
-                    this.frames.push(newFrame);
-                }
-            }
-        }
-    };*/
 
 ///////////////////////////////////////////////////////////
 
@@ -527,17 +503,36 @@ function LibToJson($settings, $config) {
      * Элемент слой на таймлайне
      * @constructor
      */
-    /*function LayerItem() {
+    function LayerItem() {
         BaseItem.apply(this, arguments);
 
+        this.name = '';
         this.layerType = '';
         this.frameCount = 0;
         this.frames = null;
         this.parentLayer = null;
+        this.visible = true;
+        this.locked = false;
     }
 
     LayerItem.prototype = new BaseItem();
-    LayerItem.constructor = LayerItem;*/
+    LayerItem.constructor = LayerItem;
+
+    LayerItem.prototype.parseData = function ($data) {
+        BaseItem.prototype.parseData.apply(this, arguments);
+
+        this.frames = [];
+        var newFrame = null;
+        $data.frames.forEach(function (frame) {
+            newFrame = new FrameItem();
+            newFrame.parseData(frame);
+            this.frames.push(newFrame);
+        }, this);
+
+        if($data.parentLayer) {
+            this.parentLayer = $data.parentLayer.name;
+        }
+    };
 
 ///////////////////////////////////////////////////////////
 
@@ -551,6 +546,8 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.elements = null;
         this.actionScript = null;
+        this.startFrame = 0;
+        this.duration = 1;
         //this.soundLibraryItem = null;
         this.isEmpty = true;
     }
@@ -609,17 +606,14 @@ function LibToJson($settings, $config) {
         BaseItem.prototype.parseData.apply(this, arguments);
 
         if($data.libraryItem) {
-
             // Проверяем есть ли элемент библиотеки среди уже созданных, и если нет то создаем его
             var check = checkDataExist($data.libraryItem.name);
             if(!check) {
                 var jsonItem = createNewLibItem($data.libraryItem);
                 putToFolder($data.libraryItem.name, jsonItem);
             }
-
             this.libraryItem = $data.libraryItem.name;
         }
-
         if($data.filters) {
             this.filters = $data.filters;
         }
@@ -780,20 +774,16 @@ function LibToJson($settings, $config) {
     ElementShapeItem.constructor = ElementShapeItem;
 
     ElementShapeItem.prototype.parseData = function ($data) {
-
+        ElementItem.prototype.parseData.apply(this, arguments);
         //DEBUG.traceElementPropertysRecursivity($data, 0);
         fl.trace('Now, we cant export Shapes :(');
-
-        ElementItem.prototype.parseData.apply(this, arguments);
-
-        if($data.vertices) {
+        /*if($data.vertices) {
             this.vertices = [];
             $data.vertices.forEach(function (value) {
                 this.vertices.push({x:value.x, y:value.y})
                 //this.vertices.push(value)
             }, this);
-
-        }
+        }*/
     };
 
     start();

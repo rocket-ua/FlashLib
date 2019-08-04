@@ -1,6 +1,6 @@
 {
   "name": "flashlib",
-  "version": "2.0.47",
+  "version": "2.0.54",
   "description": "Build items from Animate CC (.fla) library using PIXI.js",
   "author": "rocket",
   "license": "UNLICENSED",
@@ -8,7 +8,8 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "pixi.js": "^5.0.4"
   },
   "bin": {
     "flashlib": "bin/main.js"
@@ -30,13 +31,16 @@
   "keywords": [
     "FlashLib",
     "Flash",
-    "PIXI.JS"
+    "PIXI.JS",
+    "JavaScript",
+    "Animate CC",
+    "Adobe"
   ],
   "bugs": {
     "url": "https://github.com/rocket-ua/FlashLib/issues"
   },
   "homepage": "https://github.com/rocket-ua/FlashLib#readme",
   "dependencies": {
-    "pixi.js": "^5.0.4"
+
   }
 }

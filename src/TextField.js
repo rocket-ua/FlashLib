@@ -8,7 +8,7 @@ export default class TextField extends PIXI.Text {
         let style = {
             align: textAttrs.alignment,
             fill: textAttrs.fillColor,
-            fontFamily: textAttrs.face/*.split(' ')*/,
+            fontFamily: textAttrs.face.replace('*', '')/*.split(' ')*/,
             fontSize: textAttrs.size,
             fontStyle: textAttrs.italic ? 'italic' : 'normal',
             fontWeight: textAttrs.bold ? 'bold' : 'normal',

@@ -9,9 +9,14 @@ export default class MovieClip extends PIXI.Container {
         this.libData = $data;
         this.libName = this.libData.libraryName;
         this.timelineData = this.libData.timeline;
+        this.layersData = this.timelineData.layers.concat().reverse();
         this.currentFrameIndex = -1;
         this.currentFrameName = '';
         this.animateParams = null;
+        this.layers = [];
+        this.timelineData.layers.forEach(() => {
+            this.layers.push([]);
+        });
 
         this.startFrameTime = null;
 
@@ -52,7 +57,7 @@ export default class MovieClip extends PIXI.Container {
     goToNextFrame($loop) {
         let nextIndex = this.currentFrameIndex + 1;
 
-        if (nextIndex > this.timelineData.frames.length) {
+        if (nextIndex > this.timelineData.frameCount) {
             nextIndex = $loop ? 1 : this.currentFrameIndex;
 
             if (this.isPlaying && !$loop) {
@@ -69,7 +74,7 @@ export default class MovieClip extends PIXI.Container {
     goToPreviousFrame($loop) {
         let nextIndex = this.currentFrameIndex - 1;
         if (nextIndex < 1) {
-            nextIndex = $loop ? this.timelineData.frames.length : 1;
+            nextIndex = $loop ? this.timelineData.frameCount : 1;
 
             if (this.isPlaying && !$loop) {
                 this.stop();
@@ -83,39 +88,21 @@ export default class MovieClip extends PIXI.Container {
      * @param {number | string} $frameId номер или имя кадра на который нужно перейти
      * @param {boolean} $force перерисовать кадр даже если текущий кадр такой же
      */
-    goToFrame($frameId, $force) {
+    goToFrame($frameId, $force = false) {
         if (typeof $frameId === 'string') {
             $frameId = this.findFrameIndexByName($frameId);
         }
 
-        if ($frameId === this.currentFrameIndex && (!$force && $force !== 0)) {
+        if ($frameId === this.currentFrameIndex && !$force) {
             //console.log('MovieClip ' + this.name + '(' + this.timelineData.name + ')' + ' now on frame ' + $frameId);
             return;
         }
-        if ($frameId > this.timelineData.frames.length || $frameId < 1) {
+        if ($frameId > this.timelineData.frameCount || $frameId < 1) {
             console.log('MovieClip ' + this.name + '(' + this.timelineData.name + ')' + ' does not have a frame ' + $frameId);
             return;
         }
 
         this.exitFrame();
-        this.removeChildren();
-
-        /*removeTest(this, false)
-        function removeTest(parent, destroy) {
-          if(parent.children) {
-            parent.children.forEach((child)=>{
-              removeTest(child, true)
-            })
-          }
-          if(destroy && parent.parent) {
-            parent.parent.removeChild(parent)
-          }
-        }*/
-
-        /*while(this.children.length > 0) {
-          let childToRemove = this.getChildAt(0)
-          childToRemove.destroy({children:true})
-        }*/
         this.constructFrame($frameId);
     }
 
@@ -126,7 +113,7 @@ export default class MovieClip extends PIXI.Container {
      */
     findFrameIndexByName($name) {
         let index = -1;
-        for (let i = 0; i < this.timelineData.frames.length; i++) {
+        /*for (let i = 0; i < this.timelineData.frameCount; i++) {
             let frameData = this.timelineData.frames[i];
             index = frameData.findIndex((frameData1) => {
                 return frameData1.name === $name;
@@ -134,7 +121,7 @@ export default class MovieClip extends PIXI.Container {
             if (index !== -1) {
                 return i + 1;
             }
-        }
+        }*/
         return index;
     }
 
@@ -208,32 +195,51 @@ export default class MovieClip extends PIXI.Container {
 
     /**
      * Создать элемениы кадра
-     * @param {number | string} $frameId номер кадра который нужно создать
+     * @param {number} $frameId номер кадра который нужно создать
      */
     constructFrame($frameId) {
-        //let currentFrameData = null;
-        //let displayItemData = null;
-        let displayItem = null;
+        let startAddPosition = 0;
+        this.layersData.forEach((currentLayerData, layerIndex) => {
+            if (!currentLayerData.frames[$frameId - 1]) {
+                removeElements.call(this, layerIndex);
+                return;
+            }
 
-        this.timelineData.frames[$frameId - 1].forEach((currentFrameData) => {
-            currentFrameData.elements.forEach((displayItemData) => {
-                displayItem = FlashLib.createDisplayItemFromData(displayItemData, this.libName);
-                this.addChild(displayItem);
-            });
-            this.currentFrameName = currentFrameData.name;
-            this.evalScript(currentFrameData.actionScript, $frameId);
+            let currentFrameData = currentLayerData.frames[$frameId - 1];
+            let prevFrameData = currentLayerData.frames[this.currentFrameIndex - 1];
+            startAddPosition += currentFrameData.elements.length;
+
+            if (prevFrameData && $frameId >= prevFrameData.startFrame + 1 && $frameId <= prevFrameData.startFrame + prevFrameData.duration) {
+                return;
+            }
+
+            let newAdded = addNewChild.call(this, currentFrameData);
+            removeElements.call(this, layerIndex);
+            this.layers[layerIndex] = newAdded;
         });
 
-        /*for (let i = 0; i < this.timelineData.frames[$frameId - 1].length; i++) {
-            currentFrameData = this.timelineData.frames[$frameId - 1][i];
-            for (let j = 0; j < currentFrameData.elements.length; j++) {
-                displayItemData = currentFrameData.elements[j];
-                displayItem = FlashLibJS.createDisplayItemFromData(displayItemData);
-                this.addChild(displayItem);
-            }
-        }*/
-        //this.currentFrameName = currentFrameData.name;
         this.currentFrameIndex = $frameId;
+
+        function addNewChild($currentFrameData) {
+            let newAdded = [];
+            $currentFrameData.elements.forEach((elementData, index) => {
+                let displayItem = FlashLib.createDisplayItemFromData(elementData, this.libName);
+
+                this.addChildAt(displayItem, startAddPosition - $currentFrameData.elements.length + index);
+                newAdded.push(displayItem);
+
+                this.currentFrameName = $currentFrameData.name;
+                this.evalScript($currentFrameData.actionScript, $frameId);
+            });
+            return newAdded;
+        }
+
+        function removeElements($layerIndex) {
+            this.layers[$layerIndex].forEach((elem) => {
+                elem.destroy({children: true});
+            });
+            this.layers[$layerIndex] = [];
+        }
     }
 
     /**
@@ -250,5 +256,4 @@ export default class MovieClip extends PIXI.Container {
             }
         }
     }
-
 }

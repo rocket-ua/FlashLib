@@ -122,7 +122,11 @@ export default new class FlashLib {
             default:
                 let classObject = getClassByName.call(this, type);
                 if ($libraryItemData.symbolType === 'movie clip') {
-                    item = new classObject($libraryItemData);
+                    if(classObject) {
+                        item = new classObject($libraryItemData);
+                    } else {
+                        throw new Error('Не найден класс. ' + type + ' Для регистрации класса испольщуйте FlashLib.registerClass');
+                    }
                 } else {
                     item = new classObject();
                 }
@@ -176,9 +180,12 @@ export default new class FlashLib {
             this.setDisplayItemProperties(item, $displayItemData);
             this.addFiltersToDisplayItem(item, $displayItemData.filters);
 
-            if (item.hasOwnProperty('constructionComplete') && item.constructionComplete !== null) {
+            if(item.constructionComplete && typeof item.constructionComplete === 'function') {
                 item.constructionComplete();
             }
+            /*if (item.hasOwnProperty('constructionComplete') && item.constructionComplete !== null) {
+                item.constructionComplete();
+            }*/
         }
 
         return item;
