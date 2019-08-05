@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import FlashLib from "flashlib";
 
 export default class Bitmap extends PIXI.Sprite {
 
@@ -8,5 +9,8 @@ export default class Bitmap extends PIXI.Sprite {
         super(texture);
 
         this.libData = $data;
+        this.displayData = this.libData.displayData;
+
+        FlashLib.setDisplayItemProperties(this, this.displayData);
     }
 }

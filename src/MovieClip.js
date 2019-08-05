@@ -7,6 +7,7 @@ export default class MovieClip extends PIXI.Container {
         super($data);
 
         this.libData = $data;
+        this.displayData = this.libData.displayData;
         this.libName = this.libData.libraryName;
         this.timelineData = this.libData.timeline;
         this.layersData = this.timelineData.layers.concat().reverse();
@@ -14,21 +15,24 @@ export default class MovieClip extends PIXI.Container {
         this.currentFrameName = '';
         this.animateParams = null;
         this.layers = [];
-        this.timelineData.layers.forEach(() => {
-            this.layers.push([]);
-        });
+        this.layerMask = null;
+
+        this.layersData.forEach((layerData) => {
+            let layer = {
+                name: layerData.name,
+                type: layerData.layerType,
+                parent: layerData.parentLayer,
+                elements: []
+            }
+            this.layers.push(layer);
+        })
 
         this.startFrameTime = null;
 
         this.isPlaying = false;
         this.goToFrame(1);
-    }
 
-    /**
-     * Вызывается при зеверщении создания объкета и нахначение параметров на сцене
-     */
-    constructionComplete() {
-
+        FlashLib.setDisplayItemProperties(this, this.displayData);
     }
 
     /**
@@ -201,7 +205,7 @@ export default class MovieClip extends PIXI.Container {
         let startAddPosition = 0;
         this.layersData.forEach((currentLayerData, layerIndex) => {
             if (!currentLayerData.frames[$frameId - 1]) {
-                removeElements.call(this, layerIndex);
+                this._removeElements(layerIndex);
                 return;
             }
 
@@ -213,33 +217,50 @@ export default class MovieClip extends PIXI.Container {
                 return;
             }
 
-            let newAdded = addNewChild.call(this, currentFrameData);
-            removeElements.call(this, layerIndex);
-            this.layers[layerIndex] = newAdded;
+            let newAdded = this._addNewChild(currentFrameData, startAddPosition, $frameId);
+            this._removeElements(layerIndex);
+            this.layers[layerIndex].elements = newAdded;
         });
 
+        this._setMaskLayer();
+
         this.currentFrameIndex = $frameId;
+    }
 
-        function addNewChild($currentFrameData) {
-            let newAdded = [];
-            $currentFrameData.elements.forEach((elementData, index) => {
-                let displayItem = FlashLib.createDisplayItemFromData(elementData, this.libName);
+    _setMaskLayer() {
+        this.layers.forEach((layer) => {
+            if (layer.parent) {
+                let parentLayer = this.layers.find((sLayer) => {
+                    return sLayer.name === layer.parent;
+                });
+                if (parentLayer && parentLayer.type === 'mask') {
+                    layer.elements.forEach((lElement) => {
+                        lElement.layerMask = parentLayer;
+                    })
+                }
+            }
+        });
+    }
 
-                this.addChildAt(displayItem, startAddPosition - $currentFrameData.elements.length + index);
-                newAdded.push(displayItem);
+    _addNewChild($currentFrameData, $startAddPosition, $frameId) {
+        let newAdded = [];
+        $currentFrameData.elements.forEach((elementData, index) => {
+            let displayItem = FlashLib.createDisplayItemFromData(elementData, this.libName);
 
-                this.currentFrameName = $currentFrameData.name;
-                this.evalScript($currentFrameData.actionScript, $frameId);
-            });
-            return newAdded;
-        }
+            this.addChildAt(displayItem, $startAddPosition - $currentFrameData.elements.length + index);
+            newAdded.push(displayItem);
 
-        function removeElements($layerIndex) {
-            this.layers[$layerIndex].forEach((elem) => {
-                elem.destroy({children: true});
-            });
-            this.layers[$layerIndex] = [];
-        }
+            this.currentFrameName = $currentFrameData.name;
+            this.evalScript($currentFrameData.actionScript, $frameId);
+        });
+        return newAdded;
+    }
+
+    _removeElements($layerIndex) {
+        this.layers[$layerIndex].elements.forEach((elem) => {
+            elem.destroy({children: true});
+        });
+        //this.layers[$layerIndex].elements = [];
     }
 
     /**
@@ -254,6 +275,88 @@ export default class MovieClip extends PIXI.Container {
             } catch (error) {
                 console.log("Can't eval script on", "'" + this.libData.name + "'", 'in', $frameId, 'frame')
             }
+        }
+    }
+
+    render(renderer) {
+        if (!this.visible || this.worldAlpha <= 0 || !this.renderable) {
+            return;
+        }
+
+        if (this._mask || (this.filters && this.filters.length) || this.layerMask) {
+            this.renderAdvanced(renderer);
+        } else {
+            this._render(renderer);
+
+            for (let i = 0, j = this.children.length; i < j; ++i) {
+                this.children[i].render(renderer);
+            }
+        }
+    }
+
+    renderAdvanced(renderer) {
+        renderer.batch.flush();
+
+        const filters = this.filters;
+        const mask = this._mask;
+        const layerMask = this.layerMask ? this.layerMask.elements.length > 0 ? this.layerMask.elements : null : null;
+
+        if (filters) {
+            if (!this._enabledFilters) {
+                this._enabledFilters = [];
+            }
+
+            this._enabledFilters.length = 0;
+
+            for (let i = 0; i < filters.length; i++) {
+                if (filters[i].enabled) {
+                    this._enabledFilters.push(filters[i]);
+                }
+            }
+
+            if (this._enabledFilters.length) {
+                renderer.filter.push(this, this._enabledFilters);
+            }
+        }
+
+        if (mask) {
+            renderer.mask.push(this, this._mask);
+        }
+
+        if (layerMask) {
+            /*if(!this.tempCont) {
+                this.tempCont = {};
+                this.tempCont.render = (renderer) => {
+                    for (let i = 0, j = this.layerMask.elements.length; i < j; ++i){
+                        this.layerMask.elements[i].renderable = true;
+                        this.layerMask.elements[i].render(renderer);
+                        this.layerMask.elements[i].renderable = false;
+                    }
+                }
+            }*/
+            //renderer.mask.push(this, this.tempCont);
+            renderer.mask.push(this, layerMask[0]);
+        }
+
+        this._render(renderer);
+
+        for (let i = 0, j = this.children.length; i < j; i++) {
+            this.children[i].render(renderer);
+        }
+
+        renderer.batch.flush();
+
+        if (layerMask) {
+            //renderer.mask.pop(this, this.tempCont);
+            renderer.mask.pop(this, layerMask[0]);
+        }
+
+        if (mask) {
+            renderer.mask.pop(this, this._mask);
+        }
+
+        if (filters && this._enabledFilters && this._enabledFilters.length) {
+            renderer.filter.pop();
         }
     }
 }

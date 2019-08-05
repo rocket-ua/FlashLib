@@ -1,23 +1,26 @@
 import * as PIXI from 'pixi.js'
+import FlashLib from "flashlib";
 
 export default class Shape extends PIXI.Graphics {
 
     constructor($data) {
         super();
 
-        this.libData = $data;
+        this.displayData = $data;
 
         this.createGraphic();
+        
+        FlashLib.setDisplayItemProperties(this, this.displayData);
     }
 
     createGraphic() {
-        if(this.libData.isRectangleObject) {
+        if(this.displayData.isRectangleObject) {
             this.beginFill(0x0, 1);
-            this.drawRect(-this.libData.width / 2, -this.libData.height / 2, this.libData.width, this.libData.height);
+            this.drawRect(-this.displayData.width / 2, -this.displayData.height / 2, this.displayData.width, this.displayData.height);
             this.endFill();
         } else if(this.libData.isOvalObject) {
             this.beginFill(0x0, 1);
-            this.drawEllipse(0 ,0, this.libData.width / 2, this.libData.height / 2);
+            this.drawEllipse(0 ,0, this.displayData.width / 2, this.displayData.height / 2);
             this.endFill();
         }
 

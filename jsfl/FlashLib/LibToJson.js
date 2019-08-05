@@ -777,6 +777,10 @@ function LibToJson($settings, $config) {
         ElementItem.prototype.parseData.apply(this, arguments);
         //DEBUG.traceElementPropertysRecursivity($data, 0);
         fl.trace('Now, we cant export Shapes :(');
+
+        if(isNaN(this.rotation)) {
+            this.rotation = 0;
+        }
         /*if($data.vertices) {
             this.vertices = [];
             $data.vertices.forEach(function (value) {

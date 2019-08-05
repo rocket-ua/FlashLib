@@ -51,16 +51,23 @@ export default new class FlashLib {
 
     /**
      * Создать элемент из библиотеки по имени
-     * @param {string} $itemName имя элемента
+     * @param {object|string} $displayItemData имя элемента
      * @param {string} $libraryName имя библиотеки
      * @returns {*}
      */
-    createItemFromLibrary($itemName, $libraryName) {
-        let itemData = this.getItemDataFromLibrary($itemName, $libraryName);
+    createItemFromLibrary($displayItemData, $libraryName) {
+        if(typeof $displayItemData === 'string') {
+            $displayItemData = {
+                libraryItem: $displayItemData
+            };
+        }
+
+        let itemData = this.getItemDataFromLibrary($displayItemData.libraryItem, $libraryName);
         if (!itemData) {
-            throw new Error('В библиотеке не найден элемент ' + $itemName);
+            throw new Error('В библиотеке не найден элемент ' + $displayItemData.libraryItem);
         }
         itemData.libraryName = $libraryName;
+        itemData.displayData = $displayItemData;
         let libraryItem = this.createItemFromLibraryData(itemData);
         return libraryItem;
     }
@@ -72,19 +79,18 @@ export default new class FlashLib {
      */
     getItemDataFromLibrary($itemName, $libraryName) {
         let splittedName = $itemName.split('\/');
-        //let lib = this.getLibraryByName($libraryName).lib;
-        let lib = this.documents[$libraryName].lib;
-        let itemData = getItemDataFromName(lib, splittedName);
+        let lib = this.getLibraryByName($libraryName).lib;
+        let itemData = this._getItemDataFromName(lib, splittedName);
         return itemData;
+    }
 
-        function getItemDataFromName($parent, $splittedName) {
-            let currName = $splittedName.shift();
-            $parent = $parent[currName];
-            if ($splittedName.length > 0) {
-                $parent = getItemDataFromName($parent, $splittedName);
-            }
-            return $parent;
+    _getItemDataFromName($parent, $splittedName) {
+        let currName = $splittedName.shift();
+        $parent = $parent[currName];
+        if ($splittedName.length > 0) {
+            $parent = this._getItemDataFromName($parent, $splittedName);
         }
+        return $parent;
     }
 
     /**
@@ -93,13 +99,14 @@ export default new class FlashLib {
      * @returns {*}
      */
     getLibraryByName($libraryName) {
-        let index = this.libraries.findIndex(function (library) {
+        /*let index = this.libraries.findIndex(function (library) {
             return library.metaData.name === $libraryName
         });
         if (index === -1) {
             index = 0
         }
-        return this.libraries[index]
+        return this.libraries[index]*/
+        return this.documents[$libraryName];
     }
 
     /**
@@ -166,7 +173,7 @@ export default new class FlashLib {
         let item = null;
         switch ($displayItemData.elementType) {
             case 'instance':
-                item = this.createItemFromLibrary($displayItemData.libraryItem, $libraryName);
+                item = this.createItemFromLibrary($displayItemData, $libraryName);
                 break;
             case 'text':
                 item = new TextField($displayItemData);
@@ -176,36 +183,28 @@ export default new class FlashLib {
                 break;
         }
 
-        if (item) {
-            this.setDisplayItemProperties(item, $displayItemData);
-            this.addFiltersToDisplayItem(item, $displayItemData.filters);
-
-            if(item.constructionComplete && typeof item.constructionComplete === 'function') {
-                item.constructionComplete();
-            }
-            /*if (item.hasOwnProperty('constructionComplete') && item.constructionComplete !== null) {
-                item.constructionComplete();
-            }*/
-        }
-
         return item;
     }
 
     /**
      * Назначение параметров элементу
      * @param {*} $item объкет которому назначаются параметры
-     * @param {*} $displayItemData объект с параметрами которые нужно назначить
+     * @param {object} $displayItemData объект с параметрами которые нужно назначить
      */
     setDisplayItemProperties($item, $displayItemData) {
-        $item.name = $displayItemData.name;
-        $item.x = $displayItemData.x;
-        $item.y = $displayItemData.y;
-        $item.width = $displayItemData.width;
-        $item.height = $displayItemData.height;
-        $item.scale.x = $displayItemData.scaleX;
-        $item.scale.y = $displayItemData.scaleY;
-        $item.rotation = ($displayItemData.rotation * (Math.PI / 180));
-        $item.visible = $displayItemData.visible;
+        $item.name = $displayItemData.name || '';
+        $item.x = $displayItemData.x || 0;
+        $item.y = $displayItemData.y || 0;
+        $item.width = $displayItemData.width || $item.width;
+        $item.height = $displayItemData.height || $item.height;
+        $item.scale.x = $displayItemData.scaleX || $item.scale.x;
+        $item.scale.y = $displayItemData.scaleY || $item.scale.y;
+        $item.rotation = ($displayItemData.rotation * (Math.PI / 180)) || 0;
+        $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
+
+        if($displayItemData.filters) {
+            this.addFiltersToDisplayItem($item, $displayItemData.filets);
+        }
     }
 
     /**

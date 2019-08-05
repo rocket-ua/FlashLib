@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import FlashLib from "flashlib";
 
 export default class TextField extends PIXI.Text {
 
@@ -21,9 +22,11 @@ export default class TextField extends PIXI.Text {
         super(textRun.characters, style);
 
         this.textRect = null;
-        this.libData = $data;
+        this.displayData = $data;
         this.createRect();
         this.correctPosition();
+
+        FlashLib.setDisplayItemProperties(this, this.displayData);
     }
 
     createRect() {
@@ -77,8 +80,8 @@ export default class TextField extends PIXI.Text {
             this.transform.position.y = this.textRect.y;
         }
 
-        //this.transform.position.y += this.libData.textRuns[0].textAttrs.descent / 2;
-        //this.transform.position.y += this.libData.textRuns[0].textAttrs.descent
+        //this.transform.position.y += this.displayData.textRuns[0].textAttrs.descent / 2;
+        //this.transform.position.y += this.displayData.textRuns[0].textAttrs.descent
         //this.transform.position.y = this.textRect.y;
     }
 
@@ -110,8 +113,8 @@ export default class TextField extends PIXI.Text {
 
     set y(value) {
         this.textRect.y = value - this.style.strokeThickness * 2;
-        //console.log(this.libData.textRuns[0].textAttrs.descent)
-        //this.textRect.y += this.libData.textRuns[0].textAttrs.descent
+        //console.log(this.displayData.textRuns[0].textAttrs.descent)
+        //this.textRect.y += this.displayData.textRuns[0].textAttrs.descent
         this.correctPosition();
     }
 
