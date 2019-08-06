@@ -10,7 +10,7 @@ export default class MovieClip extends PIXI.Container {
         this.displayData = this.libData.displayData;
         this.libName = this.libData.libraryName;
         this.timelineData = this.libData.timeline;
-        this.layersData = this.timelineData.layers.concat().reverse();
+        this.layersData = this.timelineData.layers/*.concat().reverse()*/;
         this.currentFrameIndex = -1;
         this.currentFrameName = '';
         this.animateParams = null;
@@ -23,9 +23,9 @@ export default class MovieClip extends PIXI.Container {
                 type: layerData.layerType,
                 parent: layerData.parentLayer,
                 elements: []
-            }
+            };
             this.layers.push(layer);
-        })
+        });
 
         this.startFrameTime = null;
 
@@ -59,16 +59,35 @@ export default class MovieClip extends PIXI.Container {
      * @param {boolean} $loop если дошли до последнего кадра переходить ли на первыц
      */
     goToNextFrame($loop) {
-        let nextIndex = this.currentFrameIndex + 1;
+        let nextIndex = this._getNextFrameIndex($loop, false, 1);
+        this.goToFrame(nextIndex);
+    }
 
-        if (nextIndex > this.timelineData.frameCount) {
-            nextIndex = $loop ? 1 : this.currentFrameIndex;
-
-            if (this.isPlaying && !$loop) {
-                this.stop();
+    /**
+     * Расчет индекса следующего кадра
+     * @param $loop
+     * @param $reverse
+     * @param $delta
+     * @returns {*}
+     * @private
+     */
+    _getNextFrameIndex($loop, $reverse, $delta) {
+        let nextIndex = 0;
+        let offset = 0;
+        if ($reverse) {
+            nextIndex = this.currentFrameIndex - $delta % this.timelineData.frameCount;
+            offset = nextIndex;
+            if (offset < 1) {
+                nextIndex = $loop ? this.timelineData.frameCount + offset : 1;
+            }
+        } else {
+            nextIndex = this.currentFrameIndex + $delta % this.timelineData.frameCount;
+            offset = nextIndex - this.timelineData.frameCount;
+            if (offset > 0) {
+                nextIndex = $loop ? offset : this.currentFrameIndex;
             }
         }
-        this.goToFrame(nextIndex);
+        return nextIndex;
     }
 
     /**
@@ -76,14 +95,7 @@ export default class MovieClip extends PIXI.Container {
      * @param {boolean} $loop если дошли до первого кадра переходить ли на последний
      */
     goToPreviousFrame($loop) {
-        let nextIndex = this.currentFrameIndex - 1;
-        if (nextIndex < 1) {
-            nextIndex = $loop ? this.timelineData.frameCount : 1;
-
-            if (this.isPlaying && !$loop) {
-                this.stop();
-            }
-        }
+        let nextIndex = this._getNextFrameIndex($loop, true, 1);
         this.goToFrame(nextIndex);
     }
 
@@ -95,6 +107,10 @@ export default class MovieClip extends PIXI.Container {
     goToFrame($frameId, $force = false) {
         if (typeof $frameId === 'string') {
             $frameId = this.findFrameIndexByName($frameId);
+        }
+
+        if ($frameId === this.currentFrameIndex && this.isPlaying && !this.animateParams.loop) {
+            this.stop();
         }
 
         if ($frameId === this.currentFrameIndex && !$force) {
@@ -142,15 +158,8 @@ export default class MovieClip extends PIXI.Container {
             return;
         }
         let skipFramesCount = Math.ceil(deltaTime / frameDuration);
-        let revers = this.animateParams.revers;
-        let loop = this.animateParams.loop;
-        for (let i = 0; i < skipFramesCount; i++) {
-            if (revers) {
-                this.goToPreviousFrame(loop);
-            } else {
-                this.goToNextFrame(loop);
-            }
-        }
+        let nextFrameIndex = this._getNextFrameIndex(this.animateParams.loop, this.animateParams.revers, skipFramesCount);
+        this.goToFrame(nextFrameIndex);
         this.startFrameTime = currentTime - (deltaTime % frameDuration);
     }
 
@@ -227,6 +236,10 @@ export default class MovieClip extends PIXI.Container {
         this.currentFrameIndex = $frameId;
     }
 
+    /**
+     * Добавление слоя с маской к слоям
+     * @private
+     */
     _setMaskLayer() {
         this.layers.forEach((layer) => {
             if (layer.parent) {
@@ -242,6 +255,14 @@ export default class MovieClip extends PIXI.Container {
         });
     }
 
+    /**
+     * Добавление чайлов для нового кадра
+     * @param {object} $currentFrameData данные чайлов для текущего кадра
+     * @param {number} $startAddPosition стартовая позиция добавления чайлдов
+     * @param {number} $frameId номер кадра
+     * @returns {[]}
+     * @private
+     */
     _addNewChild($currentFrameData, $startAddPosition, $frameId) {
         let newAdded = [];
         $currentFrameData.elements.forEach((elementData, index) => {
@@ -256,6 +277,11 @@ export default class MovieClip extends PIXI.Container {
         return newAdded;
     }
 
+    /**
+     * Удаление элементов кадра с слоя
+     * @param $layerIndex индекс слоя
+     * @private
+     */
     _removeElements($layerIndex) {
         this.layers[$layerIndex].elements.forEach((elem) => {
             elem.destroy({children: true});

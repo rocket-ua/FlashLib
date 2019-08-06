@@ -487,7 +487,7 @@ function LibToJson($settings, $config) {
 
         this.layers = [];
         var newLayer = null;
-        $data.layers.forEach(function (layer) {
+        $data.layers.reverse().forEach(function (layer) {
             if(layer.layerType === 'guide') {
                 return;
             }
