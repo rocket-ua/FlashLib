@@ -286,12 +286,16 @@ export default new class FlashLib {
                         metadata: null,
                         parentResource: resource
                     };
-                    resource.data.libs.forEach(function ($lib) {
-                        PIXI.Loader.shared.add($lib.name, resource.data.baseUrl + $lib.path, options);
-                    }, this);
-                    resource.data.assets.forEach(function ($item) {
-                        PIXI.Loader.shared.add($item.name, resource.data.baseUrl + $item.path, options);
-                    }, this);
+                    if(resource.data.libs && resource.data.libs.length > 0) {
+                        resource.data.libs.forEach(function ($lib) {
+                            PIXI.Loader.shared.add($lib.name, resource.data.baseUrl + $lib.path, options);
+                        }, this);
+                    }
+                    if(resource.data.assets && resource.data.assets.length > 0) {
+                        resource.data.assets.forEach(function ($item) {
+                            PIXI.Loader.shared.add($item.name, resource.data.baseUrl + $item.path, options);
+                        }, this);
+                    }
                     return next();
                     break;
                 case 'FlashLib':

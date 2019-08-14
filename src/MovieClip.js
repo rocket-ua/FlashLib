@@ -219,6 +219,7 @@ export default class MovieClip extends PIXI.Container {
             }
 
             let currentFrameData = currentLayerData.frames[$frameId - 1];
+            currentFrameData = currentLayerData.frames[currentFrameData.startFrame];
             let prevFrameData = currentLayerData.frames[this.currentFrameIndex - 1];
             startAddPosition += currentFrameData.elements.length;
 

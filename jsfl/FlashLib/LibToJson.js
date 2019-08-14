@@ -255,7 +255,7 @@ function LibToJson($settings, $config) {
                     this[property] = $data[property];
                 }
             } catch (err) {
-                //fl.trace(err);
+                fl.trace(err);
             }
 
         }
@@ -296,6 +296,34 @@ function LibToJson($settings, $config) {
 
     LibItemBitmap.prototype = new LibItemBase();
     LibItemBitmap.constructor = LibItemBitmap;
+
+///////////////////////////////////////////////////////////
+
+    /**
+     * Элемент библиотеки твин
+     * @constructor
+     */
+    function LibItemTween() {
+        LibItemBase.apply(this, arguments);
+
+        this.startFrame = 0;
+        this.duration = 0;
+        this.tweenType = 'motion';
+        this.geometricTransform = [];
+    }
+
+    LibItemTween.prototype = new LibItemBase();
+    LibItemTween.constructor = LibItemTween;
+
+    LibItemTween.prototype.parseData = function ($data) {
+        BaseItem.prototype.parseData.apply(this, arguments);
+
+        DEBUG.traceElementPropertysRecursivity($data, 0);
+
+        for(var i = 1; i < this.duration; i++) {
+            this.geometricTransform.push($data.getGeometricTransform(i));
+        }
+    };
 
 ///////////////////////////////////////////////////////////
 
@@ -523,8 +551,8 @@ function LibToJson($settings, $config) {
 
         this.frames = [];
         var newFrame = null;
-        $data.frames.forEach(function (frame) {
-            newFrame = new FrameItem();
+        $data.frames.forEach(function (frame, index) {
+            newFrame = new FrameItem(index);
             newFrame.parseData(frame);
             this.frames.push(newFrame);
         }, this);
@@ -540,7 +568,7 @@ function LibToJson($settings, $config) {
      * Кадр на слое на таймлайне конкретного элемента
      * @constructor
      */
-    function FrameItem() {
+    function FrameItem($index) {
         BaseItem.apply(this, arguments);
 
         this.name = '';
@@ -548,8 +576,12 @@ function LibToJson($settings, $config) {
         this.actionScript = null;
         this.startFrame = 0;
         this.duration = 1;
+        this.index = $index;
         //this.soundLibraryItem = null;
         this.isEmpty = true;
+        this.tweenType = 'none';
+        this.tweenInstanceName = '';
+        this.tweenObj = null;
     }
 
     FrameItem.prototype = new BaseItem();
@@ -558,14 +590,17 @@ function LibToJson($settings, $config) {
     FrameItem.prototype.parseData = function ($data) {
         BaseItem.prototype.parseData.apply(this, arguments);
 
-        this.elements = [];
-        var newElement = null;
-        /*for each(var element in $data.elements) {
-            newElement = createElementLibItem(element);
-            //newElement.parseData(element);
-            this.elements.push(newElement);
+        if(this.index > this.startFrame && this.index <= this.startFrame + this.duration) {
+            this.elements = null;
+            return;
+        }
+
+        /*if(this.tweenType === 'motion') {
+            DEBUG.traceElementPropertysRecursivity($data.tweenObj, 0);
         }*/
 
+        this.elements = [];
+        var newElement = null;
         $data.elements.forEach(function (element) {
             newElement = createElementLibItem(element);
             //newElement.parseData(element);
@@ -638,7 +673,7 @@ function LibToJson($settings, $config) {
         this.orientation = '';
         this.scrollable = false;
         this.selectable = false;
-        this.textRuns = null; // [object TextRun]
+        this.textRuns = null;
     }
 
     ElementTextFieldItem.prototype = new ElementItem();
@@ -660,7 +695,6 @@ function LibToJson($settings, $config) {
                 textRuns.push(textRun);
             }
             this.textRuns = textRuns;
-            //this.textRuns = new TextRunsItem($data.textRuns);
         }
     };
 
@@ -756,9 +790,9 @@ function LibToJson($settings, $config) {
         members:
         isFloating: false*/
 
-        this.contours = [];
-        this.edges = [];
-        this.vertices = [];
+        //this.contours = [];
+        //this.edges = [];
+        //this.vertices = [];
 
         this.isDrawingObject = false;
         this.isFloating = false;
@@ -766,8 +800,8 @@ function LibToJson($settings, $config) {
         this.isOvalObject = false;
         this.isRectangleObject = false;
 
-        this.members = [];
-        this.numCubicSegments = 0;
+        //this.members = [];
+        //this.numCubicSegments = 0;
     }
 
     ElementShapeItem.prototype = new ElementItem();
@@ -776,7 +810,9 @@ function LibToJson($settings, $config) {
     ElementShapeItem.prototype.parseData = function ($data) {
         ElementItem.prototype.parseData.apply(this, arguments);
         //DEBUG.traceElementPropertysRecursivity($data, 0);
-        fl.trace('Now, we cant export Shapes :(');
+        if(!this.isOvalObject && !this.isRectangleObject) {
+            fl.trace('Now, we cant export Shapes :(');
+        }
 
         if(isNaN(this.rotation)) {
             this.rotation = 0;
