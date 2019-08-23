@@ -97,12 +97,17 @@ function CreateAssetsList($settings, $config) {
         var lib = document.library;
         var libItems = lib.items;
         //пробежать по всем элементам библиотеки и экспортировать графику
-        for each(var item in libItems) {
+        libItems.forEach(function (item) {
+            if (item.itemType === 'bitmap') {
+                getImagePath(item);
+            }
+        });
+        /*for each(var item in libItems) {
             if (item.itemType !== 'bitmap') {
                 continue;
             }
             getImagePath(item);
-        }
+        }*/
 
         var jsonString = JSON.encode(assetsList);
         if(jsonString && config && config.sayResultToConsole) {
@@ -922,6 +927,9 @@ function LibToJson($settings, $config) {
     BaseItem.prototype.parseData = function ($data) {
         for (var property in this) {
             try {
+                if(property === 'parseData') {
+                    continue;
+                }
                 if($data[property] !== undefined) {
                     /*if(this[property] != $data[property]) {
                         this[property] = $data[property];
@@ -994,7 +1002,7 @@ function LibToJson($settings, $config) {
     LibItemTween.prototype.parseData = function ($data) {
         BaseItem.prototype.parseData.apply(this, arguments);
 
-        DEBUG.traceElementPropertysRecursivity($data, 0);
+        //DEBUG.traceElementPropertysRecursivity($data, 0);
 
         for(var i = 1; i < this.duration; i++) {
             this.geometricTransform.push($data.getGeometricTransform(i));
@@ -1083,17 +1091,23 @@ function LibToJson($settings, $config) {
     function LibItemFont() {
         LibItemBase.apply(this, arguments);
 
+        this.itemType = '';
+        this.name = '';
+        this.linkageExportForAS = '';
+        this.linkageClassName = '';
+        this.font = 'Arial';
+        this.bitmap = '';
+        this.bold = false;
+        this.italic = false;
+        this.size = 14;
     }
 
     LibItemFont.prototype = new LibItemBase();
     LibItemFont.constructor = LibItemFont;
 
     LibItemFont.prototype.parseData = function ($data) {
-        this.itemType = $data.itemType;
-        this.name = $data.name;
-        this.linkageExportForAS = $data.linkageExportForAS;
-        this.linkageClassName = $data.linkageClassName;
-
+        BaseItem.prototype.parseData.apply(this, arguments);
+        
         /*fl.trace($data.itemType);
         fl.trace($data.name);
         fl.trace($data.linkageExportForAS);
@@ -1257,6 +1271,7 @@ function LibToJson($settings, $config) {
         this.isEmpty = true;
         this.tweenType = 'none';
         this.tweenInstanceName = '';
+        this.tweenObj = null;
     }
 
     FrameItem.prototype = new BaseItem();
@@ -1270,9 +1285,9 @@ function LibToJson($settings, $config) {
             return;
         }
 
-        if(this.tweenType === 'motion') {
+        /*if(this.tweenType === 'motion') {
             DEBUG.traceElementPropertysRecursivity($data.tweenObj, 0);
-        }
+        }*/
 
         this.elements = [];
         var newElement = null;

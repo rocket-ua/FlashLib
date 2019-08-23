@@ -97,12 +97,17 @@ function CreateAssetsList($settings, $config) {
         var lib = document.library;
         var libItems = lib.items;
         //пробежать по всем элементам библиотеки и экспортировать графику
-        for each(var item in libItems) {
+        libItems.forEach(function (item) {
+            if (item.itemType === 'bitmap') {
+                getImagePath(item);
+            }
+        });
+        /*for each(var item in libItems) {
             if (item.itemType !== 'bitmap') {
                 continue;
             }
             getImagePath(item);
-        }
+        }*/
 
         var jsonString = JSON.encode(assetsList);
         if(jsonString && config && config.sayResultToConsole) {

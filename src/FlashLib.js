@@ -30,8 +30,8 @@ export default new class FlashLib {
     registerClass($path, $class) {
         let splittedName = $path.split('.');
         let obj = this.registeredClassesObject;
-        splittedName.forEach((name, index, arr)=>{
-            if(index === arr.length - 1) {
+        splittedName.forEach((name, index, arr) => {
+            if (index === arr.length - 1) {
                 obj[name] = $class;
             } else {
                 obj[name] = {};
@@ -56,7 +56,7 @@ export default new class FlashLib {
      * @returns {*}
      */
     createItemFromLibrary($displayItemData, $libraryName) {
-        if(typeof $displayItemData === 'string') {
+        if (typeof $displayItemData === 'string') {
             $displayItemData = {
                 libraryItem: $displayItemData
             };
@@ -86,11 +86,43 @@ export default new class FlashLib {
 
     _getItemDataFromName($parent, $splittedName) {
         let currName = $splittedName.shift();
-        $parent = $parent[currName];
+        if(currName !== '.') {
+            $parent = $parent[currName];
+        }
         if ($splittedName.length > 0) {
             $parent = this._getItemDataFromName($parent, $splittedName);
         }
         return $parent;
+    }
+
+    /**
+     * Получить все элементы из бибилиотеки по типу
+     * @param {string} $itemType тип элемента
+     * @param {string} $libraryName имя библиотеки
+     * @returns {[]}
+     */
+    findItemByType($itemType, $libraryName) {
+        let lib = this.getLibraryByName($libraryName).lib;
+        return this._checkFolder('.', $itemType, lib)
+    }
+
+    _checkFolder($folderName, $itemType, $lib) {
+        let result = [];
+        let folder = this._getItemDataFromName($lib, $folderName.split('\/'))
+        for (let itemName in folder) {
+            let item = folder[itemName];
+            if(item.hasOwnProperty('itemType')) {
+                switch (item.itemType) {
+                    case 'folder':
+                        result = result.concat(this._checkFolder(item.name, $itemType, $lib));
+                        break;
+                    case $itemType:
+                        result.push(item);
+                        break;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -129,7 +161,7 @@ export default new class FlashLib {
             default:
                 let classObject = getClassByName.call(this, type);
                 if ($libraryItemData.symbolType === 'movie clip') {
-                    if(classObject) {
+                    if (classObject) {
                         item = new classObject($libraryItemData);
                     } else {
                         throw new Error('Не найден класс. ' + type + ' Для регистрации класса испольщуйте FlashLib.registerClass');
@@ -176,10 +208,10 @@ export default new class FlashLib {
                 item = this.createItemFromLibrary($displayItemData, $libraryName);
                 break;
             case 'text':
-                item = new TextField($displayItemData);
+                item = new TextField($displayItemData, $libraryName);
                 break;
             case 'shape':
-                item = new Shape($displayItemData);
+                item = new Shape($displayItemData, $libraryName);
                 break;
         }
 
@@ -202,7 +234,7 @@ export default new class FlashLib {
         $item.rotation = ($displayItemData.rotation * (Math.PI / 180)) || 0;
         $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
 
-        if($displayItemData.filters) {
+        if ($displayItemData.filters) {
             this.addFiltersToDisplayItem($item, $displayItemData.filets);
         }
     }
@@ -286,12 +318,12 @@ export default new class FlashLib {
                         metadata: null,
                         parentResource: resource
                     };
-                    if(resource.data.libs && resource.data.libs.length > 0) {
+                    if (resource.data.libs && resource.data.libs.length > 0) {
                         resource.data.libs.forEach(function ($lib) {
                             PIXI.Loader.shared.add($lib.name, resource.data.baseUrl + $lib.path, options);
                         }, this);
                     }
-                    if(resource.data.assets && resource.data.assets.length > 0) {
+                    if (resource.data.assets && resource.data.assets.length > 0) {
                         resource.data.assets.forEach(function ($item) {
                             PIXI.Loader.shared.add($item.name, resource.data.baseUrl + $item.path, options);
                         }, this);

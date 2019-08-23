@@ -3,7 +3,7 @@ import FlashLib from "flashlib";
 
 export default class TextField extends PIXI.Text {
 
-    constructor($data) {
+    constructor($data, $libraryName) {
         let textRun = $data.textRuns[0];
         let textAttrs = textRun.textAttrs;
         let style = {
@@ -19,10 +19,25 @@ export default class TextField extends PIXI.Text {
             // strokeThickness: 3
         };
 
+        //TODO: думаю этот костыль нужно переписать
+        let embeddedFontData = null;
+        if (textAttrs.face.indexOf('*') !== -1) {
+            let fontsData = FlashLib.findItemByType('font', $libraryName);
+            fontsData.forEach((item) => {
+                if (item.name.search(style.fontFamily) !== -1) {
+                    embeddedFontData = item;
+                    style.fontStyle = item.italic ? 'italic' : 'normal';
+                    style.fontWeight = item.bold ? 'bold' : 'normal';
+                }
+            });
+        }
+
         super(textRun.characters, style);
 
+        this.libName = $libraryName;
         this.textRect = null;
         this.displayData = $data;
+        this.embededFontData = embeddedFontData;
         this.createRect();
         this.correctPosition();
 
@@ -34,7 +49,7 @@ export default class TextField extends PIXI.Text {
     };
 
     correctPosition($horizontal, $vertical) {
-        if(!this.textRect) {
+        if (!this.textRect) {
             return;
         }
 

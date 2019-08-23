@@ -213,6 +213,7 @@ export default class MovieClip extends PIXI.Container {
     constructFrame($frameId) {
         let startAddPosition = 0;
         this.layersData.forEach((currentLayerData, layerIndex) => {
+            /*this._buildLayer(currentLayerData, layerIndex, $frameId, startAddPosition);*/
             if (!currentLayerData.frames[$frameId - 1]) {
                 this._removeElements(layerIndex);
                 return;
@@ -235,6 +236,26 @@ export default class MovieClip extends PIXI.Container {
         this._setMaskLayer();
 
         this.currentFrameIndex = $frameId;
+    }
+
+    _buildLayer($layerData, $layerIndex, $frameId, $startAddPosition) {
+        if (!$layerData.frames[$frameId - 1]) {
+            this._removeElements($layerIndex);
+            return;
+        }
+
+        let currentFrameData = $layerData.frames[$frameId - 1];
+        currentFrameData = $layerData.frames[currentFrameData.startFrame];
+        let prevFrameData = $layerData.frames[this.currentFrameIndex - 1];
+        $startAddPosition += $layerData.elements.length;
+
+        if (prevFrameData && $frameId >= prevFrameData.startFrame + 1 && $frameId <= prevFrameData.startFrame + prevFrameData.duration) {
+            return;
+        }
+
+        let newAdded = this._addNewChild(currentFrameData, $startAddPosition, $frameId);
+        this._removeElements($layerIndex);
+        this.layers[$layerIndex].elements = newAdded;
     }
 
     /**
