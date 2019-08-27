@@ -100,6 +100,7 @@ this.app.stage.addChild(loginWindow);
 let passwordTextImage = FlashLib.createItemFromLibrary('graphics/passwond_text.png', 'FlashLib');
 this.app.stage.addChild(passwordTextImage);
 ```
+This create your object from library and all included objects.
 **createItemFromLibrary**
 <li> The first argument is the name and path to the item in the project's .fla library.
 <li> The second argument is the name from which library the item should be created. (FlashLibConfig.json => libToJson.flashLibName)
@@ -113,9 +114,9 @@ this.app.stage.addChild(passwordTextImage);
 ___
 ## Additional features
 FlashLib can create instances of custom classes when building item from library.  
-In JS project you need to make class and register via ***FlashLib.registerClass***.  
-In Animate CC you need to make MovieClip with structure what you need, and set linkage to 'CheckBox' (name what you use in ***FlashLib.registerClass***).  
+In JS project you need to make class what you want to linkage to Animate CC item.  
 ```javascript
+//CheckBox.js
 import FlashLib from 'flashlib';
 export default class CheckBox extends FlashLib.MovieClip {
     constructor(data) {
@@ -149,8 +150,20 @@ export default class CheckBox extends FlashLib.MovieClip {
         this.goToFrame(this.checked ? 2 : 1);
     }
 }
-FlashLib.registerClass('CheckBox', CheckBox);
 ```  
+Than you need to import you classes and add do FlashLib and register via ***FlashLib.registerClass***, like this:
+
+```javascript
+//import.js
+import FlashLib from "flashlib";
+import Button from './Button';
+import CheckBox from './CheckBox';
+
+FlashLib.registerClass('Button', Button);
+FlashLib.registerClass('CheckBox', CheckBox);
+```
+In Animate CC you need to make MovieClip with structure what you need and set linkage to 'CheckBox' (name what you use in ***FlashLib.registerClass***).
+
 When your MovieClip will building, FlashLib make instance of your class, and you functionality of your class will be works.  
 You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExample).
 

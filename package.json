@@ -1,9 +1,9 @@
 {
   "name": "flashlib",
-  "version": "2.0.61",
+  "version": "2.0.63",
   "description": "Build items from Animate CC (.fla) library using PIXI.js",
   "author": "rocket",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "src/FlashLib.js",
   "devDependencies": {
     "gulp": "^3.9.1",
@@ -22,7 +22,8 @@
     "src/*.js",
     "jsfl/FlashLib.jsfl",
     "package.json",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
