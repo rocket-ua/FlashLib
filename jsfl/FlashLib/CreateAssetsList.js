@@ -98,8 +98,13 @@ function CreateAssetsList($settings, $config) {
         var libItems = lib.items;
         //пробежать по всем элементам библиотеки и экспортировать графику
         libItems.forEach(function (item) {
-            if (item.itemType === 'bitmap') {
-                getImagePath(item);
+            switch(item.itemType) {
+                case 'bitmap':
+                    getImagePath(item);
+                    break;
+                case 'sound':
+                    getSoundPath(item);
+                    break;
             }
         });
         /*for each(var item in libItems) {
@@ -142,6 +147,20 @@ function CreateAssetsList($settings, $config) {
             name : name,
             path : document.name + '_lib' + '/' + name + type,
             type : 'image'
+        };
+        assetsList.assets.push(graphicData);
+    }
+
+    function getSoundPath($item) {
+        /*DEBUG.traceElementProperties($item);
+        fl.trace('------------');*/
+        var name = $item.name.replace(/(.mp3|.wav)/, '');
+        var type = $item.compressionType === 'RAW' ? '.wav' : '.mp3';
+        var graphicData = {
+            name : name,
+            //path : document.name + '_lib' + '/' + name + type,
+            path : document.name + '_lib' + '/' + $item.name,
+            type : 'sound'
         };
         assetsList.assets.push(graphicData);
     }

@@ -48,8 +48,13 @@ function ExportImages($settings, $config) {
         }*/
 
         libItems.forEach(function (item) {
-            if(item.itemType === 'bitmap') {
-                exportImage(item);
+            switch(item.itemType) {
+                case 'bitmap':
+                    exportImage(item);
+                    break;
+                case 'sound':
+                    exportSound(item);
+                    break;
             }
         }, this);
     }
@@ -105,6 +110,32 @@ function ExportImages($settings, $config) {
         }
     }
 
+    function exportSound($item) {
+        //переименовываем битмапку, убираем пробелы и добавляем разрешение
+        //renameItem($item);
+
+        //поучить локальный путь до файла картинки
+        var path = $item.name.substr(0, $item.name.lastIndexOf('/'));
+
+        //проверить наличие папки для экспорта файла.
+        //если папки нет, она создасться
+        checkFolder(path);
+
+        //экспортировать файл в папку
+        //var filePath = createPathWithFileName($item);
+        var filePath = this.docPath + $item.name;
+
+        if (config.overrideExistingFiles) {
+            exportCurrentFile($item, filePath);
+        } else {
+            if (FLfile.exists(filePath)) {
+                fl.trace('File ' + filePath + ' already exists, rewriting is prohibited in the config file.')
+            } else {
+                exportCurrentFile($item, filePath);
+            }
+        }
+    }
+
     function createPathWithFileName($item) {
         var filePath = this.docPath;
         var fileName = $item.name;
@@ -115,7 +146,7 @@ function ExportImages($settings, $config) {
             fileName += ".jpg";
         }
         filePath += fileName;
-        return filePath
+        return filePath;
     }
 
     function exportCurrentFile($item, $filePath) {

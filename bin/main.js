@@ -62,7 +62,11 @@ function onFlaOpened() {
 
 function runJSFL() {
     var newPath = path.join(__dirname, '..', 'jsfl', 'FlashLib.jsfl');
-    open(newPath);
+    open(newPath, null, onJSFLComplete);
+}
+
+function onJSFLComplete(error, stdout, stderr) {
+    console.log('JSFL Complete');
 }
 
 

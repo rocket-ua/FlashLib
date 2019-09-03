@@ -111,7 +111,7 @@ export default new class FlashLib {
         let folder = this._getItemDataFromName($lib, $folderName.split('\/'))
         for (let itemName in folder) {
             let item = folder[itemName];
-            if(item.hasOwnProperty('itemType')) {
+            if(item && item.hasOwnProperty('itemType')) {
                 switch (item.itemType) {
                     case 'folder':
                         result = result.concat(this._checkFolder(item.name, $itemType, $lib));

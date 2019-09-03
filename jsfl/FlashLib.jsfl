@@ -98,8 +98,13 @@ function CreateAssetsList($settings, $config) {
         var libItems = lib.items;
         //пробежать по всем элементам библиотеки и экспортировать графику
         libItems.forEach(function (item) {
-            if (item.itemType === 'bitmap') {
-                getImagePath(item);
+            switch(item.itemType) {
+                case 'bitmap':
+                    getImagePath(item);
+                    break;
+                case 'sound':
+                    getSoundPath(item);
+                    break;
             }
         });
         /*for each(var item in libItems) {
@@ -142,6 +147,20 @@ function CreateAssetsList($settings, $config) {
             name : name,
             path : document.name + '_lib' + '/' + name + type,
             type : 'image'
+        };
+        assetsList.assets.push(graphicData);
+    }
+
+    function getSoundPath($item) {
+        /*DEBUG.traceElementProperties($item);
+        fl.trace('------------');*/
+        var name = $item.name.replace(/(.mp3|.wav)/, '');
+        var type = $item.compressionType === 'RAW' ? '.wav' : '.mp3';
+        var graphicData = {
+            name : name,
+            //path : document.name + '_lib' + '/' + name + type,
+            path : document.name + '_lib' + '/' + $item.name,
+            type : 'sound'
         };
         assetsList.assets.push(graphicData);
     }
@@ -279,8 +298,13 @@ function ExportImages($settings, $config) {
         }*/
 
         libItems.forEach(function (item) {
-            if(item.itemType === 'bitmap') {
-                exportImage(item);
+            switch(item.itemType) {
+                case 'bitmap':
+                    exportImage(item);
+                    break;
+                case 'sound':
+                    exportSound(item);
+                    break;
             }
         }, this);
     }
@@ -336,6 +360,32 @@ function ExportImages($settings, $config) {
         }
     }
 
+    function exportSound($item) {
+        //переименовываем битмапку, убираем пробелы и добавляем разрешение
+        //renameItem($item);
+
+        //поучить локальный путь до файла картинки
+        var path = $item.name.substr(0, $item.name.lastIndexOf('/'));
+
+        //проверить наличие папки для экспорта файла.
+        //если папки нет, она создасться
+        checkFolder(path);
+
+        //экспортировать файл в папку
+        //var filePath = createPathWithFileName($item);
+        var filePath = this.docPath + $item.name;
+
+        if (config.overrideExistingFiles) {
+            exportCurrentFile($item, filePath);
+        } else {
+            if (FLfile.exists(filePath)) {
+                fl.trace('File ' + filePath + ' already exists, rewriting is prohibited in the config file.')
+            } else {
+                exportCurrentFile($item, filePath);
+            }
+        }
+    }
+
     function createPathWithFileName($item) {
         var filePath = this.docPath;
         var fileName = $item.name;
@@ -346,7 +396,7 @@ function ExportImages($settings, $config) {
             fileName += ".jpg";
         }
         filePath += fileName;
-        return filePath
+        return filePath;
     }
 
     function exportCurrentFile($item, $filePath) {
@@ -1107,7 +1157,7 @@ function LibToJson($settings, $config) {
 
     LibItemFont.prototype.parseData = function ($data) {
         BaseItem.prototype.parseData.apply(this, arguments);
-        
+
         /*fl.trace($data.itemType);
         fl.trace($data.name);
         fl.trace($data.linkageExportForAS);
