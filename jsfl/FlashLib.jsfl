@@ -158,8 +158,8 @@ function CreateAssetsList($settings, $config) {
         var type = $item.compressionType === 'RAW' ? '.wav' : '.mp3';
         var graphicData = {
             name : name,
-            //path : document.name + '_lib' + '/' + name + type,
-            path : document.name + '_lib' + '/' + $item.name,
+            path : document.name + '_lib' + '/' + name + type,
+            //path : document.name + '_lib' + '/' + $item.name,
             type : 'sound'
         };
         assetsList.assets.push(graphicData);
@@ -373,7 +373,7 @@ function ExportImages($settings, $config) {
 
         //экспортировать файл в папку
         //var filePath = createPathWithFileName($item);
-        var filePath = this.docPath + $item.name;
+        var filePath = this.docPath + $item.name.replace(/(.wav|.mp3)/, '.mp3');
 
         if (config.overrideExistingFiles) {
             exportCurrentFile($item, filePath);

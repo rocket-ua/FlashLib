@@ -123,7 +123,7 @@ function ExportImages($settings, $config) {
 
         //экспортировать файл в папку
         //var filePath = createPathWithFileName($item);
-        var filePath = this.docPath + $item.name;
+        var filePath = this.docPath + $item.name.replace(/(.wav|.mp3)/, '.mp3');
 
         if (config.overrideExistingFiles) {
             exportCurrentFile($item, filePath);

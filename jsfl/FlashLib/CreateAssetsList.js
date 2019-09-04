@@ -158,8 +158,8 @@ function CreateAssetsList($settings, $config) {
         var type = $item.compressionType === 'RAW' ? '.wav' : '.mp3';
         var graphicData = {
             name : name,
-            //path : document.name + '_lib' + '/' + name + type,
-            path : document.name + '_lib' + '/' + $item.name,
+            path : document.name + '_lib' + '/' + name + type,
+            //path : document.name + '_lib' + '/' + $item.name,
             type : 'sound'
         };
         assetsList.assets.push(graphicData);

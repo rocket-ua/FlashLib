@@ -4,6 +4,7 @@ import Shape from './Shape';
 import Bitmap from './Bitmap';
 import MovieClip from './MovieClip';
 import TextField from './TextField';
+import ResourcesLoader from './ResourcesLoader';
 
 /*export {Shape, Bitmap, MovieClip, TextField}*/
 
@@ -19,7 +20,6 @@ export default new class FlashLib {
         this.registeredClassesObject = {};
 
         this.libraries = [];
-        this.initPIXILoader();
     }
 
     /**
@@ -297,50 +297,6 @@ export default new class FlashLib {
             }
         }, this);
         $item.filters = newFilters;
-    }
-
-    /**
-     * Добавление обработки загружаемых файлов для автоматической загрузки ассетов и библиотек
-     * Добавление библиотек автоматически после загрузки
-     */
-    initPIXILoader() {
-        function assetsParser(resource, next) {
-            if (!resource.data || !(resource.type === PIXI.LoaderResource.TYPE.JSON) || !resource.data.metaData ||
-                !resource.data.metaData.type) {
-                return next();
-            }
-            switch (resource.data.metaData.type) {
-                case 'FlashLibAssets':
-                    //PIXI.loader.reset();
-                    let options = {
-                        crossOrigin: resource.crossOrigin,
-                        xhrType: PIXI.LoaderResource.TYPE.JSON,
-                        metadata: null,
-                        parentResource: resource
-                    };
-                    if (resource.data.libs && resource.data.libs.length > 0) {
-                        resource.data.libs.forEach(function ($lib) {
-                            PIXI.Loader.shared.add($lib.name, resource.data.baseUrl + $lib.path, options);
-                        }, this);
-                    }
-                    if (resource.data.assets && resource.data.assets.length > 0) {
-                        resource.data.assets.forEach(function ($item) {
-                            PIXI.Loader.shared.add($item.name, resource.data.baseUrl + $item.path, options);
-                        }, this);
-                    }
-                    return next();
-                    break;
-                case 'FlashLib':
-                    this.addNewLibrary(resource.data);
-                    return next();
-                    break;
-                default:
-                    return next();
-            }
-        }
-
-        //PIXI.loaders.Loader.addPixiMiddleware(atlasParser);
-        PIXI.Loader.shared.use(assetsParser.bind(this));
     }
 }
 /*export {default as Shape} from './Shape';
