@@ -130,13 +130,13 @@ function LibToJson($settings, $config) {
 
         var items = lib.items;
 
+
         if(config.buildForSelected) {
             var selectedItems = lib.getSelectedItems();
             if(selectedItems && selectedItems.length > 0) {
                 items = selectedItems;
             }
         }
-
         var jsonItem = {};
         /*for each(var item in items) {
             if(checkDataExist(item.name)) {
@@ -249,7 +249,7 @@ function LibToJson($settings, $config) {
                 if(property === 'parseData') {
                     continue;
                 }
-                if($data[property] !== undefined) {
+                if($data[property] !== undefined && this[property] !== undefined) {
                     /*if(this[property] != $data[property]) {
                         this[property] = $data[property];
                     } else {
@@ -454,10 +454,20 @@ function LibToJson($settings, $config) {
     function LibItemFolder() {
         LibItemBase.apply(this, arguments);
 
+        this.itemType = '';
+        this.name = '';
+        this.linkageExportForAS = '';
+        this.linkageClassName = '';
     }
 
     LibItemFolder.prototype = new LibItemBase();
     LibItemFolder.constructor = LibItemFolder;
+
+    LibItemFont.prototype.parseData = function ($data) {
+        BaseItem.prototype.parseData.apply(this, arguments);
+
+
+    };
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -661,6 +671,10 @@ function LibToJson($settings, $config) {
         if($data.filters) {
             this.filters = $data.filters;
         }
+
+        if(isNaN(this.rotation)) {
+            this.rotation = 0
+        }
         //DEBUG.traceElementPropertys($data);
         //DEBUG.traceElementPropertysRecursivity($data, 0);
     };
@@ -683,6 +697,7 @@ function LibToJson($settings, $config) {
         this.scrollable = false;
         this.selectable = false;
         this.textRuns = null;
+        this.lineType = 'multiline'
     }
 
     ElementTextFieldItem.prototype = new ElementItem();
@@ -692,8 +707,9 @@ function LibToJson($settings, $config) {
         if($data.orientation !== 'horizontal') {
             return;
         }
-
         ElementItem.prototype.parseData.apply(this, arguments);
+
+        //DEBUG.traceElementPropertysRecursivity($data, 0);
 
         if($data.textRuns) {
             var textRun = null;
@@ -819,7 +835,8 @@ function LibToJson($settings, $config) {
     ElementShapeItem.prototype.parseData = function ($data) {
         ElementItem.prototype.parseData.apply(this, arguments);
         //DEBUG.traceElementPropertysRecursivity($data, 0);
-        if(!this.isOvalObject && !this.isRectangleObject) {
+
+        if(!$data.isOvalObject && !$data.isRectangleObject) {
             fl.trace('Now, we cant export Shapes :(');
         }
 

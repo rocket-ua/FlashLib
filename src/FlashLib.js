@@ -11,6 +11,8 @@ import ResourcesLoader from './ResourcesLoader';
 export default new class FlashLib {
 
     constructor() {
+        PIXI.Loader.registerPlugin(ResourcesLoader);
+
         this.Shape = Shape;
         this.Bitmap = Bitmap;
         this.MovieClip = MovieClip;
@@ -67,8 +69,8 @@ export default new class FlashLib {
             throw new Error('В библиотеке не найден элемент ' + $displayItemData.libraryItem);
         }
         itemData.libraryName = $libraryName;
-        itemData.displayData = $displayItemData;
-        let libraryItem = this.createItemFromLibraryData(itemData);
+        //itemData.displayData = $displayItemData;
+        let libraryItem = this.createItemFromLibraryData(itemData, $displayItemData);
         return libraryItem;
     }
 
@@ -145,7 +147,7 @@ export default new class FlashLib {
      * Получить элемент из библиотеки
      * @param {*} $libraryItemData данные элемента библиотеки
      */
-    createItemFromLibraryData($libraryItemData) {
+    createItemFromLibraryData($libraryItemData, $displayItemData) {
         let item = null;
         let type = $libraryItemData.linkageExportForAS ?
             $libraryItemData.linkageClassName :
@@ -153,16 +155,16 @@ export default new class FlashLib {
 
         switch (type) {
             case 'movie clip':
-                item = new MovieClip($libraryItemData);
+                item = new this.MovieClip($libraryItemData, $displayItemData);
                 break;
             case 'bitmap':
-                item = new Bitmap($libraryItemData);
+                item = new this.Bitmap($libraryItemData, $displayItemData);
                 break;
             default:
                 let classObject = getClassByName.call(this, type);
                 if ($libraryItemData.symbolType === 'movie clip') {
                     if (classObject) {
-                        item = new classObject($libraryItemData);
+                        item = new classObject($libraryItemData, $displayItemData);
                     } else {
                         throw new Error('Не найден класс. ' + type + ' Для регистрации класса испольщуйте FlashLib.registerClass');
                     }
@@ -208,10 +210,10 @@ export default new class FlashLib {
                 item = this.createItemFromLibrary($displayItemData, $libraryName);
                 break;
             case 'text':
-                item = new TextField($displayItemData, $libraryName);
+                item = new this.TextField($displayItemData, $libraryName);
                 break;
             case 'shape':
-                item = new Shape($displayItemData, $libraryName);
+                item = new this.Shape($displayItemData, $libraryName);
                 break;
         }
 
@@ -231,6 +233,8 @@ export default new class FlashLib {
         $item.height = $displayItemData.height || $item.height;
         $item.scale.x = $displayItemData.scaleX || $item.scale.x;
         $item.scale.y = $displayItemData.scaleY || $item.scale.y;
+        /*$item.skew.x =  $displayItemData.skewX || $item.skew.x;
+        $item.skew.y =  $displayItemData.skewY || $item.skew.y;*/
         $item.rotation = ($displayItemData.rotation * (Math.PI / 180)) || 0;
         $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
 

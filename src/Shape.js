@@ -18,7 +18,7 @@ export default class Shape extends PIXI.Graphics {
             this.beginFill(0x0, 1);
             this.drawRect(-this.displayData.width / 2, -this.displayData.height / 2, this.displayData.width, this.displayData.height);
             this.endFill();
-        } else if(this.libData.isOvalObject) {
+        } else if(this.displayData.isOvalObject) {
             this.beginFill(0x0, 1);
             this.drawEllipse(0 ,0, this.displayData.width / 2, this.displayData.height / 2);
             this.endFill();

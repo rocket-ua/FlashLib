@@ -140,11 +140,19 @@ function ExportImages($settings, $config) {
         var filePath = this.docPath;
         var fileName = $item.name;
         fileName = fileName.replace(/(.png|.jpg)/, '');
-        if ($item.hasValidAlphaLayer) {
+
+        var ext = $item.hasValidAlphaLayer ? '.png' : '.jpg';
+        if(config.usePng) {
+            ext = '.png';
+        }
+
+        /*if ($item.hasValidAlphaLayer) {
             fileName += ".png";
         } else {
             fileName += ".jpg";
-        }
+        }*/
+
+        fileName += ext;
         filePath += fileName;
         return filePath;
     }

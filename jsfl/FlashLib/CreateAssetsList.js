@@ -143,6 +143,10 @@ function CreateAssetsList($settings, $config) {
     function getImagePath($item) {
         var name = $item.name.replace(/(.png|.jpg)/, '');
         var type = $item.hasValidAlphaLayer ? '.png' : '.jpg';
+        if(config.usePng) {
+            type = '.png';
+        }
+
         var graphicData = {
             name : name,
             path : document.name + '_lib' + '/' + name + type,

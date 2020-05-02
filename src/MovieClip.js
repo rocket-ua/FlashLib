@@ -3,11 +3,11 @@ import FlashLib from './FlashLib'
 
 export default class MovieClip extends PIXI.Container {
 
-    constructor($data) {
-        super($data);
-
+    constructor($data, $displayItemData) {
+        super();
         this.libData = $data;
-        this.displayData = this.libData.displayData;
+        //this.displayData = this.libData.displayData;
+        this.displayData = $displayItemData;
         this.libName = this.libData.libraryName;
         this.timelineData = this.libData.timeline;
         this.layersData = this.timelineData.layers/*.concat().reverse()*/;
@@ -111,6 +111,7 @@ export default class MovieClip extends PIXI.Container {
 
         if ($frameId === this.currentFrameIndex && this.isPlaying && !this.animateParams.loop) {
             this.stop();
+            this.emit('animationComplete');
         }
 
         if ($frameId === this.currentFrameIndex && !$force) {
@@ -306,7 +307,9 @@ export default class MovieClip extends PIXI.Container {
      */
     _removeElements($layerIndex) {
         this.layers[$layerIndex].elements.forEach((elem) => {
-            elem.destroy({children: true});
+            if (!elem._destroyed) {
+                elem.destroy({children: true});
+            }
         });
         //this.layers[$layerIndex].elements = [];
     }
@@ -324,6 +327,11 @@ export default class MovieClip extends PIXI.Container {
                 console.log("Can't eval script on", "'" + this.libData.name + "'", 'in', $frameId, 'frame')
             }
         }
+    }
+
+    destroy(options) {
+        this.stop();
+        super.destroy(options);
     }
 
     render(renderer) {
@@ -383,6 +391,7 @@ export default class MovieClip extends PIXI.Container {
                 }
             }*/
             //renderer.mask.push(this, this.tempCont);
+            layerMask[0].renderable = false;
             renderer.mask.push(this, layerMask[0]);
         }
 
