@@ -50,7 +50,9 @@ export default class TextField extends PIXI.Text {
 
         this.roundPixels = true;
 
-        document.fonts.ready.then(this._onFontsReady.bind(this));
+        if (document.fonts) {
+            document.fonts.ready.then(this._onFontsReady.bind(this));
+        }
     }
 
     _onFontsReady() {

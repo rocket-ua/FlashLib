@@ -278,6 +278,7 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.linkageExportForAS = false;
         this.linkageClassName = '';
+        this.linkageURL = '';
     }
 
     LibItemBase.prototype = new BaseItem();
@@ -414,6 +415,7 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.linkageExportForAS = '';
         this.linkageClassName = '';
+        this.linkageURL = '';
         this.font = 'Arial';
         this.bitmap = '';
         this.bold = false;
@@ -458,6 +460,7 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.linkageExportForAS = '';
         this.linkageClassName = '';
+        this.linkageURL = '';
     }
 
     LibItemFolder.prototype = new LibItemBase();

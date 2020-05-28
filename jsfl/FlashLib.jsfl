@@ -1023,6 +1023,7 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.linkageExportForAS = false;
         this.linkageClassName = '';
+        this.linkageURL = '';
     }
 
     LibItemBase.prototype = new BaseItem();
@@ -1159,6 +1160,7 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.linkageExportForAS = '';
         this.linkageClassName = '';
+        this.linkageURL = '';
         this.font = 'Arial';
         this.bitmap = '';
         this.bold = false;
@@ -1203,6 +1205,7 @@ function LibToJson($settings, $config) {
         this.name = '';
         this.linkageExportForAS = '';
         this.linkageClassName = '';
+        this.linkageURL = '';
     }
 
     LibItemFolder.prototype = new LibItemBase();
@@ -1454,7 +1457,7 @@ function LibToJson($settings, $config) {
         }
         ElementItem.prototype.parseData.apply(this, arguments);
 
-        DEBUG.traceElementPropertysRecursivity($data, 0);
+        //DEBUG.traceElementPropertysRecursivity($data, 0);
 
         if($data.textRuns) {
             var textRun = null;

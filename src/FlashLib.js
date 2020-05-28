@@ -162,7 +162,7 @@ export default new class FlashLib {
                 break;
             default:
                 let classObject = getClassByName.call(this, type);
-                if ($libraryItemData.symbolType === 'movie clip') {
+                /*if ($libraryItemData.symbolType === 'movie clip') {
                     if (classObject) {
                         item = new classObject($libraryItemData, $displayItemData);
                     } else {
@@ -170,6 +170,11 @@ export default new class FlashLib {
                     }
                 } else {
                     item = new classObject();
+                }*/
+                if (classObject) {
+                    item = new classObject($libraryItemData, $displayItemData);
+                } else {
+                    throw new Error('Не найден класс. ' + type + ' Для регистрации класса испольщуйте FlashLib.registerClass');
                 }
         }
 
