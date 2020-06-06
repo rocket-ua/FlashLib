@@ -56,7 +56,7 @@ export default class TextField extends PIXI.Text {
     }
 
     _onFontsReady() {
-        if(this.style && document.fonts.check(this.style.fontSize + 'px ' + this.style.fontFamily)) {
+        if (this.style && document.fonts.check(this.style.fontSize + 'px ' + this.style.fontFamily)) {
             this.dirty = true;
             this.correctPosition();
         }
@@ -65,6 +65,29 @@ export default class TextField extends PIXI.Text {
     createRect() {
         this.textRect = new PIXI.Rectangle(0, 0, 0, 0);
     };
+
+    fitSize(width, height) {
+        width = width === undefined ? !this.style.wordWrap : width;
+        height = height === undefined ? !this.style.wordWrap : height;
+
+        this.style.fontSize = this.displayData.textRuns[0].textAttrs.size;
+        this['updateText'](true);
+
+        let doFitWidth = width;
+        let doFitHeight = height;
+
+        while (doFitWidth || doFitHeight) {
+            this.style.fontSize--;
+            this.updateText(true);
+            if (doFitWidth) {
+                doFitWidth = this.origWidth > this.width;
+            }
+            if (doFitHeight) {
+                doFitHeight = this.origHeight > this.height;
+            }
+        }
+        this.correctPosition();
+    }
 
     correctPosition($horizontal, $vertical) {
         if (!this.textRect) {
