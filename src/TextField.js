@@ -238,6 +238,28 @@ export default class TextField extends PIXI.Text {
         }
     }
 
+    get useTransformPoint() {
+        return this._useTransformPoint || false;
+    }
+
+    set useTransformPoint(value) {
+        if (this._useTransformPoint === value) {
+            return;
+        }
+
+        this._useTransformPoint = value;
+
+        if (this._useTransformPoint) {
+            this.pivot.set(this.tpX, this.tpY);
+            this.x += this.tpX;
+            this.y += this.tpY;
+        } else {
+            this.pivot.set(0, 0);
+            this.x -= this.tpX;
+            this.y -= this.tpY;
+        }
+    }
+
     get x() {
         return this.textRect.x;
     }

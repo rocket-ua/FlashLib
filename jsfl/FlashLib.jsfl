@@ -754,6 +754,7 @@ var JSON = {
  * }
  */
 function LibToJson($settings, $config) {
+    var fontsData = {};
     var stageData = {};
     var libData = {};
     var jsonLib = {};
@@ -779,10 +780,12 @@ function LibToJson($settings, $config) {
 
         createLibItems();
         createStage();
+        createFonts();
 
         jsonLib = {
             stage: stageData,
             lib: libData,
+            fonts: fontsData,
             metaData: {
                 type: 'FlashLib',
                 name: config.flashLibName || '',
@@ -865,6 +868,18 @@ function LibToJson($settings, $config) {
         stageData.height = document.height;
         stageData.backgroundColor = document.backgroundColor;
         stageData.timeline = {};
+    }
+
+    function createFonts() {
+        var newFont = null;
+        document.library.items.forEach(function (item) {
+            if (item.itemType === 'font') {
+                //fl.trace(item.name + ' ' + item.itemType);
+                newFont = new LibItemFont();
+                newFont.parseData(item);
+                fontsData[item.name] = newFont;
+            }
+        }, this);
     }
 
     /**
@@ -1187,6 +1202,7 @@ function LibToJson($settings, $config) {
     LibItemFont.prototype.parseData = function ($data) {
         BaseItem.prototype.parseData.apply(this, arguments);
 
+        DEBUG.traceElementPropertiesRecursively($data, 0);
         /*fl.trace($data.itemType);
         fl.trace($data.name);
         fl.trace($data.linkageExportForAS);
@@ -1201,8 +1217,6 @@ function LibToJson($settings, $config) {
         fl.trace($data.isDefineFont4Symbol);
         fl.trace($data.italic);
         fl.trace($data.size);*/
-
-        //BaseItem.prototype.parseData.apply(this, arguments);
     };
 
 ///////////////////////////////////////////////////////////

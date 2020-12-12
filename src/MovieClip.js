@@ -337,23 +337,6 @@ export default class MovieClip extends Container {
         DisplayProperties.setBlendMode(this);
     }
 
-    get blendMode() {
-        return this._blendMode;
-    }
-
-    set blendMode(value) {
-        if (value === undefined) {
-            return;
-        }
-        this._blendMode = value;
-        this.children.forEach((child)=>{
-            child.blendMode = this.blendMode;
-            if (child.resetBlendMode) {
-                child.resetBlendMode();
-            }
-        })
-    }
-
     destroy(options) {
         this.stop();
         super.destroy(options);
@@ -439,6 +422,45 @@ export default class MovieClip extends Container {
 
         if (filters && this._enabledFilters && this._enabledFilters.length) {
             renderer.filter.pop();
+        }
+    }
+
+    get blendMode() {
+        return this._blendMode;
+    }
+
+    set blendMode(value) {
+        if (value === undefined) {
+            return;
+        }
+        this._blendMode = value;
+        this.children.forEach((child)=>{
+            child.blendMode = this.blendMode;
+            if (child.resetBlendMode) {
+                child.resetBlendMode();
+            }
+        })
+    }
+
+    get useTransformPoint() {
+        return this._useTransformPoint || false;
+    }
+
+    set useTransformPoint(value) {
+        if (this._useTransformPoint === value) {
+            return;
+        }
+
+        this._useTransformPoint = value;
+
+        if (this._useTransformPoint) {
+            this.pivot.set(this.tpX, this.tpY);
+            this.x += this.tpX;
+            this.y += this.tpY;
+        } else {
+            this.pivot.set(0, 0);
+            this.x -= this.tpX;
+            this.y -= this.tpY;
         }
     }
 }

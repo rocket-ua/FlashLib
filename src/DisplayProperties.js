@@ -28,10 +28,16 @@ export default new class DisplayProperties {
      * @param {object} $displayItemData объект с параметрами которые нужно назначить
      */
     setDisplayItemProperties($item, $displayItemData) {
-        $item.pivot.set(
-            $displayItemData.transformX - $displayItemData.x,
-            $displayItemData.transformY - $displayItemData.y
-        );
+        $item.tpX = $displayItemData.transformX - $displayItemData.x;
+        $item.tpY = $displayItemData.transformY - $displayItemData.y;
+
+        $item.tpX = isNaN($item.tpX) ? 0 : $item.tpX;
+        $item.tpY = isNaN($item.tpY) ? 0 : $item.tpY;
+
+        /*$item.pivot.set(
+            $item.tpX,
+            $item.tpY
+        );*/
 
         $item.name = $displayItemData.name || '';
         $item.x = $displayItemData.x || 0;
@@ -55,9 +61,9 @@ export default new class DisplayProperties {
         $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
         $item.alpha = $displayItemData.colorAlphaPercent === undefined ? 1 : $displayItemData.colorAlphaPercent / 100;
 
-        $item.pivot.set(0, 0);
-
-
+        //$item.pivot.set(0, 0);
+        
+        
         /*if($displayItemData.matrix) {
             $item.setTransform(
                 $displayItemData.matrix.tx,
@@ -71,25 +77,6 @@ export default new class DisplayProperties {
                 $displayItemData.transformY - $displayItemData.y
             )
         }*/
-
-        /*$item.name = $displayItemData.name || '';
-        $item.x = $displayItemData.x || 0;
-        $item.y = $displayItemData.y || 0;
-        $item.width = $displayItemData.width || $item.width;
-        $item.height = $displayItemData.height || $item.height;
-        $item.scale.x = $displayItemData.scaleX || $item.scale.x;
-        $item.scale.y = $displayItemData.scaleY || $item.scale.y;
-
-        $item.rotation = ($displayItemData.rotation * (Math.PI / 180)) || 0;
-        $item.skew.x =  ($displayItemData.skewX * (Math.PI / 180)) || $item.skew.x;
-        $item.skew.y =  ($displayItemData.skewY * (Math.PI / 180)) || $item.skew.y;
-
-        $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
-        $item.alpha = $displayItemData.colorAlphaPercent === undefined ? 1 : $displayItemData.colorAlphaPercent / 100;*/
-
-        // if ($displayItemData.filters) {
-        //     this.addFiltersToDisplayItem($item, $displayItemData.filters);
-        // }
     }
 
     /**
@@ -180,19 +167,4 @@ export default new class DisplayProperties {
             $item.blendMode = $item.blendMode || this.blendModes[$item.displayData.blendMode || 'normal'];
         //}
     }
-
-    /*setBlendMode($item) {
-        return $item.blendMode || this.blendModes[$item.displayData.blendMode];
-    }*/
-    
-    /*setBlendMode($parent, $item) {
-        if ($parent.blendMode) {
-            $item.blendMode = $parent.blendMode;
-        } else if ($parent.displayData.blendMode) {
-            $parent.blendMode = this.blendModes[$parent.displayData.blendMode];
-            $item.blendMode = $parent.blendMode;
-        } else {
-            $item.blendMode = this.blendModes[$item.displayData.blendMode];
-        }
-    }*/
 }
