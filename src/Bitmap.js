@@ -1,18 +1,17 @@
-import * as PIXI from 'pixi.js'
-import FlashLib from "flashlib";
+import {Sprite, utils} from 'pixi.js'
+import DisplayProperties from "./DisplayProperties";
 
-export default class Bitmap extends PIXI.Sprite {
+export default class Bitmap extends Sprite {
 
     constructor($data, $displayItemData) {
-        let name = $data.name.replace(/(.png|.jpg)/, '');
-        let texture = PIXI.utils.TextureCache[name];
+        let name = $data.name.replace(/(\.png|\.jpg)/, '');
+        let texture = utils.TextureCache[name];
         super(texture);
 
         this.libData = $data;
-        //this.displayData = this.libData.displayData;
         this.displayData = $displayItemData;
-
-        FlashLib.setDisplayItemProperties(this, this.displayData);
+        
+        DisplayProperties.setDisplayItemProperties(this, this.displayData);
     }
 
     render(renderer) {
@@ -97,4 +96,12 @@ export default class Bitmap extends PIXI.Sprite {
             renderer.filter.pop();
         }
     }
+
+    /*get blendMode() {
+        return 0;
+    }
+
+    set blendMode(value) {
+        console.log(value)
+    }*/
 }

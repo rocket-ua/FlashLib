@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
-import FlashLib from "flashlib";
+import FlashLib from "./FlashLib";
+import DisplayProperties from "./DisplayProperties";
 
 export default class TextField extends PIXI.Text {
 
@@ -44,7 +45,7 @@ export default class TextField extends PIXI.Text {
         this.createRect();
         this.correctPosition();
 
-        FlashLib.setDisplayItemProperties(this, this.displayData);
+        DisplayProperties.setDisplayItemProperties(this, this.displayData);
         this.width = this.displayData.width;
         this.height = this.displayData.height;
 

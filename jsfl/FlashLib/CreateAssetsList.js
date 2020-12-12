@@ -141,7 +141,7 @@ function CreateAssetsList($settings, $config) {
      * @param $item
      */
     function getImagePath($item) {
-        var name = $item.name.replace(/(.png|.jpg)/, '');
+        var name = $item.name.replace(/(\.png|\.jpg)/, '');
         var type = $item.hasValidAlphaLayer ? '.png' : '.jpg';
         if(config.usePng) {
             type = '.png';
@@ -158,7 +158,7 @@ function CreateAssetsList($settings, $config) {
     function getSoundPath($item) {
         /*DEBUG.traceElementProperties($item);
         fl.trace('------------');*/
-        var name = $item.name.replace(/(.mp3|.wav)/, '');
+        var name = $item.name.replace(/(\.mp3|\.wav)/, '');
         var type = $item.compressionType === 'RAW' ? '.wav' : '.mp3';
         var graphicData = {
             name : name,

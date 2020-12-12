@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import FlashLib from "flashlib";
+import FlashLib from "./FlashLib";
 
 export default class ResourcesLoader {
     static pre(resource, next) {

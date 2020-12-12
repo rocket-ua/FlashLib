@@ -12,8 +12,8 @@ DEBUG = {
      * @param $element
      * @param $index
      */
-    traceElementPropertysRecursivity: function ($element, $index) {
-        this._traceElementPropertysRecursivity($element, $index);
+    traceElementPropertiesRecursively: function ($element, $index) {
+        this._traceElementPropertiesRecursively($element, $index);
         fl.trace("");
         fl.trace("=============================================");
         fl.trace("");
@@ -24,7 +24,7 @@ DEBUG = {
      * @param $index
      * @private
      */
-    _traceElementPropertysRecursivity: function ($element, $index) {
+    _traceElementPropertiesRecursively: function ($element, $index) {
         if($index > 10) {
             return;
         }
@@ -37,7 +37,7 @@ DEBUG = {
             try {
                 fl.trace(offset + property + ": " + $element[property]);
                 if(typeof($element[property]) === "object" && property !== "layer") {
-                    this._traceElementPropertysRecursivity($element[property], $index + 1);
+                    this._traceElementPropertiesRecursively($element[property], $index + 1);
                 }
             } catch ($error) {
                 fl.trace(offset + property + ": " + $error);

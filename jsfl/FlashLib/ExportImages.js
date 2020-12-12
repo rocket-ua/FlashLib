@@ -123,7 +123,7 @@ function ExportImages($settings, $config) {
 
         //экспортировать файл в папку
         //var filePath = createPathWithFileName($item);
-        var filePath = this.docPath + $item.name.replace(/(.wav|.mp3)/, '.mp3');
+        var filePath = this.docPath + $item.name.replace(/(\.wav|\.mp3)/, '.mp3');
 
         if (config.overrideExistingFiles) {
             exportCurrentFile($item, filePath);
@@ -139,7 +139,7 @@ function ExportImages($settings, $config) {
     function createPathWithFileName($item) {
         var filePath = this.docPath;
         var fileName = $item.name;
-        fileName = fileName.replace(/(.png|.jpg)/, '');
+        fileName = fileName.replace(/(\.png|\.jpg)/, '');
 
         var ext = $item.hasValidAlphaLayer ? '.png' : '.jpg';
         if(config.usePng) {
@@ -173,7 +173,7 @@ function ExportImages($settings, $config) {
         var tempArr = $item.name.split('/');
         var tempName = tempArr[tempArr.length - 1].replace(/\s/, '');
         //if (config.addExtensions) {
-            tempName += tempName.search(/(.png|.jpg)/) > -1 ? '' : '.png';
+            tempName += tempName.search(/(\.png|\.jpg)/) > -1 ? '' : '.png';
         //}
 
         document.library.renameItem(tempName);

@@ -1,7 +1,8 @@
-import * as PIXI from 'pixi.js'
+import {Container, Ticker, UPDATE_PRIORITY} from 'pixi.js'
 import FlashLib from './FlashLib'
+import DisplayProperties from './DisplayProperties'
 
-export default class MovieClip extends PIXI.Container {
+export default class MovieClip extends Container {
 
     constructor($data, $displayItemData) {
         super();
@@ -31,8 +32,9 @@ export default class MovieClip extends PIXI.Container {
 
         this.isPlaying = false;
         this.goToFrame(1);
-
-        FlashLib.setDisplayItemProperties(this, this.displayData);
+        
+        DisplayProperties.setDisplayItemProperties(this, this.displayData);
+        DisplayProperties.setBlendMode(this);
     }
 
     /**
@@ -177,7 +179,7 @@ export default class MovieClip extends PIXI.Container {
 
         this.animateParams = {loop: $loop, revers: $revers, fps: $fps || 24};
         this.startFrameTime = Date.now();
-        PIXI.Ticker.shared.add(this.animate, this, PIXI.UPDATE_PRIORITY.HIGH);
+        Ticker.shared.add(this.animate, this, UPDATE_PRIORITY.HIGH);
         this.isPlaying = true;
     }
 
@@ -203,7 +205,7 @@ export default class MovieClip extends PIXI.Container {
         }
 
         this.animateParams = null;
-        PIXI.Ticker.shared.remove(this.animate, this);
+        Ticker.shared.remove(this.animate, this);
         this.isPlaying = false;
     }
 
@@ -290,7 +292,9 @@ export default class MovieClip extends PIXI.Container {
         let newAdded = [];
         $currentFrameData.elements.forEach((elementData, index) => {
             let displayItem = FlashLib.createDisplayItemFromData(elementData, this.libName);
-
+            if (this.blendMode !== undefined) {
+                displayItem.blendMode = this.blendMode;
+            }
             this.addChildAt(displayItem, $startAddPosition - $currentFrameData.elements.length + index);
             newAdded.push(displayItem);
 
@@ -327,6 +331,27 @@ export default class MovieClip extends PIXI.Container {
                 console.log("Can't eval script on", "'" + this.libData.name + "'", 'in', $frameId, 'frame')
             }
         }
+    }
+
+    resetBlendMode() {
+        DisplayProperties.setBlendMode(this);
+    }
+
+    get blendMode() {
+        return this._blendMode;
+    }
+
+    set blendMode(value) {
+        if (value === undefined) {
+            return;
+        }
+        this._blendMode = value;
+        this.children.forEach((child)=>{
+            child.blendMode = this.blendMode;
+            if (child.resetBlendMode) {
+                child.resetBlendMode();
+            }
+        })
     }
 
     destroy(options) {
