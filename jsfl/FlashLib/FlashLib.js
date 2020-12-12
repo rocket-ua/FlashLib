@@ -73,13 +73,13 @@ function FlashLib($settings, $config) {
                 exportImages: true,
                 overrideExistingFiles: false,
                 addExtensions: false,
-                usePng: false
+                usePng: true
             },
             createAssetsList: {
                 libName: document.name,
                 saveToFile: true,
                 sayResultToConsole: false,
-                usePng: false,
+                usePng: true,
                 libSettings: {
                     path: "",
                     basePath: ""
