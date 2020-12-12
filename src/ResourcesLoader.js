@@ -48,11 +48,9 @@ export default class ResourcesLoader {
                         });
                     }
                     return next();
-                    break;
                 case 'FlashLib':
                     FlashLib.addNewLibrary(resource.data);
                     return next();
-                    break;
                 default:
                     return next();
             }

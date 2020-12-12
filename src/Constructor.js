@@ -71,7 +71,7 @@ export default new class Constructor {
 
         let itemData = this.getItemDataFromLibrary($displayItemData.libraryItem, $libraryName);
         if (!itemData) {
-            throw new Error('В библиотеке не найден элемент ' + $displayItemData.libraryItem);
+            throw new Error(`В библиотеке не найден элемент ${$displayItemData.libraryItem}`);
         }
         itemData.libraryName = $libraryName;
         //itemData.displayData = $displayItemData;
@@ -123,7 +123,7 @@ export default new class Constructor {
                     case 'folder':
                         result = result.concat(this._checkFolder(item.name, $itemType, $lib));
                         break;
-                    case $itemType:
+                    default:
                         result.push(item);
                         break;
                 }
@@ -144,6 +144,7 @@ export default new class Constructor {
     /**
      * Получить элемент из библиотеки
      * @param {*} $libraryItemData данные элемента библиотеки
+     * @param {*} $displayItemData
      */
     createItemFromLibraryData($libraryItemData, $displayItemData) {
         let item = null;
@@ -175,7 +176,7 @@ export default new class Constructor {
                 if (classObject) {
                     item = new classObject($libraryItemData, $displayItemData);
                 } else {
-                    throw new Error('Не найден класс. ' + type + ' Для регистрации класса испольщуйте FlashLib.registerClass');
+                    throw new Error(`Не найден класс. ${type} Для регистрации класса испольщуйте FlashLib.registerClass`);
                 }
         }
 
@@ -220,6 +221,8 @@ export default new class Constructor {
             case 'shape':
                 item = new this.defaultCalsses.Shape($displayItemData, $libraryName);
                 break;
+            default:
+                throw new Error(`Неизвестный тип элемента ${$displayItemData.elementType}`);
         }
 
         return item;

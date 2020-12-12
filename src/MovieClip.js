@@ -117,11 +117,11 @@ export default class MovieClip extends Container {
         }
 
         if ($frameId === this.currentFrameIndex && !$force) {
-            //console.log('MovieClip ' + this.name + '(' + this.timelineData.name + ')' + ' now on frame ' + $frameId);
+            //console.log(`MovieClip ${this.name} (${this.timelineData.name}) now on frame ${$frameId}`);
             return;
         }
         if ($frameId > this.timelineData.frameCount || $frameId < 1) {
-            console.log('MovieClip ' + this.name + '(' + this.timelineData.name + ')' + ' does not have a frame ' + $frameId);
+            console.log(`MovieClip ${this.name} (${this.timelineData.name}) does not have a frame ${$frameId}`);
             return;
         }
 
@@ -324,13 +324,13 @@ export default class MovieClip extends Container {
      * @param {number | string} $frameId номер или имя кадра
      */
     evalScript($script, $frameId) {
-        if ($script && $script !== '') {
+        /*if ($script && $script !== '') {
             try {
-                eval($script);
+                window.eval($script);
             } catch (error) {
-                console.log("Can't eval script on", "'" + this.libData.name + "'", 'in', $frameId, 'frame')
+                console.log(`Can't eval script on "${this.libData.name}" in ${$frameId} frame`);
             }
-        }
+        }*/
     }
 
     resetBlendMode() {

@@ -50,6 +50,9 @@ export default class Shape extends Graphics {
                     case 'radialGradient':
 
                         break;
+                    default:
+
+                        break;
                 }
             }
         })

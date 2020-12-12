@@ -28,18 +28,64 @@ export default new class DisplayProperties {
      * @param {object} $displayItemData объект с параметрами которые нужно назначить
      */
     setDisplayItemProperties($item, $displayItemData) {
+        $item.pivot.set(
+            $displayItemData.transformX - $displayItemData.x,
+            $displayItemData.transformY - $displayItemData.y
+        );
+
         $item.name = $displayItemData.name || '';
+        $item.x = $displayItemData.x || 0;
+        $item.y = $displayItemData.y || 0;
+        $item.width = $displayItemData.width || $item.width;
+        $item.height = $displayItemData.height || $item.height;
+
+        let rotation = $displayItemData.rotation < 0 ? 360 + $displayItemData.rotation : $displayItemData.rotation;
+
+        $item.rotation = (rotation * (Math.PI / 180)) || 0;
+
+        let skewX = $displayItemData.skewX < 0 ? 360 + $displayItemData.skewX : $displayItemData.skewX;
+        let skewY = $displayItemData.skewY < 0 ? 360 + $displayItemData.skewY : $displayItemData.skewY;
+
+        $item.skew.x = ((skewX * (Math.PI / 180)) || $item.skew.x) - $item.rotation;
+        $item.skew.y = ((skewY * (Math.PI / 180)) || $item.skew.y) - $item.rotation;
+
+        $item.scale.x = $displayItemData.scaleX || $item.scale.x;
+        $item.scale.y = $displayItemData.scaleY || $item.scale.y;
+
+        $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
+        $item.alpha = $displayItemData.colorAlphaPercent === undefined ? 1 : $displayItemData.colorAlphaPercent / 100;
+
+        $item.pivot.set(0, 0);
+
+
+        /*if($displayItemData.matrix) {
+            $item.setTransform(
+                $displayItemData.matrix.tx,
+                $displayItemData.matrix.ty,
+                $displayItemData.matrix.a,
+                $displayItemData.matrix.d,
+                ($displayItemData.rotation * (Math.PI / 180)) || 0,
+                ($displayItemData.matrix.b * (Math.PI / 180)) || 0,
+                ($displayItemData.matrix.c * (Math.PI / 180)) || 0,
+                $displayItemData.transformX - $displayItemData.x,
+                $displayItemData.transformY - $displayItemData.y
+            )
+        }*/
+
+        /*$item.name = $displayItemData.name || '';
         $item.x = $displayItemData.x || 0;
         $item.y = $displayItemData.y || 0;
         $item.width = $displayItemData.width || $item.width;
         $item.height = $displayItemData.height || $item.height;
         $item.scale.x = $displayItemData.scaleX || $item.scale.x;
         $item.scale.y = $displayItemData.scaleY || $item.scale.y;
+
+        $item.rotation = ($displayItemData.rotation * (Math.PI / 180)) || 0;
         $item.skew.x =  ($displayItemData.skewX * (Math.PI / 180)) || $item.skew.x;
         $item.skew.y =  ($displayItemData.skewY * (Math.PI / 180)) || $item.skew.y;
-        $item.rotation = ($displayItemData.rotation * (Math.PI / 180)) || 0;
+
         $item.visible = $displayItemData.visible === undefined ? true : $displayItemData.visible;
-        $item.alpha = $displayItemData.colorAlphaPercent === undefined ? 1 : $displayItemData.colorAlphaPercent / 100;
+        $item.alpha = $displayItemData.colorAlphaPercent === undefined ? 1 : $displayItemData.colorAlphaPercent / 100;*/
 
         // if ($displayItemData.filters) {
         //     this.addFiltersToDisplayItem($item, $displayItemData.filters);

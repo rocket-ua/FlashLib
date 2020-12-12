@@ -681,6 +681,8 @@ function LibToJson($settings, $config) {
         /*this.tintColor = null;
         this.tintPercent = 0;*/
 
+        //this.matrix = null;
+
         this.colorAlphaPercent = 100;
     }
 
@@ -706,6 +708,12 @@ function LibToJson($settings, $config) {
         if (isNaN(this.rotation)) {
             this.rotation = 0
         }
+
+        /*if ($data.matrix) {
+            var newMatrix = new MatrixItem();
+            newMatrix.parseData($data.matrix);
+            this.matrix = newMatrix;
+        }*/
         //DEBUG.traceElementProperties($data);
         //DEBUG.traceElementPropertiesRecursively($data, 0);
     };

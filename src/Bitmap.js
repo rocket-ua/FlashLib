@@ -96,12 +96,4 @@ export default class Bitmap extends Sprite {
             renderer.filter.pop();
         }
     }
-
-    /*get blendMode() {
-        return 0;
-    }
-
-    set blendMode(value) {
-        console.log(value)
-    }*/
 }
