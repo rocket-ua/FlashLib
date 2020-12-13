@@ -4,11 +4,15 @@ FlashLib is a tool to export a library from the Animate CC (.fla) project and bu
 Example of use: https://github.com/rocket-ua/FlashLibExample
 ___
 ## Features
-<li> Export MovieClip.
-<li> Export Bitmap.
-<li> Export TextField.
-<li> Ability to create items from the .fla library by name.
-<li> Build instance of custom classes when buildings item from library.
+* Export MovieClip.
+* Export Bitmap.
+* Export TextField.
+* Export simple Shapes.
+* Ability to create items from the .fla library by name.
+* Build instance of custom classes when buildings item from library.
+
+### Detail
+
 
 ## How to use
 For export resources and library use the command **flashlib**.  
@@ -41,12 +45,14 @@ It is created automatically when the script is first applied to the .fla file.
         "flashLibName": "FlashLib",
         "exportImages": true,
         "overrideExistingFiles": false,
-        "addExtensions": false
+        "addExtensions": false,
+        "usePng": true
     },
     "createAssetsList": {
         "libName": "pattern.fla",
         "saveToFile": true,
         "sayResultToConsole": false,
+        "usePng": true,
         "libSettings": {
             "path": "",
             "basePath": ""
@@ -65,11 +71,14 @@ It is created automatically when the script is first applied to the .fla file.
 - flashLibName - library name.
 - exportImages - export graphics.
 - overrideExistingFiles - overwrite files, if they already exist.
+- addExtensions - add extension for files on export.
+- usePng - always export images as PNG.
   
 **createAssetsList** - settings file resource download.
 - libName - the name of the .fla file from which the resources were exported.
 - saveToFile - save assets list to a file.
 - sayResultToConsole - output json assets string to console.
+- usePng - always add exported images as PNG.
 
 ### Loading resources and creating items
 #### To load the library and resources, you need to load the file FlashLibAssets.json from the folder where the project was exported (basePath)
@@ -77,7 +86,7 @@ After exporting the resources and the library, you need to load the FlashLibAsse
 ```javascript
 function loadAssets() {
     PIXI.loader.add('FlashLibAssets', 'FlashLibAssets.json', 'json');
-    PIXI.loader.once('complete', onLoadingComplete, this);
+    PIXI.loader.onComplete.once(onLoadingComplete, this);
     PIXI.loader.load();
 }
 
@@ -103,7 +112,8 @@ this.app.stage.addChild(passwordTextImage);
 This create your object from library and all included objects.
 **createItemFromLibrary**
 <li> The first argument is the name and path to the item in the project's .fla library.
-<li> The second argument is the name from which library the item should be created. (FlashLibConfig.json => libToJson.flashLibName)
+<li> The second argument is the name from which library the item should be created. (FlashLibConfig.json => libToJson.flashLibName).
+You can add several exported libraries in one time, and create items from this items using library name.
 
 ## Result
 ### What was make in Animate CC and what makes in PIXI.js
@@ -117,8 +127,9 @@ FlashLib can create instances of custom classes when building item from library.
 In JS project you need to make class what you want to linkage to Animate CC item.  
 ```javascript
 //CheckBox.js
-import FlashLib from 'flashlib';
-export default class CheckBox extends FlashLib.MovieClip {
+import {MovieClip} from 'flashlib';
+
+export default class CheckBox extends MovieClip {
     constructor(data) {
         super(data);
 
@@ -163,6 +174,8 @@ FlashLib.registerClass('Button', Button);
 FlashLib.registerClass('CheckBox', CheckBox);
 ```
 In Animate CC you need to make MovieClip with structure what you need and set linkage to 'CheckBox' (name what you use in ***FlashLib.registerClass***).
+
+<img src="https://images2.imgbox.com/dd/f6/TAnRBeLj_o.png" height="200" />
 
 When your MovieClip will building, FlashLib make instance of your class, and you functionality of your class will be works.  
 You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExample).
