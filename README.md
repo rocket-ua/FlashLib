@@ -1,18 +1,54 @@
+
+___ 
+### Important
+####If you update FlashLib from less than 2.1.x, you need to reexporn you .fla files and change import format FlashLib components.  
+####New format of imports see in this doc.
+___  
 # FlashLib
 This tool is under development.
 FlashLib is a tool to export a library from the Animate CC (.fla) project and build using PIXI.js.  
-Example of use: https://github.com/rocket-ua/FlashLibExample
-___
+FlashLib will develop for increase speed of implement assets into game, and fast rebuild projects from Flash to HTML5 and PIXI.js framework.  
+Using this library you can completely build all assets for project or you can build some parts.  
+FlashLib has excellent integration with existing project used PIXI.js, and you can add some parts makes with FlashLib into your existing project.  
+Example of use: https://github.com/rocket-ua/FlashLibExample  
+
 ## Features
 * Export MovieClip.
 * Export Bitmap.
 * Export TextField.
-* Export simple Shapes.
+* Export Shapes.
 * Ability to create items from the .fla library by name.
 * Build instance of custom classes when buildings item from library.
 
 ### Detail
-
+* Exported data
+    - Items positions.
+    - Items scale.
+    - Items skew.
+    - Items rotation.
+    - Color Effect Alpha.
+    - Blend modes (which supported in PIXI.js).
+    - Transform point.
+* MovieClip
+    - Export all layers and frames.
+    - Don't supported any animations (you can use only frame-by-frame animation) (Adding another in progress).
+    - All included MovieClips will be build recursively.
+    - You can work with children of MovieClip like in PIXI.Container.
+    - You can use mask layers (first screenshot from Adobe Animate CC, second - from PIXI.js project).  
+    <img src="https://images2.imgbox.com/de/a8/PSTyDtyT_o.png" height="200" />
+    <img src="https://images2.imgbox.com/55/35/kokmdZmr_o.png" height="200" />
+* Bitmap
+    - Bitmaps can be exported from Adobe Animate CC and then can be used into project.
+    - All exported bitmaps can be compiled into spritesheets.
+* Shapes
+    - Now supported only simple shapes (rectangles without holes).
+    - You can use solid color fill or bitmap fill for Shapes.
+    - You can crop some parts of shape (screenshot from PIXI.js project).  
+    <img src="https://images2.imgbox.com/f0/80/XiziDl3O_o.png" height=200>
+* TextField
+    - You can use different fonts in TextFields.
+    - Supported text alignment, text color, font size, line spacing, tracking amount,  
+    behavior (single line, multiline, multiline no wrap).  
 
 ## How to use
 For export resources and library use the command **flashlib**.  
@@ -99,8 +135,7 @@ function onLoadingComplete() {
 Import FlashLib.
 ```javascript
 import FlashLib from 'flashlib';
-```
-
+```  
 Create an object from the library by name.
 ```javascript
 let loginWindow = FlashLib.createItemFromLibrary('loginWindow', 'FlashLib');
@@ -125,9 +160,24 @@ ___
 ## Additional features
 FlashLib can create instances of custom classes when building item from library.  
 In JS project you need to make class what you want to linkage to Animate CC item.  
+
+### Example how import FlashLib components for using in custom sprites.
+```javascript
+import * as FlashLib from 'flashlib';
+
+FlashLib.MovieClip
+FlashLib.Bitmap
+FlashLib.TextField
+FlashLib.Shape
+```  
+or  
+```javascript
+import { MovieClip, Bitmap, TextField, Shape } from 'flashlib';
+```  
+### Example how to create simple checkbox class and link with exported MovieClip.
 ```javascript
 //CheckBox.js
-import {MovieClip} from 'flashlib';
+import { MovieClip } from 'flashlib';
 
 export default class CheckBox extends MovieClip {
     constructor(data) {
@@ -178,8 +228,17 @@ In Animate CC you need to make MovieClip with structure what you need and set li
 <img src="https://images2.imgbox.com/dd/f6/TAnRBeLj_o.png" height="200" />
 
 When your MovieClip will building, FlashLib make instance of your class, and you functionality of your class will be works.  
-You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExample).
+You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExample).  
 
+### Default classes
+You can change classes which FlashLib using by default.  
+When default classes will be changed, FlashLib will use new classes for creating all items (except items with linked classes).  
+For example: this can be comfortable to use if you need localization for TextFields.   
+You can create custom class extended from FlashLib TextField and change default class.
+All text fields will be created with your class and logic.
+```javascript
+FlashLib.setDefaultClass('TextField', LocalizationTextField);
+```
 ___
 ### Contacts
 Telegram [@rocket_ua](https://t.me/rocket_ua)
