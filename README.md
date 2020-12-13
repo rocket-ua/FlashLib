@@ -153,9 +153,9 @@ This create your object from library and all included objects.
 You can add several exported libraries in one time, and create items from this items using library name.
 
 ## Result
-### What was make in Animate CC and what makes in PIXI.js
+### What was make in Animate CC and what makes in PIXI.js  
 <img src="https://images2.imgbox.com/8c/79/OxKyjCMV_o.png" height="200" />
-<img src="https://images2.imgbox.com/c4/10/qoUkDy9d_o.png" height="200" />
+<img src="https://images2.imgbox.com/c4/10/qoUkDy9d_o.png" height="200" />  
 
 ### After changing the project in Animate CC (.fla), you need to restart the script to export the resources and the library.
 ___
