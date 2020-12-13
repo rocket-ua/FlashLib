@@ -10,7 +10,9 @@ FlashLib is a tool to export a library from the Animate CC (.fla) project and bu
 FlashLib will develop for increase speed of implement assets into game, and fast rebuild projects from Flash to HTML5 and PIXI.js framework.  
 Using this library you can completely build all assets for project or you can build some parts.  
 FlashLib has excellent integration with existing project used PIXI.js, and you can add some parts makes with FlashLib into your existing project.  
-Example of use: https://github.com/rocket-ua/FlashLibExample  
+[Example of using](https://github.com/rocket-ua/FlashLibExample)  
+[Example preview](https://rocket-ua.github.io/FlashLibExample/dist/)  
+Don't forget write issues or proposal :)  
 
 ## Features
 * Export MovieClip.
