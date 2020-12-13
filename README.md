@@ -1,8 +1,8 @@
 
 ___ 
 ### Important
-####If you update FlashLib from less than 2.1.x, you need to reexporn you .fla files and change import format FlashLib components.  
-####New format of imports see in this doc.
+#### If you update FlashLib from less than 2.1.x, you need to reexporn you .fla files and change import format FlashLib components.  
+#### New format of imports see in this doc.
 ___  
 # FlashLib
 This tool is under development.
