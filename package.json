@@ -1,26 +1,32 @@
 {
   "name": "flashlib",
-  "version": "2.1.0",
+  "version": "2.1.9",
   "description": "Build items from Animate CC (.fla) library using PIXI.js",
   "author": "rocket",
   "license": "MIT",
   "main": "src/FlashLib.js",
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "babel-loader": "^8.2.2",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
-    "minimist": "^1.2.0",
-    "pixi.js": "^5.3.3"
+    "minimist": "^1.2.6",
+    "pixi.js": "^5.0.0",
+    "webpack": "^5.10.1",
+    "webpack-cli": "^4.2.0"
   },
   "bin": {
     "flashlib": "bin/main.js"
   },
   "scripts": {
-    "start": "flashlib"
+    "start": "flashlib",
+    "build": "webpack"
   },
   "files": [
     "bin/",
     "src/*.js",
     "jsfl/FlashLib.jsfl",
+    "*.d.ts",
     "package.json",
     "README.md",
     "LICENSE"
@@ -40,6 +46,5 @@
   "bugs": {
     "url": "https://github.com/rocket-ua/FlashLib/issues"
   },
-  "homepage": "https://github.com/rocket-ua/FlashLib#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/rocket-ua/FlashLib#readme"
 }

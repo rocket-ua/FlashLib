@@ -37,8 +37,8 @@ Don't forget write issues or proposal :)
     - All included MovieClips will be build recursively.
     - You can work with children of MovieClip like in PIXI.Container.
     - You can use mask layers (first screenshot from Adobe Animate CC, second - from PIXI.js project).  
-    <img src="https://images2.imgbox.com/de/a8/PSTyDtyT_o.png" height="200" />
-    <img src="https://images2.imgbox.com/55/35/kokmdZmr_o.png" height="200" />
+    <img src="https://images2.imgbox.com/de/a8/PSTyDtyT_o.png" height="200" alt="img1" />
+    <img src="https://images2.imgbox.com/55/35/kokmdZmr_o.png" height="200" alt="img2" />
 * Bitmap
     - Bitmaps can be exported from Adobe Animate CC and then can be used into project.
     - All exported bitmaps can be compiled into spritesheets.
@@ -46,7 +46,7 @@ Don't forget write issues or proposal :)
     - Now supported only simple shapes (rectangles without holes).
     - You can use solid color fill or bitmap fill for Shapes.
     - You can crop some parts of shape (screenshot from PIXI.js project).  
-    <img src="https://images2.imgbox.com/f0/80/XiziDl3O_o.png" height=200>
+    <img src="https://images2.imgbox.com/f0/80/XiziDl3O_o.png" height=200  alt="img3" />
 * TextField
     - You can use different fonts in TextFields.
     - Supported text alignment, text color, font size, line spacing, tracking amount,  
@@ -135,8 +135,9 @@ function onLoadingComplete() {
 ```
 
 Import FlashLib.
+
 ```javascript
-import FlashLib from 'flashlib';
+import FlashLib from 'index';
 ```  
 Create an object from the library by name.
 ```javascript
@@ -154,8 +155,8 @@ You can add several exported libraries in one time, and create items from this i
 
 ## Result
 ### What was make in Animate CC and what makes in PIXI.js  
-<img src="https://images2.imgbox.com/8c/79/OxKyjCMV_o.png" height="200" />
-<img src="https://images2.imgbox.com/c4/10/qoUkDy9d_o.png" height="200" />  
+<img src="https://images2.imgbox.com/8c/79/OxKyjCMV_o.png" height="200" alt="img4" />
+<img src="https://images2.imgbox.com/c4/10/qoUkDy9d_o.png" height="200" alt="img5" />  
 
 ### After changing the project in Animate CC (.fla), you need to restart the script to export the resources and the library.
 ___
@@ -164,61 +165,64 @@ FlashLib can create instances of custom classes when building item from library.
 In JS project you need to make class what you want to linkage to Animate CC item.  
 
 ### Example how import FlashLib components for using in custom sprites.
+
 ```javascript
-import * as FlashLib from 'flashlib';
+import * as FlashLib from 'index';
 
 FlashLib.MovieClip
 FlashLib.Bitmap
 FlashLib.TextField
 FlashLib.Shape
 ```  
-or  
+or
+
 ```javascript
-import { MovieClip, Bitmap, TextField, Shape } from 'flashlib';
+import {MovieClip, Bitmap, TextField, Shape} from 'index';
 ```  
 ### Example how to create simple checkbox class and link with exported MovieClip.
+
 ```javascript
 //CheckBox.js
-import { MovieClip } from 'flashlib';
+import {MovieClip} from 'index';
 
 export default class CheckBox extends MovieClip {
-    constructor(data) {
-        super(data);
+  constructor(data) {
+    super(data);
 
-        this.checked = false;
+    this.checked = false;
 
-        this.init();
-        this.addListeners();
+    this.init();
+    this.addListeners();
+  }
+
+  init() {
+    this.interactive = true;
+    this.buttonMode = true;
+  }
+
+  addListeners() {
+    this.on('click', this.onEvent, this);
+  }
+
+  onEvent($data) {
+    switch ($data.type) {
+      case 'click':
+        this.onClick();
+        break;
     }
+  }
 
-    init() {
-        this.interactive = true;
-        this.buttonMode = true;
-    }
-
-    addListeners() {
-        this.on('click', this.onEvent, this);
-    }
-
-    onEvent($data) {
-        switch ($data.type) {
-            case 'click':
-                this.onClick();
-                break;
-        }
-    }
-
-    onClick() {
-        this.checked = !this.checked;
-        this.goToFrame(this.checked ? 2 : 1);
-    }
+  onClick() {
+    this.checked = !this.checked;
+    this.goToFrame(this.checked ? 2 : 1);
+  }
 }
 ```  
 Than you need to import you classes and add do FlashLib and register via ***FlashLib.registerClass***, like this:
 
 ```javascript
 //import.js
-import FlashLib from "flashlib";
+import FlashLib from "index";
 import Button from './Button';
 import CheckBox from './CheckBox';
 
@@ -227,7 +231,7 @@ FlashLib.registerClass('CheckBox', CheckBox);
 ```
 In Animate CC you need to make MovieClip with structure what you need and set linkage to 'CheckBox' (name what you use in ***FlashLib.registerClass***).
 
-<img src="https://images2.imgbox.com/dd/f6/TAnRBeLj_o.png" height="200" />
+<img src="https://images2.imgbox.com/dd/f6/TAnRBeLj_o.png" height="200" alt="img6" />
 
 When your MovieClip will building, FlashLib make instance of your class, and you functionality of your class will be works.  
 You can look detail ho it's working in [example project](https://github.com/rocket-ua/FlashLibExample).  

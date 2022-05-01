@@ -17,6 +17,7 @@ export default class MovieClip extends Container {
         this.animateParams = null;
         this.layers = [];
         this.layerMask = null;
+        this.elements = {};
 
         this.layersData.forEach((layerData) => {
             let layer = {
@@ -42,6 +43,10 @@ export default class MovieClip extends Container {
      */
     exitFrame() {
 
+    }
+
+    getElement(name) {
+        return this.elements[name];
     }
 
     /**
@@ -230,9 +235,9 @@ export default class MovieClip extends Container {
             if (prevFrameData && $frameId >= prevFrameData.startFrame + 1 && $frameId <= prevFrameData.startFrame + prevFrameData.duration) {
                 return;
             }
-
-            let newAdded = this._addNewChild(currentFrameData, startAddPosition, $frameId);
             this._removeElements(layerIndex);
+            let newAdded = this._addNewChild(currentFrameData, startAddPosition, $frameId);
+
             this.layers[layerIndex].elements = newAdded;
         });
 
@@ -298,6 +303,10 @@ export default class MovieClip extends Container {
             this.addChildAt(displayItem, $startAddPosition - $currentFrameData.elements.length + index);
             newAdded.push(displayItem);
 
+            if (displayItem.name && displayItem.name !== '') {
+                this.elements[displayItem.name] = displayItem;
+            }
+
             this.currentFrameName = $currentFrameData.name;
             this.evalScript($currentFrameData.actionScript, $frameId);
         });
@@ -311,6 +320,11 @@ export default class MovieClip extends Container {
      */
     _removeElements($layerIndex) {
         this.layers[$layerIndex].elements.forEach((elem) => {
+
+            if (elem.name && elem.name !== '' && this.elements.hasOwnProperty(elem.name)) {
+                delete this.elements[elem.name];
+            }
+
             if (!elem._destroyed) {
                 elem.destroy({children: true});
             }

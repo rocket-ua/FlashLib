@@ -57,7 +57,7 @@ export default class TextField extends PIXI.Text {
     }
 
     _onFontsReady() {
-        if (this.style && document.fonts.check(this.style.fontSize + 'px ' + this.style.fontFamily)) {
+        if (!this._destroyed && this.style && document.fonts.check(this.style.fontSize + 'px ' + this.style.fontFamily)) {
             this.dirty = true;
             this.correctPosition();
         }
@@ -91,7 +91,7 @@ export default class TextField extends PIXI.Text {
     }
 
     correctPosition($horizontal, $vertical) {
-        if (!this.textRect) {
+        if (!this.textRect || this._destroyed) {
             return;
         }
 
